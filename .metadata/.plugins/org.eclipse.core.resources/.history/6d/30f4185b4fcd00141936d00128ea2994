@@ -1,0 +1,470 @@
+package com.cipherlab.cipherconnectpro;
+
+import java.util.ArrayList;
+
+import android.app.Service;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.cipherlab.cipherconnect.sdk.CipherConnectControl;
+import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
+import com.cipherlab.cipherconnect.sdk.ICipherConnectControl;
+import com.cipherlab.cipherconnect.sdk.ICipherConnectControlListener;
+import com.cipherlab.cipherconnectpro.R;
+
+public class CipherConnectManagerService extends Service 
+{
+	public static final int STATE_OFFLINE = -1;
+    public static final int STATE_ONLINE = 0;
+    public static final int STATE_BEGINCONNECTING = 1;
+    public static final int STATE_CONNECTING = 2;
+    public static final int STATE_CONNECTED = 3;
+    public static final int STATE_CONNECTERR = 4;
+    public static final int STATE_DISCONNECT = 5;
+    private int mConnState = STATE_OFFLINE;
+    private String mDeviceName = "";
+        
+	//broadcast actions, broadcast to ConnectStatus_onPreferenceChange now.
+    public static final String ACTION_CONN_STATE_CHANGED =
+            "com.cipherEZMet.cipherconnectpro.CipherConnectManagerService.ConnectionState_CHANGED";
+	
+	private static final String TAG = "CipherConnectManagerService()";
+	public static ICipherConnectControl mCipherConnectControl;
+	private ArrayList<ICipherConnectManagerListener> mListenerList = 
+            new ArrayList<ICipherConnectManagerListener>();
+    private LocalBinder mBinder;
+    
+    @Override
+    public void onCreate() {
+    	mBinder = new LocalBinder();
+
+        CipherConnectControl_init();
+        
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        bt_setAutoConnect(false, CipherConnectSettingInfo.getLastDeviceName(CipherConnectManagerService.this));  // Stop auto connect
+        
+        if (mCipherConnectControl.isConnected())
+        	mCipherConnectControl.disconnect();
+        
+        this.mBinder = null;
+        mCipherConnectControl = null;
+
+        CipherConnectSettingInfo.destroy();
+    }
+    
+    @Override
+	public IBinder onBind(Intent intent) {
+		return mBinder;
+	}
+    
+    public class LocalBinder extends Binder implements ICipherConnectManagerService 
+    {
+		public ICipherConnectManagerService getService() {
+			return (ICipherConnectManagerService) LocalBinder.this;
+		}
+		
+		//Server service begin
+    	public void StartListenConn() {
+    		bt_StartListenConn();
+    	}
+    	
+    	public void StopListenConn() {
+    		bt_StopListenConn();
+    	}
+    	
+    	public String GetConnDeviceName() {
+    		return bt_GetConnDeviceName();
+    	}
+    	      	    
+    	public int GetConnState() {
+    		return bt_GetConnState();
+    	}
+
+    	public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight) {
+    		return bt_GetMacAddrBarcodeImage(nWidth, nHeight);
+    	}
+    		
+    	public Bitmap GetResetConnBarcodeImage(int nWidth, int nHeight){
+    		return bt_GetResetConnBarcodeImage(nWidth, nHeight);
+    	}
+    		
+    	public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight) {
+    		return bt_GetSettingConnBarcodeImage(nWidth, nHeight);
+    	}
+    	//Server service end
+    	
+		public boolean connect(String deviceName) throws Exception {
+			return bt_connect(deviceName);
+		}
+		
+		public void disConnect() {
+			if (mCipherConnectControl.isConnected())
+	        	mCipherConnectControl.disconnect();
+		}
+		
+		public String[] getBtDeviceNames() {
+			return mCipherConnectControl.getBluetoothDeviceNames();
+		}
+		
+		public boolean isConnected() {
+			return mCipherConnectControl.isConnected();
+		}
+		
+        public void AddListener(ICipherConnectManagerListener l) {
+            bt_AddListener(l);
+        }
+        
+        public void RemoveListener(ICipherConnectManagerListener l) {
+            bt_RemoveListener(l);
+        }
+
+        public void AuotConnect(boolean enable, String deviceName) {
+			bt_setAutoConnect(enable, deviceName);
+		}
+		
+		public boolean isAuotConnect() {
+			return mCipherConnectControl.isAutoReconnect();
+		}
+		
+		public void stopSelf() {
+			bt_stopSelf();
+		}
+		
+	    public boolean IsBLEModeSupported() {
+	    	return mCipherConnectControl.IsBLEModeSupported();
+	    }
+	    
+	    public void SetBLEMode(boolean bEnable) {
+	    	mCipherConnectControl.SetBLEMode(bEnable);
+	    }
+	    
+	    public boolean StartScanLEDevices() throws UnsupportedOperationException {
+	    	return mCipherConnectControl.StartScanLEDevices();
+	    }
+	    
+	    public boolean StopScanLEDevices() throws UnsupportedOperationException {
+	    	return mCipherConnectControl.StopScanLEDevices();
+	    }
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: mBroadcastConnChange()
+     * @Description: Broadcast the changing action to client.
+     * Client should use Servic.GetConnState() to get status
+     * @param: nConnState, defined as connection staus.
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    private void mBroadcastConnChange(int nConnState)
+	{
+		// Client should use Servic.GetConnState() to get status
+		mConnState = nConnState;
+		final Intent brdConnState = new Intent(ACTION_STATE_CHANGED);
+        sendBroadcast(brdConnState);
+	}
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: CipherConnectControl_init()
+     * @Description: Initial CipherConnectControl callback SDK.
+     *  
+     * @param: N/A
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    private void CipherConnectControl_init()
+    {
+    	CipherConnectWakeLock.initial(this);
+    	mCipherConnectControl = new CipherConnectControl(this);
+    	mCipherConnectControl.addCipherConnectControlListener(new ICipherConnectControlListener() 
+    	{
+    		public void onListenServerOnline() {
+    			CipherConnectControl_onListenServerOnline();
+    		}
+    		public void onListenServerOffline() {
+    			CipherConnectControl_onListenServerOffline();
+    		}
+    		public void onBeginConnecting(String deviceName) {
+    			CipherConnectControl_onBeginConnecting(deviceName);
+    		}
+    		public void onConnecting(String deviceName) {
+    			CipherConnectControl_onConnecting(deviceName);
+    		}
+    		public void onConnected(String deviceName) {				
+				CipherConnectControl_onConnected(deviceName);
+			}
+    		public void onDisconnected(String deviceName) {
+				CipherConnectControl_onDisconnected(deviceName);
+			}
+    		public void onCipherConnectControlError(String deviceName, int id, String message) {				
+				CipherConnectControl_onCipherConnectControlError(deviceName,id,message);
+			}
+			public void onReceivingBarcode(String deviceName, String barcode) {
+				CipherConnectControl_onReceivingBarcode(deviceName,barcode);
+			}
+			public void onGetLEDevice(final ICipherConnBTDevice device) {
+				for (ICipherConnectManagerListener listener :mListenerList)
+					listener.onGetLEDevice(device);
+			}
+    	});
+    	
+    	// Set Auto connect
+    	boolean bAutoReconnect = CipherConnectSettingInfo.isAutoConnect(this);
+    	String sLastDeviceName = CipherConnectSettingInfo.getLastDeviceName(this);
+    	try {
+        	mCipherConnectControl.setAuotReconnect(bAutoReconnect, sLastDeviceName);
+		} catch (Exception e) {
+			Toast.makeText(getApplicationContext(), "Can't be set AutoReconnect.["+e.getMessage()+"]", Toast.LENGTH_SHORT).show();
+		}	
+    }
+    
+    public void CipherConnectControl_onDisconnected(String deviceName) 
+    {
+    	//Log.d(TAG, "CipherConnectControl_onDisconnected("+deviceName);
+        String device_name = CipherConnectSettingInfo.getLastDeviceName(CipherConnectManagerService.this);
+		String message = device_name
+						+ " "
+						+ this.getResources().getString(R.string.the_bluetooth_device_disconnected);
+		
+		CipherConnectWakeLock.disable();
+		CipherConnectNotification.error_notify(CipherConnectManagerService.this, 
+												CipherConnectNotification.intent_cipherconnectproSettings(),
+												this.getResources().getString(R.string.ime_name), message);
+		
+		mBroadcastConnChange(STATE_DISCONNECT);
+	}
+    
+    public void CipherConnectControl_onBeginConnecting(String deviceName) 
+    {
+		String message = this.getResources().getString(R.string.the_bluetooth_device_beginConnecting);
+		CipherConnectNotification.connecting_notify(CipherConnectManagerService.this, 
+													CipherConnectNotification.intent_cipherconnectproSettings(),
+													this.getResources().getString(R.string.ime_name), message);
+		mBroadcastConnChange(STATE_BEGINCONNECTING);
+	}
+	
+    public void CipherConnectControl_onConnecting(String deviceName) 
+    {
+		//Log.d(TAG, "CipherConnectControl_onConnecting("+deviceName);
+    	mDeviceName = deviceName;
+		String message = this.getResources().getString(R.string.the_bluetooth_device_connecting);
+		CipherConnectNotification.connecting_notify(CipherConnectManagerService.this, 
+													CipherConnectNotification.intent_cipherconnectproSettings(),
+													this.getResources().getString(R.string.ime_name), message);
+		mBroadcastConnChange(STATE_CONNECTING);
+	}
+
+    public void CipherConnectControl_onConnected(String deviceName) 
+    {
+    	//Log.d(TAG, "CipherConnectControl_onConnected("+deviceName);
+    	mDeviceName = deviceName;
+        String message = mDeviceName
+			            + " "
+			            + this.getResources().getString(
+			                R.string.the_bluetooth_device_connected);
+		
+        if(CipherConnectSettingInfo.isSuspendBacklight(this) == true)
+        {
+        	CipherConnectWakeLock.enable();
+        }
+        
+        CipherConnectNotification.notify(CipherConnectManagerService.this,
+										CipherConnectNotification.intent_cipherconnectproSettings(),
+			                            this.getResources().getString(R.string.ime_name), message);
+        mBroadcastConnChange(STATE_CONNECTED);
+	}
+	
+    public void CipherConnectControl_onCipherConnectControlError(String deviceName, int id,	String message)
+    {
+    	String error_message = this.getResources().getString(R.string.the_bluetooth_device_connected_error);
+		CipherConnectNotification.error_notify(CipherConnectManagerService.this,
+												CipherConnectNotification.intent_cipherconnectproSettings(),
+												this.getResources().getString(R.string.ime_name), error_message);
+		mBroadcastConnChange(STATE_CONNECTERR);
+	}
+	
+	public void CipherConnectControl_onReceivingBarcode(String deviceName, String barcode) 
+	{
+		for (ICipherConnectManagerListener listener :mListenerList)
+			listener.onBarcode(barcode);
+	}
+	
+	public void CipherConnectControl_onListenServerOnline() 
+	{
+		mBroadcastConnChange(STATE_ONLINE);
+	}
+	
+	public void CipherConnectControl_onListenServerOffline() {
+		
+		mBroadcastConnChange(STATE_OFFLINE);
+	}
+	
+	/*
+     * <!----------------------------------------------------------------->
+     * @Name: bt_stopSelf()
+     * @Description: Set stop self for auto connect and disconnect command.
+     *  
+     * @param: N/A
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    private void bt_stopSelf() {
+        this.bt_setAutoConnect(false, CipherConnectSettingInfo.getLastDeviceName(CipherConnectManagerService.this));
+
+		if (mCipherConnectControl.isConnected())
+				mCipherConnectControl.disconnect();
+		else
+            this.sys_stopSelf();
+    }
+
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: sys_stopSelf()
+     * @Description: Send stop self message to notify.
+     *  
+     * @param: N/A
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    private void sys_stopSelf() {
+        if (!mCipherConnectControl.isAutoReconnect())
+            super.stopSelf();
+
+        CipherConnectNotification.cancel_notify(this);
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: bt_AddListener()
+     * @Description: add listener.
+     *  
+     * @param: ICipherConnectManagerListener l
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    private void bt_AddListener(ICipherConnectManagerListener l) {
+        this.mListenerList.add(l);
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: bt_RemoveListener()
+     * @Description: Remove listener.
+     *  
+     * @param: ICipherConnectManagerListener l
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    private void bt_RemoveListener(ICipherConnectManagerListener l) {
+        this.mListenerList.remove(l);
+    }
+
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: bt_connect()
+     * @Description: Set bluetooth connect command.
+     *  
+     * @param: String deviceName
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    public boolean bt_connect(String deviceName) {
+    	try {
+    		//Toast.makeText(getApplicationContext(), "bt_connect(deviceName="+deviceName+")", Toast.LENGTH_SHORT).show();
+    		Log.d(TAG, "bt_connect(): deviceName= "+deviceName);
+    		mCipherConnectControl.connect(deviceName);
+    		
+    		return true;
+    	}
+    	catch (Exception e) {
+    		Toast.makeText(getApplicationContext(), "Can't be set Connect.["+e.getMessage()+"]", Toast.LENGTH_SHORT).show();
+    		
+    		return false;
+    	}
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: bt_setAutoConnect()
+     * @Description: Set auto connect.
+     *  
+     * @param: boolean enable
+     * @param: String device_name
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    public synchronized void bt_setAutoConnect(boolean enable, String device_name) {
+    	Log.d(this.getResources().getString(R.string.ime_name), "The AutoConnectis: "+ enable);
+    	
+    	mCipherConnectControl.setAuotReconnect(enable, device_name);
+    }
+    
+    private void bt_StartListenConn()
+	{
+		if(mCipherConnectControl != null)
+			mCipherConnectControl.StartListening();
+	}
+    
+    private void bt_StopListenConn()
+	{
+		if(mCipherConnectControl != null)
+			mCipherConnectControl.StopListening();
+	}
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: bt_GetConnDeviceName()
+     * @Description: Get connected device name.
+     * 
+     * return: device name 
+     * <!----------------------------------------------------------------->
+     * */
+    private String bt_GetConnDeviceName()
+    {
+    	return mDeviceName;
+    }
+    
+    //Functions
+    private int bt_GetConnState()
+  	{
+  		return mConnState;
+  	}
+    
+    private Bitmap bt_GetMacAddrBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mCipherConnectControl != null)
+			return mCipherConnectControl.GetMacAddrBarcodeImage(nWidth, nHeight);
+		return null;
+	}
+	
+    private Bitmap bt_GetResetConnBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mCipherConnectControl != null)
+			return mCipherConnectControl.GetResetConnBarcodeImage(nWidth, nHeight);
+		return null;
+	}
+	
+    private Bitmap bt_GetSettingConnBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mCipherConnectControl != null)
+			return mCipherConnectControl.GetSettingConnBarcodeImage(nWidth, nHeight);
+		return null;
+	}
+}

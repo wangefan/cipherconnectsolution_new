@@ -1,0 +1,126 @@
+package com.cipherlab.cipherconnectpro;
+
+import android.content.Context;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ToggleButton;
+
+public class TogglePreference extends Preference 
+{
+	//data members
+	private LinearLayout mLinearView = null;
+	private boolean mIsSlaveConn = true;
+	private Button mbtnBuildConn = null;
+	private ToggleButton mbtnConnMathod = null;
+	private OnPreferenceClickListener mOnClickListener;
+	
+	//member functions
+	private void mInitCtrls()
+	{
+		if(mLinearView == null)
+		{
+			final LayoutInflater layoutInflater =
+		            (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			
+			mLinearView = (LinearLayout)layoutInflater.inflate(R.layout.build_connection, null, false);
+		}
+		
+		if(mbtnBuildConn == null)
+		{
+			mbtnBuildConn = (Button) mLinearView.findViewById(R.id.btnBuildConn);
+			if(mbtnConnMathod != null)
+			{
+				mbtnConnMathod.setOnClickListener(mClickBuildConn);
+			}			
+		}
+		
+		if(mbtnConnMathod == null)
+		{
+			mbtnConnMathod = (ToggleButton) mLinearView.findViewById(R.id.btnConnMethod);
+			if(mbtnConnMathod != null)
+			{
+				mbtnConnMathod.setOnClickListener(mClickConnMethod);
+			}			
+		}
+	}
+	
+	//public functions
+	public boolean IsMasterConn()
+	{
+		return mIsSlaveConn;
+	}
+
+    public TogglePreference(Context context) {
+        super(context);
+        mInitCtrls();
+    }
+
+    public TogglePreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mInitCtrls();
+    }
+
+    public TogglePreference(Context context, AttributeSet attrs, int defStyle) 
+    {
+        super(context, attrs, defStyle);
+        mInitCtrls();
+    }
+    
+    private void mPerformClick()
+	{
+		if (mOnClickListener != null )
+		{
+			mOnClickListener.onPreferenceClick(this);
+		}
+	}
+    
+    private Button.OnClickListener mClickBuildConn
+    
+    private ToggleButton.OnClickListener mClickConnMethod = new ToggleButton.OnClickListener()
+	{
+		@Override
+		public void onClick(View v)
+		{
+		  	mIsSlaveConn = !mIsSlaveConn;
+	    	persistBoolean(mIsSlaveConn);	//Save to preference setting.
+		}
+	};
+	
+    /**
+     * Sets the callback to be invoked when this Preference is clicked.
+     * 
+     * @param onPreferenceClickListener The callback to be invoked.
+     */
+    public void setOnPreferenceClickListener(OnPreferenceClickListener onPreferenceClickListener) {
+        mOnClickListener = onPreferenceClickListener;
+    }
+    
+    @Override
+    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
+        if (restorePersistedValue) {
+            // Restore existing state
+        	mIsSlaveConn = getPersistedBoolean(true);
+        } else {
+            // Set default state from the XML attribute
+        	mIsSlaveConn = (Boolean) defaultValue;
+        	persistBoolean(mIsSlaveConn);
+        }
+    }
+
+    public View getView(View convertView, ViewGroup parent) {
+        if (convertView == null) 
+        {
+        	convertView = mLinearView;
+        	//Update UI
+        	mbtnConnMathod.setChecked(mIsSlaveConn);
+        }
+
+        return convertView;
+    }
+}

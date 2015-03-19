@@ -1,0 +1,1 @@
+INDEX VERSION 1.126+D:\Projects\CipherLab_Software_Android\CipherConnectSolution\CipherConnectPro\.metadata\.plugins\org.eclipse.jdt.core

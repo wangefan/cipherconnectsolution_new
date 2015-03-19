@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:drawable="@drawable/slave_conn" 
+          android:state_enabled="true"
+          android:state_checked="true" />
+    <item android:drawable="@drawable/master_conn"
+          android:state_enabled="true"
+          android:state_checked="false"/>
+    <item android:drawable="@drawable/master_conn_disable" 
+       
+        android:state_enabled="false"/>
+    <item android:drawable="@drawable/slave_conn_disable" 
+        android:state_checked="true"
+        android:state_enabled="false"/>
+</selector>

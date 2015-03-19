@@ -1,0 +1,20 @@
+1426472193949	Rename package 'com.cipherlab.cipherconnectui'
+1426472340751	Rename resource 'CipherConnectUI'
+1426485023666	Rename type 'ChooseConnSetting'
+1426557952004	Rename resource 'listenConn.png'
+1426560573916	Extract Style
+1426577327331	Rename compilation unit 'TogglePreference.java'
+1426578544251	Rename type 'MainActivity'
+1426578737041	Rename resource 'activity_main.xml'
+1426579832846	Rename type 'BuildMethodPreference'
+1426644303508	Delete element
+1426655428634	Delete element
+1426655474258	Delete element
+1426657244500	Move file
+1426657416370	Rename resource 'mainsetting.xml'
+1426657454549	Rename resource 'slave_activity.xml'
+1426657566683	Rename resource 'build_connection.xml'
+1426657580827	Rename resource 'cipherconnectsettingactivity.xml'
+1426657594001	Rename resource 'buildconnmethodpreference.xml'
+1426657605696	Rename resource 'salvemodeactivity.xml'
+1426658191515	Extracts string 'null' into R.string.strCurrentDevName
