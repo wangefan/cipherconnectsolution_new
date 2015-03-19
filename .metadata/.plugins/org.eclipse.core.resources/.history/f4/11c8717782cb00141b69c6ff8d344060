@@ -1,7 +1,0 @@
-package com.cipherlab.cipherconnectpro;
-import android.preference.PreferenceActivity;
-
-
-public class ChooseConnSetting extends PreferenceActivity {
-
-}
