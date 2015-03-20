@@ -118,7 +118,12 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		mServrState = STATE_OFFLINE;
 		if(mListenAndConnThread != null)
 		{
+			//Here will fire offline in thread. 
 			mListenAndConnThread.StopServer();
+		}
+		else {
+			//fire offline ourself
+			fireCipherListenServerOffline();
 		}
 	}
 	//================ Server functions end=============
