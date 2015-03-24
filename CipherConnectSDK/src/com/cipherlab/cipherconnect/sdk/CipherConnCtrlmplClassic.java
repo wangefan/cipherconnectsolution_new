@@ -197,20 +197,15 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
 	}
 
-	public String[] getBluetoothDeviceNames() {
+	public ICipherConnBTDevice[] getBtDevices() {
 		Set<BluetoothDevice> btDericeList = this.getBtDeviceList();
-		if(btDericeList==null)
-			return null;
 		
-		if(btDericeList.size()<=0){
-			return null;
-		}
-		String[] deviceNames = new String[btDericeList.size()];
-		int i = 0;
+		ICipherConnBTDevice [] devices = new CipherConnBTDevice[btDericeList.size()];
+		int idxDevice = 0;
 		for (BluetoothDevice device : btDericeList) {
-			deviceNames[i++]=device.getName();
+			devices[idxDevice++] = new CipherConnBTDevice(device.getName(), device.getAddress());
 		}
-		return deviceNames;
+		return devices;
 	}
 
 	public boolean isAutoReconnect() {
@@ -360,6 +355,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	
 	private class CipherConnectErrException extends Exception  
 	{
+		private static final long serialVersionUID = 5548848902595353181L;
 		public static final int INFO_NOT_CIPHER_DEVICE = 0;
 		public static final int INFO_SERVER_SKT_ERROR = 1;
 		public static final int INFO_SKT_ERROR = 2;

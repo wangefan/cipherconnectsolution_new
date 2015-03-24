@@ -59,9 +59,9 @@ public class CipherConnectControl implements ICipherConnectControl {
 		return mCipherConnCtrlImpl.isConnected();
 	}
 	
-	public String[] getBluetoothDeviceNames()
+	public ICipherConnBTDevice[] getBtDevices()
 	{
-		return mCipherConnCtrlImpl.getBluetoothDeviceNames();
+		return mCipherConnCtrlImpl.getBtDevices();
 	}
 	
     public void connect(String deviceName)throws NullPointerException

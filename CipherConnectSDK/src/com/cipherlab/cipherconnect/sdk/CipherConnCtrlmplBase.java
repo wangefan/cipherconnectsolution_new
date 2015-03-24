@@ -170,8 +170,8 @@ abstract public class CipherConnCtrlmplBase {
 	
 	//abstract methods
 	public abstract boolean isConnected();
-		
-	public abstract String[] getBluetoothDeviceNames();
+	
+	public abstract ICipherConnBTDevice[] getBtDevices();
 		
 	public abstract void connect(String deviceName)throws NullPointerException;	
 	    

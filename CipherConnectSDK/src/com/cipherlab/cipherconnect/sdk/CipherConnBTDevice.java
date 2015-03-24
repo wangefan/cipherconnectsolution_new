@@ -13,6 +13,13 @@ public class CipherConnBTDevice implements ICipherConnBTDevice {
 		mStrDeviceAddress = new String(strDeviceAddress);
 	}
 	
+	//constructor 
+	CipherConnBTDevice(ICipherConnBTDevice src)
+	{
+		mStrDeviceName = new String(src.getDeviceName());
+		mStrDeviceAddress = new String(src.getAddress());
+	}
+	
 	@Override
 	public String getDeviceName() {
 		return mStrDeviceName;

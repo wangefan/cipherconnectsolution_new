@@ -34,14 +34,13 @@ public interface ICipherConnectControl {
 	public boolean isConnected();
 	
 	/**
-	 * Get the names of all Bluetooth devices which have been identified with the OS.
+	 * Get the all Bluetooth devices which have been identified with the OS.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
-	 * String[] sNames = _control.getBluetoothDeviceNames();
+	 * ICipherConnBTDevice[] sNames = _control.getBtDevices();
 	 * </DD>
-	 * @return {"1661DM5065535","1661xxxx"...}
 	 */
-	public String[] getBluetoothDeviceNames();
+	public ICipherConnBTDevice[] getBtDevices();
 	
 	/**
 	 * Connect to the BT scanner device by deviceName.

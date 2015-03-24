@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -13,8 +14,10 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	final private static UUID mSUUIDString = UUID.fromString("00001801-0000-1000-8000-00805f9b34fb");
 	final private static UUID mCUUIDString = UUID.fromString("cc330a40-fb09-11e1-a84d-0002a5d5c51b");
@@ -131,14 +134,19 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
         	
         	if(bAdd) 
         	{
-        		CipherConnBTDevice cBTDeivce = new CipherConnBTDevice(device.getName(), device.getAddress());
-				mbtDericeList.add(cBTDeivce);
-				
-				//fire to listener.
-				if(mListenerList != null) {
-					for (ICipherConnectControlListener connListener : mListenerList) 
-	    	    		connListener.onGetLEDevice(cBTDeivce);
-				}
+        		String name = device.getName();
+        		String add = device.getAddress();
+        		if(name != null && add != null)
+        		{
+            		CipherConnBTDevice cBTDeivce = new CipherConnBTDevice(name, add);
+    				mbtDericeList.add(cBTDeivce);
+    				
+    				//fire to listener.
+    				if(mListenerList != null) {
+    					for (ICipherConnectControlListener connListener : mListenerList) 
+    	    	    		connListener.onGetLEDevice(cBTDeivce);
+    				}	
+        		}
         	}
         }
     };
@@ -260,15 +268,14 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	}
 
 	@Override
-	public String[] getBluetoothDeviceNames() {
-		if(mbtDericeList.size() <= 0)
-			return null;
-		String[] deviceNames = new String[mbtDericeList.size()];
-		int idxDevicesName = 0;
+	public ICipherConnBTDevice[] getBtDevices() 
+	{
+		ICipherConnBTDevice[] devices = new ICipherConnBTDevice[mbtDericeList.size()];
+		int idxDevices = 0;
 		for (ICipherConnBTDevice device : mbtDericeList) {
-			deviceNames[idxDevicesName++]=device.getDeviceName();
+			devices[idxDevices++] = new CipherConnBTDevice(device);
 		}
-		return deviceNames;
+		return devices;
 	}
 
 	@Override
@@ -367,7 +374,6 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		return false;
 	}
 	
-	@Override
 	public boolean StopScanLEDevices() throws UnsupportedOperationException {
 		if(mBluetoothAdapter != null) {
 			mBluetoothAdapter.stopLeScan(mLeScanCallback);
