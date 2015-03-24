@@ -147,6 +147,7 @@ public abstract class BTSettingActivity extends ListActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
+		registerReceiver(mBTActReceiver, makeBTActionsIntentFilter());
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(mBluetoothAdapter == null)
 		{
@@ -161,7 +162,6 @@ public abstract class BTSettingActivity extends ListActivity
         	mDoBTIntentForResult();
             return;
         }
-		registerReceiver(mBTActReceiver, makeBTActionsIntentFilter());
 	}
 	
 	@Override

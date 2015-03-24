@@ -228,15 +228,19 @@ public class SalveModeActivity extends BTSettingActivity
 	protected void onResume() {
 		super.onResume();
 		registerReceiver(mServerActReceiver, makeActionsIntentFilter());
-        mStartListenService();
-        mUpdateUI();
+		if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+	        mStartListenService();
+	        mUpdateUI();
+		}
 	}
 
 	//This method be called after requesting turning on and allow BT.
 	protected void mDoThingsAtrEnableBTActy()
 	{
-		mStartListenService();
-		mUpdateUI();
+		if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+			mStartListenService();
+			mUpdateUI();
+		}
 	}
 	
 	@Override
