@@ -4,7 +4,7 @@
     		android:versionCode="14" 
     		android:versionName="2.4.5">
     		
-	<uses-sdk  android:minSdkVersion="18" android:targetSdkVersion="18"/>
+	<uses-sdk  android:minSdkVersion="11" android:targetSdkVersion="22"/>
 
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.BLUETOOTH" />
@@ -13,7 +13,11 @@
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="com.cipherlab.cipherconnectpro.CipherConnectKeyboardService" />
 	<uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
-	<application android:label="@string/ime_name" android:icon="@drawable/icon" android:killAfterRestore="false" android:theme="@android:style/Theme.Holo.Light">
+	<application android:label="@string/ime_name" 
+	             android:icon="@drawable/icon"
+	             android:allowBackup = "true"
+	             android:killAfterRestore="false" 
+	             android:theme="@android:style/Theme.Holo.Light">
 		<service 	android:name="com.cipherlab.cipherconnectpro.CipherConnectKeyboardService"
 					android:label="@string/ime_name" 
 					android:enabled="true"
@@ -36,6 +40,8 @@
 		<activity android:name=".SalveModeActivity"
 		     	  android:parentActivityName="com.cipherlab.cipherconnectpro.CipherConnectSettingActivity"/>
 		<activity android:name=".LEDeviceScanActivity"
+		     	  android:parentActivityName="com.cipherlab.cipherconnectpro.CipherConnectSettingActivity"/>
+		<activity android:name=".ClassicBTDeviceScanActivity"
 		     	  android:parentActivityName="com.cipherlab.cipherconnectpro.CipherConnectSettingActivity"/>
 		<activity android:name=".CipherConnectAboutActivity" android:label="@string/setting_about" 
 		          android:parentActivityName="com.cipherlab.cipherconnectpro.CipherConnectSettingActivity"/>

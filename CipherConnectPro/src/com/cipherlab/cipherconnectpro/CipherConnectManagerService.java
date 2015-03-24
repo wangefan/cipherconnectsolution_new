@@ -114,8 +114,8 @@ public class CipherConnectManagerService extends Service
 	        	mCipherConnectControl.disconnect();
 		}
 		
-		public String[] getBtDeviceNames() {
-			return mCipherConnectControl.getBluetoothDeviceNames();
+		public ICipherConnBTDevice[] getBtDevices() {
+			return mCipherConnectControl.getBtDevices();
 		}
 		
 		public boolean isConnected() {

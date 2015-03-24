@@ -25,13 +25,6 @@ public class CipherConnectSettingInfo {
         return _sp.getString("LastDeviceName", "No select");
     }
     
-    public static void setLastDeviceName(Context c,String mDeviceName) {
-        initSharedPreferences(c);
-        Editor editor = _sp.edit();
-        editor.putString("LastDeviceName", mDeviceName);
-        editor.commit();
-    }
-    
     public static String getBarcodeInterval(Context c) {
         initSharedPreferences(c);
         return _sp.getString("BarcodeInterval", "No select");
@@ -56,15 +49,15 @@ public class CipherConnectSettingInfo {
         editor.commit();
     }
     
-    public static String getScanMode(Context c) {
+    public static String getBTMode(Context c) {
         initSharedPreferences(c);
-        return _sp.getString("ScanMode", c.getResources().getString(R.string.Str_BT_Classic));
+        return _sp.getString("BTMode", c.getResources().getString(R.string.Str_BT_Classic));
     }
 
-    public static void setScanMode(Context c,String strMode) {
+    public static void setBTMode(Context c,String strMode) {
         initSharedPreferences(c);
         Editor editor = _sp.edit();
-        editor.putString("ScanMode", strMode);
+        editor.putString("BTMode", strMode);
         editor.commit();
     }
 

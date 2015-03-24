@@ -8,11 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 public class BuildConnMethodPreference extends Preference 
 {
 	//data members
+	final private String SLAVE = "slave";
+	final private String MASTER = "master";
 	private LinearLayout mLinearView = null;
 	private boolean mIsSlaveConn = true;
 	private Button mbtnBuildConn = null;
@@ -20,6 +23,7 @@ public class BuildConnMethodPreference extends Preference
 	private ToggleButton mbtnConnMathod = null;
 	private OnPreferenceClickListener mOnPreferenceClickListener;
 	private Button.OnClickListener mOnPreferenceClickScanListener ;
+	private TextView mtvLastDevName = null;
 	
 	//member functions
 	private Button.OnClickListener mClickBuildConn = new Button.OnClickListener()
@@ -40,7 +44,8 @@ public class BuildConnMethodPreference extends Preference
 		public void onClick(View v)
 		{
 		  	mIsSlaveConn = !mIsSlaveConn;
-	    	persistBoolean(mIsSlaveConn);	//Save to preference setting.
+		  	mPersistValuses();  //Save to preference setting.
+		  	
 	    	mUpdateUI();
 		}
 	};
@@ -93,6 +98,29 @@ public class BuildConnMethodPreference extends Preference
 				mbtnScanDev.setOnClickListener(mClickScan);
 			}			
 		}
+		if(mtvLastDevName == null)
+		{
+			mtvLastDevName = (TextView) mLinearView.findViewById(R.id.tvwLastDevice);
+		}
+	}
+	
+	private void mGetPersistValues()
+	{
+		String strDefault = getContext().getResources().getString(R.string.Str_defaultBMPreference);
+		String val = getPersistedString(strDefault);
+		int nPosBreak = val.indexOf(";", 0);
+		String strMode = val.substring(0, nPosBreak);
+		String strDev = val.substring(nPosBreak + 1);
+		mIsSlaveConn = strMode.equals(SLAVE) ? true : false;
+		if(mtvLastDevName != null)
+			mtvLastDevName.setText(strDev);
+	}
+	
+	private void mPersistValuses()
+	{
+		String strValuse = mIsSlaveConn ? SLAVE : MASTER;
+		strValuse = strValuse + ";" + mtvLastDevName.getText();
+		persistString(strValuse);
 	}
 	
 	private void mUpdateUI()
@@ -157,15 +185,27 @@ public class BuildConnMethodPreference extends Preference
     		mbtnScanDev.setEnabled(!IsSlaveConn());
     	}
     }
+    
+    public void setLastDevName(String name) {
+    	if(mtvLastDevName != null)
+    	{
+    		mtvLastDevName.setText(name);
+    		mPersistValuses();
+    	}
+    }
+    
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         if (restorePersistedValue) {
             // Restore existing state
-        	mIsSlaveConn = getPersistedBoolean(true);
+        	mGetPersistValues();
         } else {
             // Set default state from the XML attribute
-        	mIsSlaveConn = (Boolean) defaultValue;
-        	persistBoolean(mIsSlaveConn);
+        	String strDefaultVal = (String) defaultValue;
+        	if(strDefaultVal != null)
+        	{
+        		persistString(strDefaultVal);
+        	}
         }
     }
 

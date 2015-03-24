@@ -87,9 +87,9 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         super.onStartInputView(info, restarting);
 
         if (this.mCipherConnectManagerService.isConnected() == false) {
-            String[] deviceNames = this.mCipherConnectManagerService
-                                   .getBtDeviceNames();
-            if (deviceNames != null && deviceNames.length > 0) {
+        	ICipherConnBTDevice[] devices = this.mCipherConnectManagerService
+                                   .getBtDevices();
+            if (devices != null && devices.length > 0) {
                 String device_name = CipherConnectSettingInfo
                                      .getLastDeviceName(this);
                 try {

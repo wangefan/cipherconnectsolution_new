@@ -1,6 +1,8 @@
 package com.cipherlab.cipherconnectpro;
 
 
+import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
+
 import android.graphics.Bitmap;
 
 
@@ -27,7 +29,7 @@ public interface ICipherConnectManagerService {
 	public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight);
 	/*Server service end*/
 	public boolean isConnected();
-    public String[] getBtDeviceNames();
+    public ICipherConnBTDevice[] getBtDevices();
     public boolean connect(String device_name)throws Exception;
     public void disConnect();
     public void AddListener(ICipherConnectManagerListener l);

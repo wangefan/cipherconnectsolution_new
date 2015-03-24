@@ -1,28 +1,20 @@
 package com.cipherlab.cipherconnectpro;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SalveModeActivity extends Activity 
+public class SalveModeActivity extends BTSettingActivity 
 {
-	private String mTag = "SalveModeActivity";
-	private BluetoothAdapter mBluetoothAdapter;
 	private TextView mTvwDeviceName;
 	private ImageView mBCodeResetImage;
 	private TextView mTvwResetBCode;
@@ -32,67 +24,30 @@ public class SalveModeActivity extends Activity
 	private TextView mTvwBCodeAddress;
 	private ImageView mImageBTConn;
 	private ProgressDialog mPDialog = null;
-	private ICipherConnectManagerService mListenConnService = null;
-	private ServiceConnection mListenConnServiceConn = new ServiceConnection() 
-	{
-		public void onServiceConnected(ComponentName className, IBinder service) 
-		{
-			Log.d(mTag, "onServiceConnected, get mListenConnService and set SetKeepService true");
-			mListenConnService = ((CipherConnectManagerService.LocalBinder) service).getService();
-			if(mListenConnService == null)
-			{
-				Toast.makeText(SalveModeActivity.this, R.string.strServiceFail, Toast.LENGTH_LONG).show();
-			}
-			else
-			{
-				mStartListenService();
-				mUpdateUI();
-			}
-        }
-
-        public void onServiceDisconnected(ComponentName className) 
-        {
-        	Log.d(mTag, "onServiceDisconnected, set SetKeepService false");
-        	mListenConnService.StopListenConn();
-        	mListenConnService = null;
-        }
-	};
 	
-	//constant 
-	private static final int REQUEST_ENABLE_BT = 1;
+	protected void mDoThingsOnServiceConnected()
+	{
+		mStartListenService();
+		mUpdateUI();
+	}
 
 	/*
      * <!----------------------------------------------------------------->
-     * @Name: mBTActReceiver
-     * @Description: Receiver the Bluetooth Turn on/off event. 
+     * @Name: mActReceiver
+     * @Description: Receiver the connecnt service server state. 
      * return: N/A 
      * <!----------------------------------------------------------------->
      * */
-    private BroadcastReceiver mBTActReceiver = new BroadcastReceiver()
+    private BroadcastReceiver mServerActReceiver = new BroadcastReceiver()
 	{
 		@Override
         public void onReceive(Context context, Intent intent) 
 		{
         	final String action = intent.getAction();
 
-            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                                               BluetoothAdapter.ERROR);
-                if (state == BluetoothAdapter.STATE_ON) 
-                {
-                    
-                } 
-                else if (state == BluetoothAdapter.STATE_OFF) 
-                {
-                	if (!mBluetoothAdapter.isEnabled()) {
-                		mDoBTIntentForResult();
-                        return;
-                    }
-                }
-            }
-            else if(action.equals(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED))
+            if(action.equals(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED))
             {
-            	ICipherConnectManagerService.SERVER_STATE servertate = mListenConnService.GetServerState();  	
+            	ICipherConnectManagerService.SERVER_STATE servertate = mCipherConnectService.GetServerState();  	
             	switch (servertate)
             	{
             	case SERVER_STATE_ONLINE:
@@ -106,12 +61,12 @@ public class SalveModeActivity extends Activity
             }
             else if(action.equals(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED))
             {
-            	ICipherConnectManagerService.CONN_STATE conntate = mListenConnService.GetConnState();  	
+            	ICipherConnectManagerService.CONN_STATE conntate = mCipherConnectService.GetConnState();  	
             	switch (conntate)
             	{
             	case CONN_STATE_CONNECTED:
             	{
-            		String strMag = mListenConnService.GetConnDeviceName() + " connected";
+            		String strMag = mCipherConnectService.GetConnDeviceName() + " connected";
             		Toast.makeText(SalveModeActivity.this, strMag, Toast.LENGTH_LONG).show();
             	}
             	break;
@@ -147,10 +102,10 @@ public class SalveModeActivity extends Activity
 	
     private void mUpdateUI()
     {
-		if(mListenConnService == null)
+		if(mCipherConnectService == null)
     		return;
 		
-		ICipherConnectManagerService.SERVER_STATE servertate = mListenConnService.GetServerState();  	
+		ICipherConnectManagerService.SERVER_STATE servertate = mCipherConnectService.GetServerState();  	
     	switch (servertate) 
     	{
     		case  SERVER_STATE_ONLINE:
@@ -164,17 +119,17 @@ public class SalveModeActivity extends Activity
     				fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
     			}
     					
-    			Bitmap bmpReset = mListenConnService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
+    			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
     			mBCodeResetImage.setImageBitmap(bmpReset);
     			mBCodeResetImage.setVisibility(View.VISIBLE);
     			mTvwResetBCode.setText(R.string.strResetConn);
     			
-    			Bitmap bmpSetConn = mListenConnService.GetSettingConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
+    			Bitmap bmpSetConn = mCipherConnectService.GetSettingConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
     			mBCodeSettingConnImage.setImageBitmap(bmpSetConn);
     			mBCodeSettingConnImage.setVisibility(View.VISIBLE);
     			mTvwSetConnBCode.setVisibility( View.VISIBLE);
     			
-    			Bitmap bmpAddress = mListenConnService.GetMacAddrBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
+    			Bitmap bmpAddress = mCipherConnectService.GetMacAddrBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
     			mBCodeAddressImage.setImageBitmap(bmpAddress);
     			mBCodeAddressImage.setVisibility(View.VISIBLE);
     			mTvwBCodeAddress.setVisibility( View.VISIBLE);
@@ -197,7 +152,7 @@ public class SalveModeActivity extends Activity
     		break;
     	}  	
 		
-    	ICipherConnectManagerService.CONN_STATE connState = mListenConnService.GetConnState();  	
+    	ICipherConnectManagerService.CONN_STATE connState = mCipherConnectService.GetConnState();  	
     	switch (connState) 
     	{
     		case  CONN_STATE_BEGINCONNECTING:
@@ -216,7 +171,7 @@ public class SalveModeActivity extends Activity
     				fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
     				fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
     			}
-    			Bitmap bmpReset = mListenConnService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
+    			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
     			mBCodeResetImage.setImageBitmap(bmpReset);
     			mTvwResetBCode.setText(R.string.strDisconnect);
     			mBCodeSettingConnImage.setVisibility( View.INVISIBLE);
@@ -224,7 +179,7 @@ public class SalveModeActivity extends Activity
     			mBCodeAddressImage.setVisibility( View.INVISIBLE);
     			mTvwBCodeAddress.setVisibility( View.INVISIBLE);
     			mImageBTConn.setImageResource(R.drawable.btconnected);	
-    			String strMag = mListenConnService.GetConnDeviceName() + " connected";
+    			String strMag = mCipherConnectService.GetConnDeviceName() + " connected";
     			mTvwDeviceName.setText(strMag);  			
     			ShowProgressDlg(false);			
     		}
@@ -235,19 +190,12 @@ public class SalveModeActivity extends Activity
     
     private void mStartListenService()
     {
-        if(mListenConnService != null)
-        	mListenConnService.StartListenConn();	
-    }
-	
-    private void mDoBTIntentForResult()
-    {
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        if(mCipherConnectService != null)
+        	mCipherConnectService.StartListenConn();	
     }
     
-    private static IntentFilter makeBTActionsIntentFilter() {
+    private static IntentFilter makeActionsIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         intentFilter.addAction(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED);
         intentFilter.addAction(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED);
         return intentFilter;
@@ -269,17 +217,6 @@ public class SalveModeActivity extends Activity
 		mTvwBCodeAddress = (TextView) findViewById(R.id.tvwAddress);
 		mImageBTConn = (ImageView)findViewById(R.id.imageBTConn);
 		mTvwDeviceName = (TextView) findViewById(R.id.tvwDeviceName);
-		
-		//Bind Listen service
-		try {
-			Intent intent = new Intent(this, CipherConnectManagerService.class);
-	        startService(intent);
-	        bindService(intent, mListenConnServiceConn, Context.BIND_AUTO_CREATE);		
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -290,43 +227,22 @@ public class SalveModeActivity extends Activity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		registerReceiver(mBTActReceiver, makeBTActionsIntentFilter());
-		
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if(mBluetoothAdapter == null)
-		{
-			Toast.makeText(this, R.string.error_bluetooth_not_turnon, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-		}
-		
-		// Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-        // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBluetoothAdapter.isEnabled()) {
-        	mDoBTIntentForResult();
-            return;
-        }
-        
+		registerReceiver(mServerActReceiver, makeActionsIntentFilter());
         mStartListenService();
         mUpdateUI();
 	}
 
-	@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // User chose not to enable Bluetooth.
-        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
-            finish();
-            return;
-        }
-        mStartListenService();
-        mUpdateUI();
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+	//This method be called after requesting turning on and allow BT.
+	protected void mDoThingsAtrEnableBTActy()
+	{
+		mStartListenService();
+		mUpdateUI();
+	}
 	
 	@Override
 	protected void onPause() 
 	{
-		unregisterReceiver(mBTActReceiver);
+		unregisterReceiver(mServerActReceiver);
 		super.onPause();
 	}
 
@@ -339,17 +255,12 @@ public class SalveModeActivity extends Activity
 	@Override
 	protected void onDestroy() 
 	{	
-		if(mListenConnServiceConn != null)
-		{
-			unbindService(mListenConnServiceConn);
-			mListenConnServiceConn = null;
-		}
-		
-		if(mListenConnService != null)
-		{
-			mListenConnService.StopListenConn();
-			mListenConnService = null;
-		}
+		mCipherConnectService = null;
 		super.onDestroy();
+	}
+
+	@Override
+	protected String getTag() {
+		return "SalveModeActivity";
 	}
 }

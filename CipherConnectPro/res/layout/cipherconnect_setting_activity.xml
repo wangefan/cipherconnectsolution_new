@@ -3,12 +3,12 @@
 	<PreferenceCategory android:title="@string/ime_connection" >
 	    <com.cipherlab.cipherconnectpro.BuildConnMethodPreference
 	        android:key="btnBT_buildConn"
-	        android:defaultValue="@string/Str_wait_connect"/>
+	        android:defaultValue="@string/Str_defaultBMPreference"/>
 	   	
 	    <ListPreference
-	    	android:key="btnBT_Setting"
-	        android:summary="@string/Bluetooth_Setting_Summary"
-	        android:title="@string/Bluetooth_Setting_Title"
+	    	android:key="btnBT_Mode"
+	        android:summary="@string/Bluetooth_Mode_Summary"
+	        android:title="@string/Bluetooth_Mode_Title"
 			android:entries="@array/ScanMode_entries"
 			android:entryValues="@array/ScanMode_entries_value"
 			android:defaultValue="@string/Str_BT_Classic"/>

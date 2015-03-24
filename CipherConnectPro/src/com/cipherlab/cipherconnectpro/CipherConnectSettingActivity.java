@@ -21,6 +21,8 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -35,16 +37,13 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
 	
 	private static final String TAG = "CipherConnectSettingActivity()";
 	private static final int REQUEST_ENABLE_BT = 1;
-	public static final int CLASSIC_BLUETOOTH_SETTINGS = 2;
-	public static final int LE_BLUETOOTH_SETTINGS = 3;
 		
 	private BluetoothAdapter mBluetoothAdapter;
 	private ServiceReceiver mServiceActionReceiver = new ServiceReceiver();
 	private String mStrConnectDlgTitle = null;
 	private ProgressDialog mPDialog = null;
 	private BuildConnMethodPreference mBuildConn = null;
-	private Preference   btnBTSetting = null;  // visual,2012/4/18,Open BT-Setting for 3.x, Yifan,2015/01/27,support Low energy mode.
-	//private PreferenceScreen btnDisplaySetting = null;  // visual,2012/8/22
+	private Preference   mBtnBTMode = null;  // visual,2012/4/18,Open BT-Setting for 3.x, Yifan,2015/01/27,support Low energy mode.
 	private ListPreference lstSendBarcodeInterval = null;  // william, 2012/09/13
 	private ListPreference lstLanguage = null;             // william, 2012/09/18
 	private CheckBoxPreference ckbMinimum = null;	//Minimize keyboard 
@@ -58,8 +57,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mCipherConnectService = ((CipherConnectManagerService.LocalBinder) service).getService();                                    
             init_UI();         
-            mStopListenConnIfSlaveMode();
             mUpdateUI();
+            mSetConnService();
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -145,36 +144,60 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
                 	return true;
                 }
             });
+        	
+        	mBuildConn.setOnPreferenceClickScanListener(new Button.OnClickListener()
+        	{
+        		public  void onClick(View v)
+        		{
+        			String strCurBTMode = CipherConnectSettingInfo.getBTMode(CipherConnectSettingActivity.this);
+        			if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_Classic)))
+        			{
+        				Intent intent = new Intent(CipherConnectSettingActivity.this, ClassicBTDeviceScanActivity.class);
+            			startActivity(intent);
+        			}
+        			else if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_LE)))
+        			{
+        				Intent intent = new Intent(CipherConnectSettingActivity.this, LEDeviceScanActivity.class);
+            			startActivity(intent);
+        			}
+        		}
+        	});
         }
         
-        /* BTSetting */
-    	this.btnBTSetting = (ListPreference)findPreference("btnBT_Setting");
-    	String strCurSettingMode = CipherConnectSettingInfo.getScanMode(this);
-    	
-    	if(0 == strCurSettingMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
+        /* BT mode select */
+    	mBtnBTMode = (ListPreference)findPreference("btnBT_Mode");
+    	if(mBtnBTMode != null)
     	{
-    		this.btnBTSetting.setSummary(R.string.Bluetooth_Setting_Summary);
-    		this.btnBTSetting.setTitle(R.string.Bluetooth_Setting_Title);
-    	}
-    	else if(0 == strCurSettingMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
-    		this.btnBTSetting.setSummary(R.string.Bluetooth_Setting_BLE_Summary);
-    		this.btnBTSetting.setTitle(R.string.Bluetooth_Setting_BLE_Title);
-    	}
-    	
-        this.btnBTSetting.setOnPreferenceClickListener(new OnPreferenceClickListener() 
-        {
-            public boolean onPreferenceClick(Preference preference) {
-                return BTSetting_onPreferenceClick(preference);
-            }
-        });
-        
-        this.btnBTSetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener() 
-        {
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				return BTMode_onPreferenceClick(preference, newValue);
-			}
-        });
+    		// not support LE mode
+    		if(false == mCipherConnectService.IsBLEModeSupported())
+    		{
+    			mBtnBTMode.setSummary(R.string.Bluetooth_Mode_Summary);
+        		mBtnBTMode.setTitle(R.string.Bluetooth_Mode_Title);
+        		mBtnBTMode.setEnabled(false);
+    		}
+    		else
+    		{
+    			//Get from persist setting
+    			String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
+            	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
+            	{
+            		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_Summary);
+            		mBtnBTMode.setTitle(R.string.Bluetooth_Mode_Title);
+            	}
+            	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
+            		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_BLE_Summary);
+            		mBtnBTMode.setTitle(R.string.Bluetooth_Mode_BLE_Title);
+            	}
+            	mBtnBTMode.setEnabled(true);
+            	mBtnBTMode.setOnPreferenceChangeListener(new OnPreferenceChangeListener() 
+                {
+        			@Override
+        			public boolean onPreferenceChange(Preference preference, Object newValue) {
+        				return BTMode_onPreferenceClick(preference, newValue);
+        			}
+                });
+    		}
+    	}   	
      
         /* DisplaySetting */
 		ckbScreenBacklight = (CheckBoxPreference) findPreference("ckbSuspend_Enable");
@@ -250,6 +273,9 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
            mCipherConnectService == null)
         	return;
         mBuildConn.setButtonMode(mCipherConnectService.isConnected());       
+        ICipherConnectManagerService.CONN_STATE connstate = mCipherConnectService.GetConnState();  	
+    	if (connstate == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED) 
+    		mBuildConn.setLastDevName(mCipherConnectService.GetConnDeviceName());
     }
 
     /*
@@ -270,12 +296,22 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
         }
     }
 
-    private void mStopListenConnIfSlaveMode()
+    private void mSetConnService()
     {
     	if(mBuildConn != null && mBuildConn.IsSlaveConn())
     	{
             if(mCipherConnectService != null)
             	mCipherConnectService.StopListenConn();		
+    	}
+    	
+    	String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
+    	if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_Classic)))
+		{
+    		mCipherConnectService.SetBLEMode(false);
+		}
+    	else if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_LE)))
+    	{
+    		mCipherConnectService.SetBLEMode(true);
     	}
     }
     
@@ -293,63 +329,19 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
         ckbMinimum.setEnabled(false);
     }
     
-    /*
-     * <!----------------------------------------------------------------->
-     * @Name: doBTSettingIntent()
-     * @Description: Enter into bluetooth setting page.
-     * @param: N/A
-     * @param: N/A
-     * return: N/A 
-     * <!----------------------------------------------------------------->
-     * */
-    private void doBTSettingIntent() {
-    	Intent intentBluetooth = new Intent();
-		intentBluetooth.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
-		startActivityForResult(intentBluetooth, CLASSIC_BLUETOOTH_SETTINGS); 
-    }
-    
-    /*
-     * <!----------------------------------------------------------------->
-     * @Name: BTSetting_onPreferenceClick()
-     * @Description: Entry the Bluetooth Setting menu
-     *  
-     * @param: Preference preference
-     * @param: N/A
-     * return: boolean 
-     * <!----------------------------------------------------------------->
-     * */
-    public boolean BTSetting_onPreferenceClick(Preference preference) {
-    	if(false == mCipherConnectService.IsBLEModeSupported()) {
-    		((ListPreference)preference).getDialog().hide();
-    		mCipherConnectService.SetBLEMode(false);
-    		doBTSettingIntent();
-    	}
-        return true;
-    }
-    
     public boolean BTMode_onPreferenceClick(Preference preference, Object newValue) {
     	String strMode = (String) newValue;
 	    if(0 == strMode.compareTo(getResources().getString(R.string.Str_BT_Classic))) {
 	    	mCipherConnectService.SetBLEMode(false);
-	    	preference.setSummary(R.string.Bluetooth_Setting_Summary);
-	    	preference.setTitle(R.string.Bluetooth_Setting_Title);
-	    	CipherConnectSettingInfo.setScanMode(this, strMode);
-	    	doBTSettingIntent();
+	    	preference.setSummary(R.string.Bluetooth_Mode_Summary);
+	    	preference.setTitle(R.string.Bluetooth_Mode_Title);
+	    	CipherConnectSettingInfo.setBTMode(this, strMode);
 	    }
 	    else if (0 == strMode.compareTo(getResources().getString(R.string.Str_BT_LE))) {
 	    	mCipherConnectService.SetBLEMode(true);
-	    	preference.setSummary(R.string.Bluetooth_Setting_BLE_Summary);
-	    	preference.setTitle(R.string.Bluetooth_Setting_BLE_Title);
-	    	CipherConnectSettingInfo.setScanMode(this, strMode);
-	    	if(null != mBluetoothAdapter && false == mBluetoothAdapter.isEnabled()) {
-	    		Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                return true;
-	    	}
-	    	
-	    	Intent enableLEScanActivity = new Intent(this, LEDeviceScanActivity.class);
-	    	startActivityForResult(enableLEScanActivity, LE_BLUETOOTH_SETTINGS);
-	    	return true;
+	    	preference.setSummary(R.string.Bluetooth_Mode_BLE_Summary);
+	    	preference.setTitle(R.string.Bluetooth_Mode_BLE_Title);
+	    	CipherConnectSettingInfo.setBTMode(this, strMode);   	
 	    }
 	    else {
 	    	return false;
@@ -495,37 +487,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
         		super.onActivityResult(requestCode, resultCode, data);
         		Intent enableLEScanActivity = new Intent(this, LEDeviceScanActivity.class);
     	    	startActivity(enableLEScanActivity);
-        	}
-        }
-        break;
-        case CLASSIC_BLUETOOTH_SETTINGS:
-        {
-        	String[] strDeviceNames = mCipherConnectService.getBtDeviceNames();
-    		String strDevice = "";
-        	if(strDeviceNames != null && strDeviceNames.length > 0) {
-        		strDevice = strDeviceNames[0];
-    		} 
-        	CipherConnectSettingInfo.setLastDeviceName(this, strDevice);
-
-        }
-        break;
-        case LE_BLUETOOTH_SETTINGS:
-        {
-        	if(data != null) {
-        		String strDeviceName = data.getStringExtra(LEDeviceScanActivity.EXTRAS_DEVICE_NAME);
-	        	if (strDeviceName != null) {
-	        		CipherConnectSettingInfo.setLastDeviceName(this, strDeviceName);
-
-	            }
-        	}
-        	else {
-        		String[] strDeviceNames = mCipherConnectService.getBtDeviceNames();
-        		String strDevice = "";
-        		if(strDeviceNames != null && strDeviceNames.length > 0) {
-        			strDevice = strDeviceNames[0];
-        		}
-        		CipherConnectSettingInfo.setLastDeviceName(this, strDevice);
-
         	}
         }
         break;

@@ -70,11 +70,11 @@
 	<string name="remove_lite_dialog_body">This input method may conflict with application CipherConnect Lite. Please remove CipherConnect Lite.</string>
 	<string name="remove_lite_quit_button">Exit</string>
 	<string name="setting_minimum">Minimize keyboard</string>
-	<string name="Bluetooth_Setting_Title">Bluetooth settings</string>
-	<string name="Bluetooth_Setting_Summary">Manage connections, set device name &amp; discoverability</string>
-	<string name="Bluetooth_Setting_BLE_Summary">Manage Low Energy connections, discover Low Energy devices &amp; </string>
+	<string name="Bluetooth_Mode_Title">Bluetooth mode select</string>
+	<string name="Bluetooth_Mode_Summary">Select Bluetooth Mode(Classic) </string>
+	<string name="Bluetooth_Mode_BLE_Summary">Select Bluetooth Mode(Low energy)</string>
 	<string name="Bluetooth_Title">Bluetooth</string>
-	<string name="Bluetooth_Setting_BLE_Title">Bluetooth (LE)</string>
+	<string name="Bluetooth_Mode_BLE_Title">Bluetooth mode select(LE)</string>
 	<string name="Backlight_Suspend_Title">Stay awake</string>
 	<string name="Exit_Title">Exit CiperConnect</string>
 	<string name="Bluetooth_TurnOn">Turn on Bluetooth</string>
@@ -108,8 +108,10 @@
 	<string name="ble_not_supported">BLE is not supported</string>
 	<string name="ble_bind_service_fail">Inter initialize fail, please try again</string>
 	<string name="LE_scan_title">BLE Device Scan</string>
+	<string name="Classic_scan_title">Bluetooth Device Scan</string>
 	<string name="Str_connect_to">Scan Devices and connect</string>
 	<string name="Str_wait_connect">Wait devices to connect</string>
+	<string name="Str_defaultBMPreference">slave;none</string>
 	<string name="Str_BT_Classic">Classic</string>
 	<string name="Str_BT_LE">Low Energy</string>
 	<string name="menu_scan">Scan</string>
