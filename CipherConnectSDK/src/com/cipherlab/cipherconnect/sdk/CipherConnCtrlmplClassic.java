@@ -199,8 +199,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 
 	public ICipherConnBTDevice[] getBtDevices() {
 		Set<BluetoothDevice> btDericeList = this.getBtDeviceList();
-		
-		ICipherConnBTDevice [] devices = new CipherConnBTDevice[btDericeList.size()];
+		int nSize = btDericeList != null ? btDericeList.size() : 0;
+		ICipherConnBTDevice [] devices = new CipherConnBTDevice[nSize];
 		int idxDevice = 0;
 		for (BluetoothDevice device : btDericeList) {
 			devices[idxDevice++] = new CipherConnBTDevice(device.getName(), device.getAddress());
@@ -256,7 +256,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 					CipherConnectControlResource.can_not_find_any_bluetooth_device_id,
 					CipherConnectControlResource.can_not_find_any_bluetooth_device);
 			
-			return null;
 		}
 		return dericeList;
 	}
@@ -335,7 +334,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		if(deviceName==null)
 			throw new NullPointerException();
 		
-    	Set<BluetoothDevice> dericeList = this.getBtDeviceList();
+    	Set<BluetoothDevice> dericeList = getBtDeviceList();
     	if(dericeList==null || dericeList.size()==0){
     		return null;
     	}
