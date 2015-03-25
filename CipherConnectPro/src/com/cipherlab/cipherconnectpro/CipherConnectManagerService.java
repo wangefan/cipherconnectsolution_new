@@ -22,7 +22,7 @@ public class CipherConnectManagerService extends Service
 {
     private SERVER_STATE mServerState = SERVER_STATE.SERVER_STATE_OFFLINE;
     private CONN_STATE mConnState = CONN_STATE.CONN_STATE_DISCONNECT;
-    private String mDeviceName = "";
+    private ICipherConnBTDevice mDevice = null;
         
 	//broadcast actions, broadcast to ConnectStatus_onPreferenceChange now.
     public static final String ACTION_SERVER_STATE_CHANGED =
@@ -49,7 +49,7 @@ public class CipherConnectManagerService extends Service
     public void onDestroy() {
         super.onDestroy();
 
-        bt_setAutoConnect(false, CipherConnectSettingInfo.getLastDeviceName(CipherConnectManagerService.this));  // Stop auto connect
+        bt_setAutoConnect(false, null);  // Stop auto connect
         
         if (mCipherConnectControl.isConnected())
         	mCipherConnectControl.disconnect();
@@ -80,8 +80,8 @@ public class CipherConnectManagerService extends Service
     		bt_StopListenConn();
     	}
     	
-    	public String GetConnDeviceName() {
-    		return bt_GetConnDeviceName();
+    	public ICipherConnBTDevice GetConnDevice() {
+    		return bt_GetConnDevice();
     	}
     	      	    
     	public CONN_STATE GetConnState() {
@@ -105,8 +105,8 @@ public class CipherConnectManagerService extends Service
     	}
     	//Server service end
     	
-		public boolean connect(String deviceName) throws Exception {
-			return bt_connect(deviceName);
+		public boolean connect(ICipherConnBTDevice device) throws Exception {
+			return bt_connect(device);
 		}
 		
 		public void disConnect() {
@@ -130,8 +130,8 @@ public class CipherConnectManagerService extends Service
             bt_RemoveListener(l);
         }
 
-        public void AuotConnect(boolean enable, String deviceName) {
-			bt_setAutoConnect(enable, deviceName);
+        public void AutoConnect(boolean enable, ICipherConnBTDevice device) {
+			bt_setAutoConnect(enable, device);
 		}
 		
 		public boolean isAuotConnect() {
@@ -206,41 +206,32 @@ public class CipherConnectManagerService extends Service
     		public void onListenServerOffline() {
     			CipherConnectControl_onListenServerOffline();
     		}
-    		public void onBeginConnecting(String deviceName) {
-    			CipherConnectControl_onBeginConnecting(deviceName);
+    		public void onBeginConnecting(ICipherConnBTDevice device) {
+    			CipherConnectControl_onBeginConnecting(device);
     		}
-    		public void onConnecting(String deviceName) {
-    			CipherConnectControl_onConnecting(deviceName);
+    		public void onConnecting(ICipherConnBTDevice device) {
+    			CipherConnectControl_onConnecting(device);
     		}
-    		public void onConnected(String deviceName) {				
-				CipherConnectControl_onConnected(deviceName);
+    		public void onConnected(ICipherConnBTDevice device) {				
+				CipherConnectControl_onConnected(device);
 			}
-    		public void onDisconnected(String deviceName) {
-				CipherConnectControl_onDisconnected(deviceName);
+    		public void onDisconnected(ICipherConnBTDevice device) {
+				CipherConnectControl_onDisconnected(device);
 			}
-    		public void onCipherConnectControlError(String deviceName, int id, String message) {				
-				CipherConnectControl_onCipherConnectControlError(deviceName,id,message);
+    		public void onCipherConnectControlError(ICipherConnBTDevice device, int id, String message) {				
+				CipherConnectControl_onCipherConnectControlError(device, id, message);
 			}
-			public void onReceivingBarcode(String deviceName, String barcode) {
-				CipherConnectControl_onReceivingBarcode(deviceName,barcode);
+			public void onReceivingBarcode(ICipherConnBTDevice device, String barcode) {
+				CipherConnectControl_onReceivingBarcode(device,barcode);
 			}
 			public void onGetLEDevice(final ICipherConnBTDevice device) {
 				for (ICipherConnectManagerListener listener :mListenerList)
 					listener.onGetLEDevice(device);
 			}
     	});
-    	
-    	// Set Auto connect
-    	boolean bAutoReconnect = CipherConnectSettingInfo.isAutoConnect(this);
-    	String sLastDeviceName = CipherConnectSettingInfo.getLastDeviceName(this);
-    	try {
-        	mCipherConnectControl.setAuotReconnect(bAutoReconnect, sLastDeviceName);
-		} catch (Exception e) {
-			Toast.makeText(getApplicationContext(), "Can't be set AutoReconnect.["+e.getMessage()+"]", Toast.LENGTH_SHORT).show();
-		}	
     }
     
-    public void CipherConnectControl_onDisconnected(String deviceName) 
+    public void CipherConnectControl_onDisconnected(ICipherConnBTDevice device) 
     {
     	//Log.d(TAG, "CipherConnectControl_onDisconnected("+deviceName);
         String device_name = CipherConnectSettingInfo.getLastDeviceName(CipherConnectManagerService.this);
@@ -256,7 +247,7 @@ public class CipherConnectManagerService extends Service
 		mBroadcastConnChange(CONN_STATE.CONN_STATE_DISCONNECT);
 	}
     
-    public void CipherConnectControl_onBeginConnecting(String deviceName) 
+    public void CipherConnectControl_onBeginConnecting(ICipherConnBTDevice device) 
     {
 		String message = this.getResources().getString(R.string.the_bluetooth_device_beginConnecting);
 		CipherConnectNotification.connecting_notify(CipherConnectManagerService.this, 
@@ -265,10 +256,10 @@ public class CipherConnectManagerService extends Service
 		mBroadcastConnChange(CONN_STATE.CONN_STATE_BEGINCONNECTING);
 	}
 	
-    public void CipherConnectControl_onConnecting(String deviceName) 
+    public void CipherConnectControl_onConnecting(ICipherConnBTDevice device) 
     {
 		//Log.d(TAG, "CipherConnectControl_onConnecting("+deviceName);
-    	mDeviceName = deviceName;
+    	mDevice = device;
 		String message = this.getResources().getString(R.string.the_bluetooth_device_connecting);
 		CipherConnectNotification.connecting_notify(CipherConnectManagerService.this, 
 													CipherConnectNotification.intent_cipherconnectproSettings(),
@@ -276,11 +267,11 @@ public class CipherConnectManagerService extends Service
 		mBroadcastConnChange(CONN_STATE.CONN_STATE_CONNECTING);
 	}
 
-    public void CipherConnectControl_onConnected(String deviceName) 
+    public void CipherConnectControl_onConnected(ICipherConnBTDevice device) 
     {
     	//Log.d(TAG, "CipherConnectControl_onConnected("+deviceName);
-    	mDeviceName = deviceName;
-        String message = mDeviceName
+    	mDevice = device;
+        String message = device.getDeviceName()
 			            + " "
 			            + this.getResources().getString(
 			                R.string.the_bluetooth_device_connected);
@@ -296,7 +287,7 @@ public class CipherConnectManagerService extends Service
         mBroadcastConnChange(CONN_STATE.CONN_STATE_CONNECTED);
 	}
 	
-    public void CipherConnectControl_onCipherConnectControlError(String deviceName, int id,	String message)
+    public void CipherConnectControl_onCipherConnectControlError(ICipherConnBTDevice device, int id,	String message)
     {
     	String error_message = this.getResources().getString(R.string.the_bluetooth_device_connected_error);
 		CipherConnectNotification.error_notify(CipherConnectManagerService.this,
@@ -305,7 +296,7 @@ public class CipherConnectManagerService extends Service
 		mBroadcastConnChange(CONN_STATE.CONN_STATE_CONNECTERR);
 	}
 	
-	public void CipherConnectControl_onReceivingBarcode(String deviceName, String barcode) 
+	public void CipherConnectControl_onReceivingBarcode(ICipherConnBTDevice device, String barcode) 
 	{
 		for (ICipherConnectManagerListener listener :mListenerList)
 			listener.onBarcode(barcode);
@@ -337,7 +328,7 @@ public class CipherConnectManagerService extends Service
      * <!----------------------------------------------------------------->
      * */
     private void bt_stopSelf() {
-        this.bt_setAutoConnect(false, CipherConnectSettingInfo.getLastDeviceName(CipherConnectManagerService.this));
+        this.bt_setAutoConnect(false, null);
 
 		if (mCipherConnectControl.isConnected())
 				mCipherConnectControl.disconnect();
@@ -395,16 +386,16 @@ public class CipherConnectManagerService extends Service
      * @Name: bt_connect()
      * @Description: Set bluetooth connect command.
      *  
-     * @param: String deviceName
+     * @param: ICipherConnBTDevice device
      * @param: N/A
      * return: N/A 
      * <!----------------------------------------------------------------->
      * */
-    public boolean bt_connect(String deviceName) {
+    public boolean bt_connect(ICipherConnBTDevice device) {
     	try {
     		//Toast.makeText(getApplicationContext(), "bt_connect(deviceName="+deviceName+")", Toast.LENGTH_SHORT).show();
-    		Log.d(TAG, "bt_connect(): deviceName= "+deviceName);
-    		mCipherConnectControl.connect(deviceName);
+    		Log.d(TAG, "bt_connect(): deviceName= "+ device.getDeviceName());
+    		mCipherConnectControl.connect(device);
     		
     		return true;
     	}
@@ -421,14 +412,14 @@ public class CipherConnectManagerService extends Service
      * @Description: Set auto connect.
      *  
      * @param: boolean enable
-     * @param: String device_name
+     * @param: device
      * return: N/A 
      * <!----------------------------------------------------------------->
      * */
-    public synchronized void bt_setAutoConnect(boolean enable, String device_name) {
+    public synchronized void bt_setAutoConnect(boolean enable, ICipherConnBTDevice device) {
     	Log.d(this.getResources().getString(R.string.ime_name), "The AutoConnectis: "+ enable);
     	
-    	mCipherConnectControl.setAuotReconnect(enable, device_name);
+    	mCipherConnectControl.setAutoReconnect(enable, device);
     }
     
     private boolean bt_StartListenConn()
@@ -446,15 +437,15 @@ public class CipherConnectManagerService extends Service
     
     /*
      * <!----------------------------------------------------------------->
-     * @Name: bt_GetConnDeviceName()
-     * @Description: Get connected device name.
+     * @Name: bt_GetConnDevice()
+     * @Description: Get connected device.
      * 
-     * return: device name 
+     * return: device 
      * <!----------------------------------------------------------------->
      * */
-    private String bt_GetConnDeviceName()
+    private ICipherConnBTDevice bt_GetConnDevice()
     {
-    	return mDeviceName;
+    	return mDevice;
     }
     
     //Functions

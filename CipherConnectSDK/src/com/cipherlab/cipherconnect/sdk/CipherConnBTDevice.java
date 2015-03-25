@@ -1,5 +1,7 @@
 package com.cipherlab.cipherconnect.sdk;
 
+import android.bluetooth.BluetoothDevice;
+
 public class CipherConnBTDevice implements ICipherConnBTDevice {
 
 	//Data members
@@ -7,6 +9,12 @@ public class CipherConnBTDevice implements ICipherConnBTDevice {
 	private String mStrDeviceAddress = null;
 	
 	//constructor 
+	CipherConnBTDevice()
+	{
+		mStrDeviceName = "";
+		mStrDeviceAddress = "";
+	}
+	
 	CipherConnBTDevice(String strDeviceName, String strDeviceAddress)
 	{
 		mStrDeviceName = new String(strDeviceName);
@@ -18,6 +26,18 @@ public class CipherConnBTDevice implements ICipherConnBTDevice {
 	{
 		mStrDeviceName = new String(src.getDeviceName());
 		mStrDeviceAddress = new String(src.getAddress());
+	}
+	
+	CipherConnBTDevice(BluetoothDevice src)
+	{
+		mStrDeviceName = new String(src.getName());
+		mStrDeviceAddress = new String(src.getAddress());
+	}
+	
+	public void getParamFromBTDevice(BluetoothDevice src)
+	{
+		mStrDeviceName = src.getName();
+		mStrDeviceAddress = src.getAddress();
 	}
 	
 	@Override

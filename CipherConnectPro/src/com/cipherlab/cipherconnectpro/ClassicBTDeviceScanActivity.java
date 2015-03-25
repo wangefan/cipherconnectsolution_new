@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class ClassicBTDeviceScanActivity extends BTSettingActivity 
@@ -116,6 +118,16 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
 		 mFillBTAdaperList();
 	}
     
+	@Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        final ICipherConnBTDevice device = mClassicDeviceListAdapter.getDevice(position);
+        if (device == null) return;
+        Intent resultInt = new Intent();
+        resultInt.putExtra(CipherConnectSettingActivity.KEY_GET_CLSC_BT_DEVICE, device);
+        setResult(RESULT_OK, resultInt);
+        onBackPressed();
+    }
+	
 	@Override
     public void onCreate(Bundle savedInstanceState)
 	{

@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
+import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
 import com.cipherlab.cipherconnectpro.CipherConnectSettingInfo;
 import com.cipherlab.cipherconnectpro.R;
 import com.cipherlab.util.DialogUtil;
@@ -33,17 +34,20 @@ import com.cipherlab.util.KeyboardUtil;
 import com.cipherlab.cipherconnectpro.SalveModeActivity;
 
 
-public class CipherConnectSettingActivity extends PreferenceActivity {
-	
+public class CipherConnectSettingActivity extends PreferenceActivity 
+{
+	public static final String KEY_GET_CLSC_BT_DEVICE = "KEY_GET_CLSC_BT_DEVICE";
+	public static final String KEY_GET_LE_BT_DEVICE = "KEY_GET_LE_BT_DEVICE";
 	private static final String TAG = "CipherConnectSettingActivity()";
-	private static final int REQUEST_ENABLE_BT = 1;
+	private static final int REQUEST_GET_CLASSIC_BT = 1;
+	private static final int REQUEST_GET_CLE_BT = 2;
 		
 	private BluetoothAdapter mBluetoothAdapter;
 	private ServiceReceiver mServiceActionReceiver = new ServiceReceiver();
 	private String mStrConnectDlgTitle = null;
 	private ProgressDialog mPDialog = null;
 	private BuildConnMethodPreference mBuildConn = null;
-	private Preference   mBtnBTMode = null;  // visual,2012/4/18,Open BT-Setting for 3.x, Yifan,2015/01/27,support Low energy mode.
+	private ListPreference   mBtnBTMode = null;  // visual,2012/4/18,Open BT-Setting for 3.x, Yifan,2015/01/27,support Low energy mode.
 	private ListPreference lstSendBarcodeInterval = null;  // william, 2012/09/13
 	private ListPreference lstLanguage = null;             // william, 2012/09/18
 	private CheckBoxPreference ckbMinimum = null;	//Minimize keyboard 
@@ -65,6 +69,39 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
             mCipherConnectService = null;
         }
     };
+    
+    private void mConnectBT(ICipherConnBTDevice device)
+    {
+    	if(device != null && mCipherConnectService != null)
+    	{
+    		try {
+				mCipherConnectService.connect(device);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    }
+    
+    private void mShowProgressDlg(boolean bShow)
+    {
+    	if(bShow)
+    	{
+    		if(mPDialog != null)
+    			mPDialog.show();
+    		else
+    		{
+    			String strTitle = getResources().getString(R.string.strConnecting), 
+    				   strMsg = getResources().getString(R.string.strConnectingMsg);
+    			mPDialog = ProgressDialog.show(this, strTitle, strMsg);
+    		}
+    	}
+    	else
+    	{
+    		if(mPDialog != null)
+    			mPDialog.dismiss();
+    	}
+    }
     
     /** Called when the activity is first created. */
     @Override
@@ -138,7 +175,18 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
                 		}
                 		else //Master connection
                 		{
+                			String strCurMode = (String)mBtnBTMode.getEntry();
                 			
+                			//Classic
+                			if(strCurMode.equals(getResources().getString(R.string.Str_BT_Classic)))
+                			{
+                				
+                			}
+                			//Low Energy
+                			else if(strCurMode.equals(getResources().getString(R.string.Str_BT_LE)))
+                			{
+                				
+                			}
                 		}
                 	}
                 	return true;
@@ -152,13 +200,13 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
         			String strCurBTMode = CipherConnectSettingInfo.getBTMode(CipherConnectSettingActivity.this);
         			if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_Classic)))
         			{
-        				Intent intent = new Intent(CipherConnectSettingActivity.this, ClassicBTDeviceScanActivity.class);
-            			startActivity(intent);
+        				Intent getBtDeviceIntent = new Intent(CipherConnectSettingActivity.this, ClassicBTDeviceScanActivity.class);
+        		        startActivityForResult(getBtDeviceIntent, REQUEST_GET_CLASSIC_BT);
         			}
         			else if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_LE)))
         			{
-        				Intent intent = new Intent(CipherConnectSettingActivity.this, LEDeviceScanActivity.class);
-            			startActivity(intent);
+        				Intent getBtDeviceIntent = new Intent(CipherConnectSettingActivity.this, LEDeviceScanActivity.class);
+        		        startActivityForResult(getBtDeviceIntent, REQUEST_GET_CLE_BT);
         			}
         		}
         	});
@@ -275,7 +323,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
         mBuildConn.setButtonMode(mCipherConnectService.isConnected());       
         ICipherConnectManagerService.CONN_STATE connstate = mCipherConnectService.GetConnState();  	
     	if (connstate == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED) 
-    		mBuildConn.setLastDevName(mCipherConnectService.GetConnDeviceName());
+    	{
+    		ICipherConnBTDevice device = mCipherConnectService.GetConnDevice();
+    		if(device != null)
+    			mBuildConn.setLastDev(device.getDeviceName(), 
+    									  device.getAddress());
+    	}
     }
 
     /*
@@ -445,7 +498,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
             		CipherConnectSettingActivity.this.finish();
 
             		if (mCipherConnectService != null) {
-            			mCipherConnectService.AuotConnect(false, CipherConnectSettingInfo.getLastDeviceName(getApplicationContext()));
+            			mCipherConnectService.AutoConnect(false, null);
                 		mCipherConnectService.stopSelf();
                 	}
 
@@ -481,12 +534,22 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // User chose not to enable Bluetooth.
         switch (requestCode) {
-        case REQUEST_ENABLE_BT :
+        case REQUEST_GET_CLASSIC_BT :
         {
-        	if(resultCode == Activity.RESULT_OK ) {
-        		super.onActivityResult(requestCode, resultCode, data);
-        		Intent enableLEScanActivity = new Intent(this, LEDeviceScanActivity.class);
-    	    	startActivity(enableLEScanActivity);
+        	if(resultCode == Activity.RESULT_OK ) 
+        	{
+        		ICipherConnBTDevice device = (ICipherConnBTDevice) data.getSerializableExtra(KEY_GET_CLSC_BT_DEVICE);
+        		mConnectBT(device);
+        		super.onActivityResult(requestCode, resultCode, data);        		
+        	}
+        }
+        break;
+        case REQUEST_GET_CLE_BT:
+        {
+        	if(resultCode == Activity.RESULT_OK ) 
+        	{
+        		ICipherConnBTDevice device = (ICipherConnBTDevice) data.getSerializableExtra(KEY_GET_LE_BT_DEVICE);
+        		super.onActivityResult(requestCode, resultCode, data);        		
         	}
         }
         break;
@@ -560,40 +623,25 @@ public class CipherConnectSettingActivity extends PreferenceActivity {
             	{
             		case  CONN_STATE_CONNECTING:
             		{
-            			String strMsg = getResources().getString(R.string.setting_bluetooth_device_connecting);
-                    	if(mPDialog == null) {
-                    		mPDialog = ProgressDialog.show(CipherConnectSettingActivity.this, mStrConnectDlgTitle, strMsg);
-                    	}
-                    	else {
-                    		mPDialog.setMessage(strMsg);
-                    		mPDialog.show();
-                    	}
+            			
+            			mShowProgressDlg(true);
             		}
             		break;
             		case  CONN_STATE_CONNECTERR:
             		{
+            			mShowProgressDlg(false);
             			Toast.makeText(getApplicationContext(), "BT Connect error", Toast.LENGTH_SHORT).show();
             		}
             		break;
             		case CONN_STATE_DISCONNECT:
             		{
-            			if(mPDialog != null) {
-                    		String strMsg = getResources().getString(R.string.the_bluetooth_device_disconnected);
-                    		mPDialog.setMessage(strMsg);
-                    		mPDialog.dismiss();
-                    		mPDialog = null;
-                    	}
+            			mShowProgressDlg(false);
                     	Toast.makeText(getApplicationContext(), "BT Disconnected", Toast.LENGTH_SHORT).show();
             		}
             		break;
             		case  CONN_STATE_CONNECTED:
             		{
-            			if(mPDialog != null) {
-                    		String strMsg = getResources().getString(R.string.setting_bluetooth_device_connected);
-                    		mPDialog.setMessage(strMsg);
-                    		mPDialog.dismiss();
-                    		mPDialog = null;
-                    	}
+            			mShowProgressDlg(false);
                     	Toast.makeText(getApplicationContext(), "BT Connected", Toast.LENGTH_SHORT).show();
             		}
             		default:

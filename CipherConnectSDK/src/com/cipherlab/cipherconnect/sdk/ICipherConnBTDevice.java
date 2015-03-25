@@ -1,6 +1,9 @@
 package com.cipherlab.cipherconnect.sdk;
 
-public interface ICipherConnBTDevice {
+import java.io.Serializable;
+
+public interface ICipherConnBTDevice extends Serializable
+{
 	/**
 	 * Get the name of Bluetooth device.
 	 * <DT><B>code:</B><DT>

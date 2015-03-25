@@ -64,9 +64,9 @@ public class CipherConnectControl implements ICipherConnectControl {
 		return mCipherConnCtrlImpl.getBtDevices();
 	}
 	
-    public void connect(String deviceName)throws NullPointerException
+    public void connect(ICipherConnBTDevice device)throws NullPointerException
     {
-		mCipherConnCtrlImpl.connect(deviceName);
+		mCipherConnCtrlImpl.connect(device);
 	}
     
 	public void disconnect()
@@ -82,9 +82,9 @@ public class CipherConnectControl implements ICipherConnectControl {
 		mListenerList.add(listener);
 	}
 	
-	public void setAuotReconnect(boolean enable,String deviceName)throws NullPointerException
+	public void setAutoReconnect(boolean enable, ICipherConnBTDevice device)throws NullPointerException
 	{
-		mCipherConnCtrlImpl.setAuotReconnect(enable, deviceName);
+		mCipherConnCtrlImpl.setAutoReconnect(enable, device);
 	}
 	
 	public boolean isAutoReconnect()

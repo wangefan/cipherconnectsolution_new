@@ -43,20 +43,20 @@ public interface ICipherConnectControl {
 	public ICipherConnBTDevice[] getBtDevices();
 	
 	/**
-	 * Connect to the BT scanner device by deviceName.
+	 * Connect to the BT scanner device by device.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * try{<br>
-	 * 		_control.connect("1661DM5065535");<br>
+	 * 		_control.connect(device);<br>
 	 * }<br>
 	 * catch(NullPointerException e){<br>
 	 *      System.out.println(e);<br>
 	 * }<br>
 	 * </DD>
-	 * @param deviceName : BT scanner device name  "1661DM5065535" and have been identified with this OS. 
-	 * @throws NullPointerException : if deviceName is null, CipherConnectControl throws a NullPointerException.
+	 * @param device: BT scanner device and have been identified with this OS. 
+	 * @throws NullPointerException : if device is null, CipherConnectControl throws a NullPointerException.
 	 */
-    public void connect(String deviceName)throws NullPointerException;	
+    public void connect(ICipherConnBTDevice device)throws NullPointerException;	
     
     /**
      * Disconnect from the BT scanner device.
@@ -105,7 +105,7 @@ public interface ICipherConnectControl {
 	 * <DD>
 	 * //Set auto Reconnect.<br>
 	 * try{<br>
-	 * 		_control.setAuotReconnect(true,"1661DM5065535");<br>
+	 * 		_control.setAuotReconnect(true, device);<br>
 	 * }<br>
 	 * catch(NullPointerException e){<br>
 	 * 		System.out.println(e);<br>
@@ -119,10 +119,10 @@ public interface ICipherConnectControl {
 	 * } <br>
 	 * </DD>
 	 * @param enable true | false 
-	 * @param deviceName BT scanner device name "1661DM5065535" and have been identified with this OS. 
-	 * @throws NullPointerException If deviceName is null, CipherConnectControl throws a NullPointerException. 
+	 * @param device BT scanner device and have been identified with this OS. 
+	 * @throws NullPointerException If device is null, CipherConnectControl throws a NullPointerException. 
 	 */
-	public void setAuotReconnect(boolean enable,String deviceName)throws NullPointerException;
+	public void setAutoReconnect(boolean enable, ICipherConnBTDevice device)throws NullPointerException;
 	
 	/**
 	 * Get the status of AutoReconnect.

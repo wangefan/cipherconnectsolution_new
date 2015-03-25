@@ -66,7 +66,7 @@ public class SalveModeActivity extends BTSettingActivity
             	{
             	case CONN_STATE_CONNECTED:
             	{
-            		String strMag = mCipherConnectService.GetConnDeviceName() + " connected";
+            		String strMag = mCipherConnectService.GetConnDevice().getDeviceName() + " connected";
             		Toast.makeText(SalveModeActivity.this, strMag, Toast.LENGTH_LONG).show();
             	}
             	break;
@@ -179,7 +179,7 @@ public class SalveModeActivity extends BTSettingActivity
     			mBCodeAddressImage.setVisibility( View.INVISIBLE);
     			mTvwBCodeAddress.setVisibility( View.INVISIBLE);
     			mImageBTConn.setImageResource(R.drawable.btconnected);	
-    			String strMag = mCipherConnectService.GetConnDeviceName() + " connected";
+    			String strMag = mCipherConnectService.GetConnDevice().getDeviceName() + " connected";
     			mTvwDeviceName.setText(strMag);  			
     			ShowProgressDlg(false);			
     		}

@@ -21,7 +21,6 @@ public interface ICipherConnectManagerService {
 	/*Server service begin*/
 	public boolean StartListenConn();
 	public void StopListenConn();
-	public String GetConnDeviceName();
 	public CONN_STATE GetConnState();
 	public SERVER_STATE GetServerState(); 
 	public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight);
@@ -30,11 +29,12 @@ public interface ICipherConnectManagerService {
 	/*Server service end*/
 	public boolean isConnected();
     public ICipherConnBTDevice[] getBtDevices();
-    public boolean connect(String device_name)throws Exception;
+    public ICipherConnBTDevice GetConnDevice();
+    public boolean connect(ICipherConnBTDevice device)throws Exception;
     public void disConnect();
     public void AddListener(ICipherConnectManagerListener l);
     public void RemoveListener(ICipherConnectManagerListener l);
-    public void AuotConnect(boolean enable, String deviceName);
+    public void AutoConnect(boolean enable, ICipherConnBTDevice device);
     public boolean isAuotConnect();
     public void stopSelf();
     public boolean IsBLEModeSupported();

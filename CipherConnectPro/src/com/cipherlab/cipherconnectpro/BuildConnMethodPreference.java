@@ -1,5 +1,7 @@
 package com.cipherlab.cipherconnectpro;
 
+import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
+
 import android.content.Context;
 import android.preference.Preference;
 import android.util.AttributeSet;
@@ -16,8 +18,13 @@ public class BuildConnMethodPreference extends Preference
 	//data members
 	final private String SLAVE = "slave";
 	final private String MASTER = "master";
+	private String mStrDefaultMode = "";
+	private String mStrDefaultDevName = "";
+	private String mStrDefaultDevAddr = "";
 	private LinearLayout mLinearView = null;
 	private boolean mIsSlaveConn = true;
+	private String  mDeviceName = "";
+	private String  mDeviceAddr = "";
 	private Button mbtnBuildConn = null;
 	private Button mbtnScanDev = null;
 	private ToggleButton mbtnConnMathod = null;
@@ -102,25 +109,41 @@ public class BuildConnMethodPreference extends Preference
 		{
 			mtvLastDevName = (TextView) mLinearView.findViewById(R.id.tvwLastDevice);
 		}
+		
+		mStrDefaultMode = getContext().getResources().getString(R.string.Str_defaultMode);
+		mStrDefaultDevName = getContext().getResources().getString(R.string.Str_defaultDevName);
+		mStrDefaultDevAddr = getContext().getResources().getString(R.string.Str_defaultDevAddr);
+		mDeviceName = mStrDefaultDevName;
+		mDeviceAddr = mStrDefaultDevAddr;
+	}
+	
+	//combine values to single string to save.
+	private String mGeneratePersisString(boolean IsSlaveMode, String devName, String devAddr)
+	{
+		String strValuse = (IsSlaveMode ? SLAVE : MASTER) + ";" + devName + "|" + devAddr;
+		return strValuse;
 	}
 	
 	private void mGetPersistValues()
 	{
-		String strDefault = getContext().getResources().getString(R.string.Str_defaultBMPreference);
-		String val = getPersistedString(strDefault);
-		int nPosBreak = val.indexOf(";", 0);
-		String strMode = val.substring(0, nPosBreak);
-		String strDev = val.substring(nPosBreak + 1);
+		String strDefFormat = getContext().getResources().getString(R.string.Str_defaultBMPrefFormat);
+		String formatVal = getPersistedString(strDefFormat);
+		String strVal = String.format(formatVal, mStrDefaultMode, mStrDefaultDevName, mStrDefaultDevAddr);
+		int nPosBreak = strVal.indexOf(";", 0);
+		String strMode = strVal.substring(0, nPosBreak);
+		String strDevName = strVal.substring(nPosBreak + 1, strVal.indexOf("|", 0));
+		nPosBreak = strVal.indexOf("|", 0);
+		String strAddr = strVal.substring(nPosBreak + 1);
 		mIsSlaveConn = strMode.equals(SLAVE) ? true : false;
+		mDeviceName = strDevName;
+		mDeviceAddr = strAddr;
 		if(mtvLastDevName != null)
-			mtvLastDevName.setText(strDev);
+			mtvLastDevName.setText(mDeviceName);
 	}
 	
 	private void mPersistValuses()
 	{
-		String strValuse = mIsSlaveConn ? SLAVE : MASTER;
-		strValuse = strValuse + ";" + mtvLastDevName.getText();
-		persistString(strValuse);
+		persistString(mGeneratePersisString(mIsSlaveConn, mDeviceName, mDeviceAddr));
 	}
 	
 	private void mUpdateUI()
@@ -128,9 +151,17 @@ public class BuildConnMethodPreference extends Preference
 		if(mIsSlaveConn)
 		{
 			mbtnScanDev.setEnabled(false);
+			mbtnBuildConn.setEnabled(true);
 		}
-		else
+		else	//Master mode
 		{
+			//disable connection button if no selection device. 
+			String strDefValue = mGeneratePersisString(false, mStrDefaultDevName, mStrDefaultDevAddr);
+			String strCurValue = mGeneratePersisString(mIsSlaveConn, mDeviceName, mDeviceAddr);
+			if(strCurValue.equals(strDefValue))
+				mbtnBuildConn.setEnabled(false);
+			else
+				mbtnBuildConn.setEnabled(true);
 			mbtnScanDev.setEnabled(true);
 		}
 	}
@@ -186,12 +217,18 @@ public class BuildConnMethodPreference extends Preference
     	}
     }
     
-    public void setLastDevName(String name) {
-    	if(mtvLastDevName != null)
-    	{
-    		mtvLastDevName.setText(name);
-    		mPersistValuses();
-    	}
+    public void setLastDev(String devName, String devAddr)
+    {
+		mDeviceName = devName;
+		mDeviceAddr = devAddr;
+		mtvLastDevName.setText(devName);
+		mPersistValuses();
+    }
+    
+    public void getLastDev(String devName, String devAddr) 
+    {
+    	devName = mDeviceName;
+    	devAddr = mDeviceAddr;
     }
     
     @Override

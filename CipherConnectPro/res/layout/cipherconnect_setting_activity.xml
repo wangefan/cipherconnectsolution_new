@@ -3,7 +3,7 @@
 	<PreferenceCategory android:title="@string/ime_connection" >
 	    <com.cipherlab.cipherconnectpro.BuildConnMethodPreference
 	        android:key="btnBT_buildConn"
-	        android:defaultValue="@string/Str_defaultBMPreference"/>
+	        android:defaultValue="@string/Str_defaultBMPrefFormat"/>
 	   	
 	    <ListPreference
 	    	android:key="btnBT_Mode"

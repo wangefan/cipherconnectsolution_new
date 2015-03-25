@@ -44,13 +44,13 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		mResetListenThread();
 	}
 	
-	protected void fireCipherConnectControlError(String deviceName, CipherConnectErrException e){
+	protected void fireCipherConnectControlError(ICipherConnBTDevice device, CipherConnectErrException e){
 		if(mListenerList == null)
 			return;
 		for (ICipherConnectControlListener l : this.mListenerList) {
 			if(l!=null)
 			{
-				l.onCipherConnectControlError(deviceName, 0, e.getMessage());
+				l.onCipherConnectControlError(device, 0, e.getMessage());
 			}
 		}
 	}
@@ -128,16 +128,16 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	}
 	//================ Server functions end=============
 	
-	public void setAuotReconnect(boolean enable, String deviceName)throws NullPointerException{
+	public void setAutoReconnect(boolean enable, ICipherConnBTDevice device)throws NullPointerException{
 		if(enable){
-			if(deviceName==null)
+			if(device == null)
 				throw new NullPointerException();
 			
 			if(this.mAutoConnectThread==null){
 				//if(_DEBUG)
 				//	Log.d("CipherConnectControl","The AutoConnectThread is opening.");
 
-				this.mAutoConnectThread = new AutoConnectThread(deviceName);
+				this.mAutoConnectThread = new AutoConnectThread(device);
 				this.mAutoConnectThread.start();
 			}
 		}
@@ -152,29 +152,19 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		}
 	}
 	
-	public void connect(String deviceName) throws NullPointerException{
-		fireCipherBeginConnectControl(deviceName);
-		if(deviceName==null)
+	public void connect(ICipherConnBTDevice device) throws NullPointerException
+	{
+		if(device == null || device.getDeviceName() == null)
 			throw new NullPointerException();
 		
-		BluetoothDevice device = null;
-		try {
-	    	device = this.getBtDevice(deviceName);
-	    	if(device==null){
-	    		return;
-	    	}
-		} 
-		catch (NullPointerException e) {
-			throw e;
-		}
-		
-
     	if(this.isConnected()){
 			//if(_DEBUG)
 			//	Log.d("CipherConnectControl", "CipherConnectService.bt_connected:Can't connect again, because you have already connected");
     		
 			return;
     	}
+    	
+    	fireCipherBeginConnectControl(device);
     	
     	synchronized(this){
         	if(this.mConnectThread==null){
@@ -228,9 +218,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		if(this.mConnectThread.isAlive() && this.mIsConnected)
 			return true;
 		
-		this.mConnectThread.cancel();
-		this.mConnectThread = null;
-		
 		return false;
 	}
 	
@@ -260,7 +247,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		return dericeList;
 	}
 	
-	private void mProcessBarcode(byte[] buffer, String strDviceName) throws UnsupportedEncodingException{
+	private void mProcessBarcode(byte[] buffer, ICipherConnBTDevice device) throws UnsupportedEncodingException{
     	if(buffer==null || buffer.length==0)
     		return ;
     	
@@ -296,7 +283,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		
 		StringTokenizer st = new StringTokenizer(barcode,"\n");
         if(st.countTokens()==1){
-        	fireReceivingBarcode(strDviceName+"A", barcode);
+        	fireReceivingBarcode(device, barcode);
         }
         else{
         	
@@ -305,9 +292,9 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         	{
         		String code = (String)st.nextElement();
         		if(i<count-1)
-        			fireReceivingBarcode(strDviceName+"B",code +"\n");
+        			fireReceivingBarcode(device,code +"\n");
         		else
-        			fireReceivingBarcode(strDviceName+"C",code);
+        			fireReceivingBarcode(device,code);
         		
         		try {
 					Thread.sleep(300);
@@ -330,8 +317,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         }
     }
 	
-	private BluetoothDevice getBtDevice(String deviceName)throws NullPointerException{
-		if(deviceName==null)
+	private BluetoothDevice getBtDevice(ICipherConnBTDevice device)throws NullPointerException{
+		if(device == null)
 			throw new NullPointerException();
 		
     	Set<BluetoothDevice> dericeList = getBtDeviceList();
@@ -339,15 +326,15 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
     		return null;
     	}
     	
-    	for (BluetoothDevice device : dericeList) {
-    		if(deviceName.equals(device.getName()))
-    			return device;
+    	for (BluetoothDevice btDevice : dericeList) {
+    		if(device.getAddress().equals(btDevice.getAddress()))
+    			return btDevice;
 		}
 
     	this.fireCipherConnectControlError(
 				null, 
 				CipherConnectControlResource.can_not_find_id,
-				CipherConnectControlResource.can_not_find + " " + deviceName);
+				CipherConnectControlResource.can_not_find + " " + device.getDeviceName());
     	
     	return null;
     }
@@ -500,8 +487,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             setName("ListenAndConnThread" + mSocketType);
             mCloseInStream();
         	mCloseSocket();
-
-        	String strRemoteDevice = "unknown device name";		
+        	
+        	CipherConnBTDevice device = new CipherConnBTDevice();
             try {
                 // This is a blocking call and will only return on a
                 // successful connection or an exception            	
@@ -514,22 +501,21 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             	BluetoothDevice remoteDevice= mSocket.getRemoteDevice();
             	if(remoteDevice == null) 
             		throw new CipherConnectErrException(CipherConnectErrException.INFO_BTDEVICE_NONE);
-                
-            	strRemoteDevice = remoteDevice.getName();
-                fireCipherBeginConnectControl(strRemoteDevice);
+            	device.getParamFromBTDevice(remoteDevice);
+                fireCipherBeginConnectControl(device);
                 
                 mInStream = mSocket.getInputStream();	
                 
-                fireConnecting(strRemoteDevice);
+                fireConnecting(device);
                 CipherConnectVerify cverify = new CipherConnectVerify(mSocket);
                 if(cverify.verify() == false)
                 	throw new CipherConnectErrException(CipherConnectErrException.INFO_NOT_CIPHER_DEVICE);
                 
                 byte[] buffer = cverify.getTransmitBuffer();
-                mProcessBarcode(buffer, strRemoteDevice);
+                mProcessBarcode(buffer, device);
                 buffer = null;
                 
-                fireConnected(strRemoteDevice);
+                fireConnected(device);
                 mIsConnected = true;
                 
                 buffer = new byte[1024];
@@ -539,7 +525,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 	Arrays.fill(buffer, (byte) '\0');
                     // Read from the InputStream
                 	mInStream.read(buffer);
-                	mProcessBarcode(buffer, strRemoteDevice);
+                	mProcessBarcode(buffer, device);
                 }
             } 
             //exception handle
@@ -548,7 +534,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 if(mServrState == STATE_OFFLINE)
                 {
                 	if(mIsConnected == true) 
-	                	fireDisconnected(strRemoteDevice);
+	                	fireDisconnected(device);
                 	mMainThrdHandler.post(
                 			new Runnable()
                 			{
@@ -565,12 +551,12 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 	if(e != null) 
                 		strMsg = e.getMessage();
                 	
-                	fireCipherConnectControlError(strRemoteDevice, 0, strMsg);
+                	fireCipherConnectControlError(device, 0, strMsg);
                 }
             } 
             catch (CipherConnectErrException e) {
                 Log.d(mTAG, "Socket Type: " + mSocketType + " CipherConnectErrException", e);
-                fireCipherConnectControlError(strRemoteDevice, e);
+                fireCipherConnectControlError(device, e);
             } 
             finally {
             	Log.d(mTAG, "Close Listen thread");
@@ -598,10 +584,10 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	
 	private class AutoConnectThread extends Thread{
 		private boolean mIsCancel = true;
-		private String mDeviceName = "";
+		private ICipherConnBTDevice mDevice = null;
 		
-		public AutoConnectThread(String device_name){
-			this.mDeviceName = device_name;
+		public AutoConnectThread(ICipherConnBTDevice device){
+			mDevice = device;
 		}
 		
 		public void run(){
@@ -611,9 +597,9 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 						//	Log.d("CipherConnectControl","AutoConnectThread_connect(device_name="+this.mDeviceName+")");
 	
 						try {
-							connect(this.mDeviceName);
+							connect(mDevice);
 						} catch (Exception e) {
-							Log.e("CipherConnectControl","AutoConnectThread_connect(device_name="+this.mDeviceName+")",e);
+							Log.e("CipherConnectControl","AutoConnectThread_connect(device_name=" + mDevice.getDeviceName() +")",e);
 						}
 				}
 				try {
@@ -632,25 +618,16 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	
 	private class ConnectedThread extends Thread {
 	    private BluetoothSocket mBluetoothSocket = null;
-	    private BluetoothDevice mDevice = null;
+	    private ICipherConnBTDevice mDevice = null;
 	    private InputStream mInputStream = null;
-	    private String mDeviceName = null;
 	    private volatile boolean isContinue = true;  // Control terminate thread flag
 
 	    public void terminate() { 
 	        isContinue = false; 
 	    } 
 
-	    public ConnectedThread(BluetoothDevice device){
-	    	this.mDevice = device;
-	    	try {
-		    	if(this.mDevice!=null)
-		    		this.mDeviceName = this.mDevice.getName();
-			} 
-	    	catch (Exception e) {
-	    		System.out.println("e="+e);
-				//this.mDeviceName = "";
-			}
+	    public ConnectedThread(ICipherConnBTDevice device){
+	    	mDevice = device;
 	    }
 	    
 	    public void run() {
@@ -658,23 +635,34 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    	if(BluetoothAdapter.getDefaultAdapter()==null)
 	    		return;
 	    	
-	    	fireConnecting(this.mDeviceName);
+	    	BluetoothDevice btDevice = null;
+			try {
+				btDevice = getBtDevice(mDevice);
+		    	if(btDevice==null){
+		    		return;
+		    	}
+			} 
+			catch (NullPointerException e) {
+				throw e;
+			}
+	    	
+	    	fireConnecting(mDevice);
 	    	
 	    	if(BluetoothAdapter.getDefaultAdapter().isEnabled()==false){
 	    		fireCipherConnectControlError(
-	    				this.mDeviceName,
+	    				mDevice,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth);
 				return;
 			}
 	    	
 			try {
-				this.mBluetoothSocket = this.mDevice.createRfcommSocketToServiceRecord(mUuid);
+				this.mBluetoothSocket = btDevice.createRfcommSocketToServiceRecord(mUuid);
 			} 
 			catch (Exception e) {
 				Log.e("CipherConnectControl", "CipherConnectService.bt_connected:Can't connect to the SocketToServiceRecord",e);
+	        	fireCipherConnectControlError(mDevice,0,e.getMessage());
 	        	disconnect();
-	        	fireCipherConnectControlError(this.mDeviceName,0,e.getMessage());
 	    		return;
 			}
 			
@@ -686,8 +674,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	        } 
 	    	catch (Exception e) {
 	        	Log.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't connect.",e);
+	        	fireCipherConnectControlError(mDevice,0,e.getMessage());
 	        	disconnect();
-	        	fireCipherConnectControlError(this.mDeviceName,0,e.getMessage());
 	            return;
 	        }
 	    	
@@ -697,8 +685,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    	catch (Exception e) {
 	        	Log.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't get the InputStream.",e);
 	        	this.mInputStream = null;
+	        	fireCipherConnectControlError(mDevice,0,e.getMessage());
 	        	disconnect();
-	        	fireCipherConnectControlError(this.mDeviceName,0,e.getMessage());
 	        	try {
 					this.mBluetoothSocket.close();
 				} catch (Exception e1) {
@@ -716,7 +704,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				  if(verify.verify()==false){
 				 
 					fireCipherConnectControlError(
-							this.mDeviceName,
+							mDevice,
 							CipherConnectControlResource.the_device_is_not_the_cipherlab_product_id,
 							CipherConnectControlResource.the_device_is_not_the_cipherlab_product);
 					
@@ -727,7 +715,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				Log.d("CipherConnectControl", e.getMessage());
 			}
 
-        	fireConnected(this.mDeviceName);
+        	fireConnected(mDevice);
         	
         	buffer = verify.getTransmitBuffer();
         	if(buffer!=null && buffer.length>0)
@@ -762,7 +750,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 						}
             			this.mInputStream = null;
 	            	}
-	            	fireDisconnected(this.mDeviceName);
+	            	fireDisconnected(mDevice);
 	            	mConnectThread = null;
 	            	terminate(); // Terminate thread
 	            	
@@ -780,7 +768,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    }
 	    
 		private synchronized void processionBarcode(byte[] buffer) throws UnsupportedEncodingException{
-	    	mProcessBarcode(buffer, mDeviceName);
+	    	mProcessBarcode(buffer, mDevice);
 	    }
 
 	    public synchronized void cancel() {

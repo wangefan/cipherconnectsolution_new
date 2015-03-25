@@ -27,7 +27,7 @@ abstract public class CipherConnCtrlmplBase {
 	public void Reset() {
 		SetCipherConnectControlListener(null);
 		disconnect();
-		setAuotReconnect(false, "");
+		setAutoReconnect(false, null);
 	}
 	
 	public void SetCipherConnectControlListener(ArrayList<ICipherConnectControlListener> listenerList) throws NullPointerException {
@@ -65,73 +65,73 @@ abstract public class CipherConnCtrlmplBase {
 		}
 	}
 	
-	protected void fireCipherBeginConnectControl(String deviceName) {
+	protected void fireCipherBeginConnectControl(ICipherConnBTDevice device) {
 		if(mListenerList == null)
 			return;
 		for (ICipherConnectControlListener l : this.mListenerList) {
 			if(l!=null)
 			{
-				l.onBeginConnecting(deviceName);
+				l.onBeginConnecting(device);
 			}
 		}
 	}
 	
-	protected void fireReceivingBarcode(String deviceName,String barcode){
+	protected void fireReceivingBarcode(ICipherConnBTDevice device,String barcode){
 		if(mListenerList == null)
 			return;
 		for (ICipherConnectControlListener l : this.mListenerList) {
 			if(l!=null)
 			{
 				//Log.e("CipherConnectControl","fireReceivingBarcode(deviceName="+deviceName+", barcode="+barcode+")");
-				l.onReceivingBarcode(deviceName, barcode);
+				l.onReceivingBarcode(device, barcode);
 			}
 		}
 	}
 	
-	protected void fireConnecting(String deviceName){
+	protected void fireConnecting(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
 		for (ICipherConnectControlListener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireConnecting(deviceName="+deviceName+")");
-				l.onConnecting(deviceName);
+				Log.e("CipherConnectControl","fireConnecting(deviceName="+device.getDeviceName()+")");
+				l.onConnecting(device);
 			}
 		}
 	}
 	
-	protected void fireConnected(String deviceName){
+	protected void fireConnected(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
 		for (ICipherConnectControlListener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireConnected(deviceName="+deviceName+")");
-				l.onConnected(deviceName);
+				Log.e("CipherConnectControl","fireConnected(deviceName="+device.getDeviceName()+")");
+				l.onConnected(device);
 			}
 		}
 	}
 	
-	protected void fireCipherConnectControlError(String deviceName, int id, String message){
+	protected void fireCipherConnectControlError(ICipherConnBTDevice device, int id, String message){
 		if(mListenerList == null)
 			return;
 		for (ICipherConnectControlListener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireCipherConnectControlError(deviceName="+deviceName+", id="+id+", message="+message+")");
-				l.onCipherConnectControlError(deviceName, id, message);
+				Log.e("CipherConnectControl","fireCipherConnectControlError(deviceName="+device.getDeviceName()+", id="+id+", message="+message+")");
+				l.onCipherConnectControlError(device, id, message);
 			}
 		}
 	}
 
-	protected void fireDisconnected(String deviceName){
+	protected void fireDisconnected(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
 		for (ICipherConnectControlListener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireDisconnected(deviceName="+deviceName+")");
-				l.onDisconnected(deviceName);
+				Log.e("CipherConnectControl","fireDisconnected(deviceName="+device.getDeviceName()+")");
+				l.onDisconnected(device);
 			}
 		}
 	}
@@ -173,11 +173,11 @@ abstract public class CipherConnCtrlmplBase {
 	
 	public abstract ICipherConnBTDevice[] getBtDevices();
 		
-	public abstract void connect(String deviceName)throws NullPointerException;	
+	public abstract void connect(ICipherConnBTDevice device)throws NullPointerException;	
 	    
 	public abstract void disconnect();
 		
-	public abstract void setAuotReconnect(boolean enable,String deviceName)throws NullPointerException;
+	public abstract void setAutoReconnect(boolean enable, ICipherConnBTDevice device)throws NullPointerException;
 		
 	public abstract boolean isAutoReconnect();
 	

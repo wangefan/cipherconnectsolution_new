@@ -26,16 +26,16 @@ public interface ICipherConnectControlListener {
 	 *  while CipherConnectControl is beginning
 	 *   to connect to BT scanner device.
 	 * 
-	 * @param deviceName: BT scanner device name
+	 * @param device: BT scanner device 
 	 */
-	public void onBeginConnecting(String deviceName);
+	public void onBeginConnecting(ICipherConnBTDevice device);
 	/**
 	 * The user program will be notified When BT scanner device sends the data to CipherConnectControl
 	 * 
-	 * @param deviceName : Active BT scanner device name
+	 * @param device: Active BT scanner device 
 	 * @param barcode : A set of barcode data.
 	 */
-	public void onReceivingBarcode(String deviceName,String barcode);
+	public void onReceivingBarcode(ICipherConnBTDevice device, String barcode);
 	
 	/**
 	 * The user program will be notified
@@ -43,7 +43,7 @@ public interface ICipherConnectControlListener {
 	 *   in CipherConnectControl while CipherConnectControl
 	 *    is doing operations.
 	 * 
-	 * @param deviceName: BT scanner device name
+	 * @param device: BT scanner device
 	 * @param id,message : exception message list is follows:<br>
 	 * 	               <UL>	
 	 * 					  <li>0,Exception message.
@@ -57,30 +57,30 @@ public interface ICipherConnectControlListener {
 	 *					  <li>108,Cannot find any services (for low energy mode)
 	 *					<UL>
 	 */
-	public void onCipherConnectControlError(String deviceName,int id, String message);
+	public void onCipherConnectControlError(ICipherConnBTDevice device,int id, String message);
 	
 	/**
 	 * The user program will be notified
 	 *  while CipherConnectControl is trying
 	 *   to connect to BT scanner device.
 	 * 
-	 * @param deviceName: BT scanner device name
+	 * @param device: BT scanner device
 	 */
-	public void onConnecting(String deviceName);
+	public void onConnecting(ICipherConnBTDevice device);
 	
 	/**
 	 * The user program will be notified when CipherConnectControl is connected to the BT scanner device.
 	 * 
-	 * @param deviceName: BT scanner device name
+	 * @param device: BT scanner device 
 	 */
-	public void onConnected(String deviceName);
+	public void onConnected(ICipherConnBTDevice device);
 	
 	/**
 	 * The user program will be notified when CipherConnectControl is disconnected from the BT scanner device. 
 	 * 
-	 * @param deviceName: BT scanner device name
+	 * @param device: BT scanner device 
 	 */
-	public void onDisconnected(String deviceName);
+	public void onDisconnected(ICipherConnBTDevice device);
 	
 	/**
 	 * The user program will be notified when CipherConnectControl in scan LE mode and discover devices. 
