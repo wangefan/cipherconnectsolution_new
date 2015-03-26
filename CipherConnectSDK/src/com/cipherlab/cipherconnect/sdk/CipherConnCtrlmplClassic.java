@@ -638,6 +638,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    				mDevice,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth);
+	    		mDevice = null;
 	    		return;
 	    	}
 	    	
@@ -649,10 +650,16 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		    				mDevice,
 		    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
 		    				CipherConnectControlResource.please_turn_on_Bluetooth);
+		    		mDevice = null;
 		    		return;
 		    	}
 			} 
 			catch (NullPointerException e) {
+				fireCipherConnectControlError(
+	    				mDevice,
+	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
+	    				CipherConnectControlResource.please_turn_on_Bluetooth);
+	    		mDevice = null;
 				throw e;
 			}
 	    	
@@ -663,6 +670,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    				mDevice,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth);
+	    		mDevice = null;
 				return;
 			}
 	    	
@@ -673,6 +681,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				Log.e("CipherConnectControl", "CipherConnectService.bt_connected:Can't connect to the SocketToServiceRecord",e);
 	        	fireCipherConnectControlError(mDevice,0,e.getMessage());
 	        	disconnect();
+	        	mDevice = null;
 	    		return;
 			}
 			
@@ -686,6 +695,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	        	Log.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't connect.",e);
 	        	fireCipherConnectControlError(mDevice,0,e.getMessage());
 	        	disconnect();
+	        	mDevice = null;
 	            return;
 	        }
 	    	
@@ -702,7 +712,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				} catch (Exception e1) {
 		        	Log.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't close.",e);
 				}
-				
+	        	mDevice = null;
 	        	return;
 			}
 	    	
@@ -719,6 +729,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 							CipherConnectControlResource.the_device_is_not_the_cipherlab_product);
 					
 				    disconnect();
+				    mDevice = null;
 				    return;
 				}
 			} catch (Exception e) {
@@ -762,6 +773,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	            	}
 	            	fireDisconnected(mDevice);
 	            	mConnectThread = null;
+	            	mDevice = null;
 	            	terminate(); // Terminate thread
 	            	
 	            	return;
@@ -791,7 +803,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				}
         	}
         	this.mBluetoothSocket = null;
-        	this.mDevice = null;
 	    }
 	}
 }

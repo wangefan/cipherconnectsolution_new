@@ -178,12 +178,26 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 			//Classic
                 			if(strCurMode.equals(getResources().getString(R.string.Str_BT_Classic)))
                 			{
-                				
+                				if(mCipherConnectService.isConnected())
+                				{
+                					mCipherConnectService.disConnect();
+                				}
+                				else
+                				{
+                					
+                				}
                 			}
                 			//Low Energy
                 			else if(strCurMode.equals(getResources().getString(R.string.Str_BT_LE)))
                 			{
-                				
+                				if(mCipherConnectService.isConnected())
+                				{
+                					mCipherConnectService.disConnect();
+                				}
+                				else
+                				{
+                					
+                				}
                 			}
                 		}
                 	}
@@ -208,6 +222,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         			}
         		}
         	});
+        	
+        	mBuildConn.setService(mCipherConnectService);
         }
         
         /* BT mode select */
@@ -315,18 +331,15 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * <!----------------------------------------------------------------->
      * */
     private void mUpdateUI() {
-        if(mBuildConn == null ||
-           mCipherConnectService == null)
-        	return;
-        mBuildConn.setButtonMode(mCipherConnectService.isConnected());       
-        ICipherConnectManagerService.CONN_STATE connstate = mCipherConnectService.GetConnState();  	
-    	if (connstate == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED) 
-    	{
-    		ICipherConnBTDevice device = mCipherConnectService.GetConnDevice();
-    		if(device != null)
-    			mBuildConn.setLastDev(device.getDeviceName(), 
-    									  device.getAddress());
-    	}
+        if(mBuildConn != null)
+        	mBuildConn.updateButtons();
+        if(mCipherConnectService != null)
+        {
+            if(mCipherConnectService.isConnected())
+            	mBtnBTMode.setEnabled(false);
+            else
+            	mBtnBTMode.setEnabled(true);
+        }
     }
 
     /*
@@ -630,6 +643,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	        		break;	
             		case  CONN_STATE_CONNECTERR:
             		{
+            			if(mBuildConn != null)
+            				mBuildConn.setNoneDev();
             			mShowProgressDlg(false);
             			Toast.makeText(getApplicationContext(), "BT Connect error", Toast.LENGTH_SHORT).show();
             		}
@@ -642,6 +657,11 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             		break;
             		case  CONN_STATE_CONNECTED:
             		{
+            			ICipherConnBTDevice device = mCipherConnectService.GetConnDevice();
+            			if(mBuildConn != null && device != null)
+            			{
+            				mBuildConn.setLastDev(device.getDeviceName(), device.getAddress());
+            			}
             			mShowProgressDlg(false);
                     	Toast.makeText(getApplicationContext(), "BT Connected", Toast.LENGTH_SHORT).show();
             		}

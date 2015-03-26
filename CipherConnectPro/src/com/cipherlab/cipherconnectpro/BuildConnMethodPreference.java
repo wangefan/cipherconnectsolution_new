@@ -1,7 +1,5 @@
 package com.cipherlab.cipherconnectpro;
 
-import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
-
 import android.content.Context;
 import android.preference.Preference;
 import android.util.AttributeSet;
@@ -18,6 +16,7 @@ public class BuildConnMethodPreference extends Preference
 	//data members
 	final private String SLAVE = "slave";
 	final private String MASTER = "master";
+	private ICipherConnectManagerService mCipherConnectService = null;
 	private String mStrDefaultMode = "";
 	private String mStrDefaultDevName = "";
 	private String mStrDefaultDevAddr = "";
@@ -52,8 +51,7 @@ public class BuildConnMethodPreference extends Preference
 		{
 		  	mIsSlaveConn = !mIsSlaveConn;
 		  	mPersistValuses();  //Save to preference setting.
-		  	
-	    	mUpdateUI();
+		  	updateButtons();
 		}
 	};
 	
@@ -146,23 +144,50 @@ public class BuildConnMethodPreference extends Preference
 		persistString(mGeneratePersisString(mIsSlaveConn, mDeviceName, mDeviceAddr));
 	}
 	
-	private void mUpdateUI()
+	public void updateButtons()
 	{
+		if(mCipherConnectService == null)
+			return;
 		if(mIsSlaveConn)
 		{
-			mbtnScanDev.setEnabled(false);
-			mbtnBuildConn.setEnabled(true);
+			if(mCipherConnectService.isConnected())
+	    	{
+				mbtnBuildConn.setEnabled(true);
+	    		mbtnBuildConn.setText(R.string.strDisconnect);
+	    		mbtnConnMathod.setEnabled(false);
+				mbtnScanDev.setEnabled(false);
+	    	}
+	    	else
+	    	{
+	    		mbtnBuildConn.setEnabled(true);
+	    		mbtnBuildConn.setText(R.string.setting_buildconnect);
+	    		mbtnScanDev.setEnabled(false);
+	    		mbtnConnMathod.setEnabled(true);	    		
+	    	}
 		}
 		else	//Master mode
 		{
-			//disable connection button if no selection device. 
-			String strDefValue = mGeneratePersisString(false, mStrDefaultDevName, mStrDefaultDevAddr);
-			String strCurValue = mGeneratePersisString(mIsSlaveConn, mDeviceName, mDeviceAddr);
-			if(strCurValue.equals(strDefValue))
-				mbtnBuildConn.setEnabled(false);
-			else
+			if(mCipherConnectService.isConnected())
+	    	{
 				mbtnBuildConn.setEnabled(true);
-			mbtnScanDev.setEnabled(true);
+	    		mbtnBuildConn.setText(R.string.strDisconnect);
+	    		mbtnConnMathod.setEnabled(false);
+	    		mbtnScanDev.setEnabled(false);
+	    	}
+			else
+			{
+				//disable build connection button if no selection device. 
+				String strDefValue = mGeneratePersisString(false, mStrDefaultDevName, mStrDefaultDevAddr);
+				String strCurValue = mGeneratePersisString(mIsSlaveConn, mDeviceName, mDeviceAddr);
+				if(strCurValue.equals(strDefValue))
+					mbtnBuildConn.setEnabled(false);
+				else
+					mbtnBuildConn.setEnabled(true);
+				mbtnBuildConn.setText(R.string.setting_buildconnect);
+				
+				mbtnConnMathod.setEnabled(true);
+				mbtnScanDev.setEnabled(true);
+			}
 		}
 	}
 	
@@ -201,20 +226,17 @@ public class BuildConnMethodPreference extends Preference
     	mOnPreferenceClickScanListener = onPreferenceClickScanListener;
     }
     
-    public void setButtonMode(boolean bIsConnected) {
-    	if(bIsConnected)
-    	{
-    		mbtnConnMathod.setEnabled(false);
-    		mbtnBuildConn.setText(R.string.strDisconnect);
-    		mbtnScanDev.setEnabled(false);
-    		
-    	}
-    	else
-    	{
-    		mbtnConnMathod.setEnabled(true);
-    		mbtnBuildConn.setText(R.string.setting_buildconnect);
-    		mbtnScanDev.setEnabled(!IsSlaveConn());
-    	}
+    public void setService(ICipherConnectManagerService cipherConnectService)
+    {
+    	mCipherConnectService = cipherConnectService;
+    }
+    
+    public void setNoneDev()
+    {
+		mDeviceName = mStrDefaultDevName;
+		mDeviceAddr = mStrDefaultDevAddr;
+		mtvLastDevName.setText(mDeviceName);
+		mPersistValuses();
     }
     
     public void setLastDev(String devName, String devAddr)
@@ -251,7 +273,7 @@ public class BuildConnMethodPreference extends Preference
         {
         	convertView = mLinearView;
         	mbtnConnMathod.setChecked(mIsSlaveConn);
-        	mUpdateUI();
+        	updateButtons();
         }
 
         return convertView;
