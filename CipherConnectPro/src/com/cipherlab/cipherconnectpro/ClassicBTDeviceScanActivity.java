@@ -21,6 +21,8 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
 	//Member functions
     private void mFillBTAdaperList()
     {
+    	mClassicDeviceListAdapter = new ClassicDeviceListAdapter();
+        setListAdapter(mClassicDeviceListAdapter);
     	if(mClassicDeviceListAdapter != null && mBluetoothAdapter != null)
     	{
         	if(mBluetoothAdapter.isEnabled())
@@ -107,9 +109,7 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
     @Override
 	protected void mDoThingsOnServiceConnected()
 	{
-		mClassicDeviceListAdapter = new ClassicDeviceListAdapter();
-        setListAdapter(mClassicDeviceListAdapter);
-        mFillBTAdaperList();
+		mFillBTAdaperList();
 	}
 
 	@Override
