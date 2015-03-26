@@ -44,7 +44,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 		
 	private BluetoothAdapter mBluetoothAdapter;
 	private ServiceReceiver mServiceActionReceiver = new ServiceReceiver();
-	private String mStrConnectDlgTitle = null;
 	private ProgressDialog mPDialog = null;
 	private BuildConnMethodPreference mBuildConn = null;
 	private ListPreference   mBtnBTMode = null;  // visual,2012/4/18,Open BT-Setting for 3.x, Yifan,2015/01/27,support Low energy mode.
@@ -110,7 +109,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         
         addPreferencesFromResource(R.layout.cipherconnect_setting_activity);     
         PreferenceManager.setDefaultValues(this, R.layout.cipherconnect_setting_activity, false);
-        mStrConnectDlgTitle = getResources().getString(R.string.setting_bluetooth_device_status);
         remove_ime_conflic();
         
         /* [Begin] Enable CipherConnectManagerService */ 
@@ -519,6 +517,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     @Override
     protected void onResume() {
+    	Log.d(TAG, "onResume()");
         super.onResume();
         registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter());
         mUpdateUI();
@@ -526,18 +525,20 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     @Override
     protected void onPause() {
+    	Log.d(TAG, "onPause()");
         super.onPause();
         unregisterReceiver(mServiceActionReceiver);
     }
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // User chose not to enable Bluetooth.
+        Log.d(TAG, "onActivityResult()"); 
         switch (requestCode) {
         case REQUEST_GET_CLASSIC_BT :
         {
         	if(resultCode == Activity.RESULT_OK ) 
         	{
+        		registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter()); //ensure that can receive callback from connect
         		ICipherConnBTDevice device = (ICipherConnBTDevice) data.getSerializableExtra(KEY_GET_CLSC_BT_DEVICE);
         		mConnectBT(device);
         		super.onActivityResult(requestCode, resultCode, data);        		
@@ -621,12 +622,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             	ICipherConnectManagerService.CONN_STATE connstate = mCipherConnectService.GetConnState();  	
             	switch (connstate) 
             	{
-            		case  CONN_STATE_CONNECTING:
-            		{
-            			
-            			mShowProgressDlg(true);
-            		}
-            		break;
+	            	case  CONN_STATE_BEGINCONNECTING:
+	            	case  CONN_STATE_CONNECTING:
+	        		{
+	        			mShowProgressDlg(true);
+	        		}
+	        		break;	
             		case  CONN_STATE_CONNECTERR:
             		{
             			mShowProgressDlg(false);

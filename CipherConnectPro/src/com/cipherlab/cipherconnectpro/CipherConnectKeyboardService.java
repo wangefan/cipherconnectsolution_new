@@ -86,6 +86,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     	
         super.onStartInputView(info, restarting);
 
+        /*
         if (this.mCipherConnectManagerService.isConnected() == false) {
         	ICipherConnBTDevice[] devices = this.mCipherConnectManagerService
                                    .getBtDevices();
@@ -105,6 +106,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
             if (!this.mCipherConnectManagerService.isAuotConnect())
                 this.mCipherConnectManagerService.AuotConnect(true, CipherConnectSettingInfo.getLastDeviceName(this));
         }
+        */
 
         this.isOnStartInputView = true;
     }

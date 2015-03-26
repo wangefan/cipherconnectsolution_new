@@ -631,14 +631,24 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    }
 	    
 	    public void run() {
-	    	
+	    	fireCipherBeginConnectControl(mDevice);
 	    	if(BluetoothAdapter.getDefaultAdapter()==null)
+	    	{
+	    		fireCipherConnectControlError(
+	    				mDevice,
+	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
+	    				CipherConnectControlResource.please_turn_on_Bluetooth);
 	    		return;
+	    	}
 	    	
 	    	BluetoothDevice btDevice = null;
 			try {
 				btDevice = getBtDevice(mDevice);
 		    	if(btDevice==null){
+		    		fireCipherConnectControlError(
+		    				mDevice,
+		    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
+		    				CipherConnectControlResource.please_turn_on_Bluetooth);
 		    		return;
 		    	}
 			} 

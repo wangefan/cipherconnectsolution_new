@@ -161,6 +161,12 @@ public class SalveModeActivity extends BTSettingActivity
     			ShowProgressDlg(true);
     		}
     		break;
+    		case  CONN_STATE_DISCONNECT:
+    		case  CONN_STATE_CONNECTERR:
+    		{
+    			ShowProgressDlg(false);
+    		}
+    		break;
     		case  CONN_STATE_CONNECTED:
     		{
     			float fWidthPxl = 300.0f;
