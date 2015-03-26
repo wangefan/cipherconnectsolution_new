@@ -69,6 +69,11 @@ public class CipherConnectControl implements ICipherConnectControl {
 		mCipherConnCtrlImpl.connect(device);
 	}
     
+    public void connect(String deviceName, String deviceAddr)throws NullPointerException
+    {
+		mCipherConnCtrlImpl.connect(deviceName, deviceAddr);
+	}
+    
 	public void disconnect()
 	{
 		mCipherConnCtrlImpl.disconnect();

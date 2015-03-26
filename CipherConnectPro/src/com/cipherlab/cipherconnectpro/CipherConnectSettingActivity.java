@@ -184,7 +184,14 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 				}
                 				else
                 				{
-                					
+                					String devName = mBuildConn.getLastDevName(), 
+                						   devAddr = mBuildConn.getLastDevAddr();	
+                					try {
+										mCipherConnectService.connect(devName, devAddr);
+									} catch (Exception e) {										
+										e.printStackTrace();
+									}
+                					Log.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);
                 				}
                 			}
                 			//Low Energy

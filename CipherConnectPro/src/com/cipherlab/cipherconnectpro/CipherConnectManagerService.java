@@ -109,6 +109,10 @@ public class CipherConnectManagerService extends Service
 			return bt_connect(device);
 		}
 		
+		public boolean connect(String deviceName, String deviceAddr)throws Exception {
+			return bt_connect(deviceName, deviceAddr);
+		}
+		
 		public void disConnect() {
 			if (mCipherConnectControl.isConnected())
 	        	mCipherConnectControl.disconnect();
@@ -396,6 +400,31 @@ public class CipherConnectManagerService extends Service
     		//Toast.makeText(getApplicationContext(), "bt_connect(deviceName="+deviceName+")", Toast.LENGTH_SHORT).show();
     		Log.d(TAG, "bt_connect(): deviceName= "+ device.getDeviceName());
     		mCipherConnectControl.connect(device);
+    		
+    		return true;
+    	}
+    	catch (Exception e) {
+    		Toast.makeText(getApplicationContext(), "Can't be set Connect.["+e.getMessage()+"]", Toast.LENGTH_SHORT).show();
+    		
+    		return false;
+    	}
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: bt_connect()
+     * @Description: Set bluetooth connect command.
+     *  
+     * @param: device MAC address. 
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    public boolean bt_connect(String deviceName, String deviceAddr) {
+    	try {
+    		
+    		Log.d(TAG, "bt_connect(): deviceName= " + deviceName);
+    		mCipherConnectControl.connect(deviceName, deviceAddr);
     		
     		return true;
     	}

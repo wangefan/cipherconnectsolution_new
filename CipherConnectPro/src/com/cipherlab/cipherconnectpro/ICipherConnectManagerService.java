@@ -31,6 +31,7 @@ public interface ICipherConnectManagerService {
     public ICipherConnBTDevice[] getBtDevices();
     public ICipherConnBTDevice GetConnDevice();
     public boolean connect(ICipherConnBTDevice device)throws Exception;
+    public boolean connect(String deviceName, String deviceAddr)throws Exception;
     public void disConnect();
     public void AddListener(ICipherConnectManagerListener l);
     public void RemoveListener(ICipherConnectManagerListener l);

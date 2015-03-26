@@ -59,6 +59,23 @@ public interface ICipherConnectControl {
     public void connect(ICipherConnBTDevice device)throws NullPointerException;	
     
     /**
+	 * Connect to the BT scanner device by MAC address.
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * try{<br>
+	 * 		_control.connect(deviceName, deviceAddr);<br>
+	 * }<br>
+	 * catch(NullPointerException e){<br>
+	 *      System.out.println(e);<br>
+	 * }<br>
+	 * </DD>
+	 * @param deviceName: BT name and have been identified with this OS.
+	 * @param deviceAddr: BT MAC address and have been identified with this OS. 
+	 * @throws NullPointerException : if device is null, CipherConnectControl throws a NullPointerException.
+	 */
+    public void connect(String deviceName, String deviceAddr)throws NullPointerException;	
+    
+    /**
      * Disconnect from the BT scanner device.
      * <DT><B>code:</B><DT>
      * <DD>

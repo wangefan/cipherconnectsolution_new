@@ -247,10 +247,14 @@ public class BuildConnMethodPreference extends Preference
 		mPersistValuses();
     }
     
-    public void getLastDev(String devName, String devAddr) 
+    public String getLastDevName() 
     {
-    	devName = mDeviceName;
-    	devAddr = mDeviceAddr;
+    	return mDeviceName;
+    }
+    
+    public String getLastDevAddr() 
+    {
+    	return mDeviceAddr;
     }
     
     @Override

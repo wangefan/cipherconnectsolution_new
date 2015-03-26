@@ -174,6 +174,8 @@ abstract public class CipherConnCtrlmplBase {
 	public abstract ICipherConnBTDevice[] getBtDevices();
 		
 	public abstract void connect(ICipherConnBTDevice device)throws NullPointerException;	
+	
+	public abstract void connect(String deviceName, String deviceAddr)throws NullPointerException;
 	    
 	public abstract void disconnect();
 		

@@ -164,8 +164,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 			return;
     	}
     	
-    	fireCipherBeginConnectControl(device);
-    	
     	synchronized(this){
         	if(this.mConnectThread==null){
         		this.mConnectThread = null;
@@ -173,6 +171,12 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         		this.mConnectThread.start();
         	}
     	}
+	}
+	
+	public void connect(String deviceName, String deviceAddr)throws NullPointerException
+    {
+		ICipherConnBTDevice device = new CipherConnBTDevice(deviceName, deviceAddr);
+		connect(device);
 	}
 
 	public void disconnect() {
@@ -317,24 +321,17 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         }
     }
 	
-	private BluetoothDevice getBtDevice(ICipherConnBTDevice device)throws NullPointerException{
-		if(device == null)
-			throw new NullPointerException();
-		
+	private BluetoothDevice getBtDevice(String deviceAddr)
+	{	
     	Set<BluetoothDevice> dericeList = getBtDeviceList();
     	if(dericeList==null || dericeList.size()==0){
     		return null;
     	}
     	
     	for (BluetoothDevice btDevice : dericeList) {
-    		if(device.getAddress().equals(btDevice.getAddress()))
+    		if(deviceAddr.equals(btDevice.getAddress()))
     			return btDevice;
 		}
-
-    	this.fireCipherConnectControlError(
-				null, 
-				CipherConnectControlResource.can_not_find_id,
-				CipherConnectControlResource.can_not_find + " " + device.getDeviceName());
     	
     	return null;
     }
@@ -618,61 +615,45 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	
 	private class ConnectedThread extends Thread {
 	    private BluetoothSocket mBluetoothSocket = null;
-	    private ICipherConnBTDevice mDevice = null;
 	    private InputStream mInputStream = null;
+	    private CipherConnBTDevice mDevice = null;
 	    private volatile boolean isContinue = true;  // Control terminate thread flag
 
 	    public void terminate() { 
 	        isContinue = false; 
 	    } 
 
-	    public ConnectedThread(ICipherConnBTDevice device){
-	    	mDevice = device;
+	    public ConnectedThread(ICipherConnBTDevice srcDevice){
+	    	mDevice = (CipherConnBTDevice) srcDevice;
 	    }
 	    
-	    public void run() {
-	    	fireCipherBeginConnectControl(mDevice);
+	    public void run() 
+	    {
+	    	
 	    	if(BluetoothAdapter.getDefaultAdapter()==null)
 	    	{
 	    		fireCipherConnectControlError(
 	    				mDevice,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth);
+	    		disconnect();
 	    		mDevice = null;
 	    		return;
 	    	}
 	    	
-	    	BluetoothDevice btDevice = null;
-			try {
-				btDevice = getBtDevice(mDevice);
-		    	if(btDevice==null){
-		    		fireCipherConnectControlError(
-		    				mDevice,
-		    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
-		    				CipherConnectControlResource.please_turn_on_Bluetooth);
-		    		mDevice = null;
-		    		return;
-		    	}
-			} 
-			catch (NullPointerException e) {
-				fireCipherConnectControlError(
-	    				mDevice,
-	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
-	    				CipherConnectControlResource.please_turn_on_Bluetooth);
-	    		mDevice = null;
-				throw e;
-			}
-	    	
-	    	fireConnecting(mDevice);
-	    	
-	    	if(BluetoothAdapter.getDefaultAdapter().isEnabled()==false){
+	    	BluetoothDevice btDevice = getBtDevice(mDevice.getAddress());
+	    	if(btDevice==null){
 	    		fireCipherConnectControlError(
 	    				mDevice,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
 	    				CipherConnectControlResource.please_turn_on_Bluetooth);
+	    		disconnect();
 	    		mDevice = null;
-				return;
-			}
+	    		return;
+	    	}
+	    	mDevice.getParamFromBTDevice(btDevice);	// update name and address from OS.
+	    	fireCipherBeginConnectControl(mDevice);
+	    	fireConnecting(mDevice);
 	    	
 			try {
 				this.mBluetoothSocket = btDevice.createRfcommSocketToServiceRecord(mUuid);
