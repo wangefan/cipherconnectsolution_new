@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
 import com.cipherlab.cipherconnectpro.R;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -164,6 +166,9 @@ public class LEDeviceScanActivity extends BTSettingActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         final ICipherConnBTDevice device = mLeDeviceListAdapter.getDevice(position);
         if (device == null) return;
+        Intent resultInt = new Intent();
+        resultInt.putExtra(CipherConnectSettingActivity.KEY_GET_LE_BT_DEVICE, device);
+        setResult(RESULT_OK, resultInt);
         onBackPressed();
     }
     

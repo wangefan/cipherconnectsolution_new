@@ -4,9 +4,13 @@ import java.util.ArrayList;
 
 import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,14 +19,14 @@ import android.widget.TextView;
 
 public class ClassicBTDeviceScanActivity extends BTSettingActivity 
 {
+	//constant
+	public static final int CLASSIC_BLUETOOTH_SETTINGS = 2;
 	//Data members
 	private ClassicDeviceListAdapter mClassicDeviceListAdapter = null;
 	
 	//Member functions
     private void mFillBTAdaperList()
     {
-    	mClassicDeviceListAdapter = new ClassicDeviceListAdapter();
-        setListAdapter(mClassicDeviceListAdapter);
     	if(mClassicDeviceListAdapter != null && mBluetoothAdapter != null)
     	{
         	if(mBluetoothAdapter.isEnabled())
@@ -109,13 +113,17 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
     @Override
 	protected void mDoThingsOnServiceConnected()
 	{
+    	mClassicDeviceListAdapter = new ClassicDeviceListAdapter();
+        setListAdapter(mClassicDeviceListAdapter);
 		mFillBTAdaperList();
 	}
 
 	@Override
 	protected void mDoThingsAtrEnableBTActy() 
 	{
-		 mFillBTAdaperList();
+    	mClassicDeviceListAdapter = new ClassicDeviceListAdapter();
+        setListAdapter(mClassicDeviceListAdapter);
+		mFillBTAdaperList();
 	}
     
 	@Override
@@ -129,6 +137,43 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
     }
 	
 	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.classic_menu, menu);
+        return true;
+    }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.menu_scan:
+	        {
+	        	Intent intentBluetooth = new Intent();
+	    		intentBluetooth.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+	    		startActivityForResult(intentBluetooth, CLASSIC_BLUETOOTH_SETTINGS); 
+	        }
+	            
+	        break;
+	        case android.R.id.home:
+	            onBackPressed();
+	            return true;
+	    }
+	    return true;
+	}
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        
+        switch (requestCode) {
+        case CLASSIC_BLUETOOTH_SETTINGS :
+        {
+        	mFillBTAdaperList();      
+        }
+        default:
+        	super.onActivityResult(requestCode, resultCode, data);
+        }        
+    }
+	 
+	@Override
     public void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState);
@@ -140,6 +185,7 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
 	@Override
  	protected void onDestroy() 
     {
+		mClassicDeviceListAdapter.clear();
 		mClassicDeviceListAdapter = null;
 		super.onDestroy();
     }

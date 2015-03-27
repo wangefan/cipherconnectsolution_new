@@ -203,7 +203,14 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 				}
                 				else
                 				{
-                					
+                					String devName = mBuildConn.getLastDevName(), 
+                 						   devAddr = mBuildConn.getLastDevAddr();	
+                 					try {
+ 										mCipherConnectService.connect(devName, devAddr);
+ 									} catch (Exception e) {										
+ 										e.printStackTrace();
+ 									}
+                 					Log.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
                 				}
                 			}
                 		}
@@ -569,7 +576,9 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         {
         	if(resultCode == Activity.RESULT_OK ) 
         	{
+        		registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter()); //ensure that can receive callback from connect
         		ICipherConnBTDevice device = (ICipherConnBTDevice) data.getSerializableExtra(KEY_GET_LE_BT_DEVICE);
+        		mConnectBT(device);
         		super.onActivityResult(requestCode, resultCode, data);        		
         	}
         }
