@@ -150,7 +150,7 @@ public class BuildConnMethodPreference extends Preference
 			return;
 		if(mIsSlaveConn)
 		{
-			if(mCipherConnectService.isConnected())
+			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
 	    	{
 				mbtnBuildConn.setEnabled(true);
 	    		mbtnBuildConn.setText(R.string.strDisconnect);
@@ -167,7 +167,7 @@ public class BuildConnMethodPreference extends Preference
 		}
 		else	//Master mode
 		{
-			if(mCipherConnectService.isConnected())
+			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
 	    	{
 				mbtnBuildConn.setEnabled(true);
 	    		mbtnBuildConn.setText(R.string.strDisconnect);

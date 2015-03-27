@@ -60,7 +60,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         public void onServiceConnected(ComponentName className, IBinder service) {
             mCipherConnectService = ((CipherConnectManagerService.LocalBinder) service).getService();                                    
             init_UI();         
-            mUpdateUI();
+            mUpdateUI(false);
             mSetConnService();
         }
 
@@ -344,16 +344,51 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * return: N/A 
      * <!----------------------------------------------------------------->
      * */
-    private void mUpdateUI() {
+    private void mUpdateUI(boolean bShowToast) {
         if(mBuildConn != null)
         	mBuildConn.updateButtons();
-        if(mCipherConnectService != null)
-        {
-            if(mCipherConnectService.isConnected())
-            	mBtnBTMode.setEnabled(false);
-            else
-            	mBtnBTMode.setEnabled(true);
-        }
+        
+        if(mCipherConnectService == null)
+    		return;
+        
+        ICipherConnectManagerService.CONN_STATE connState = mCipherConnectService.GetConnState();  	
+    	switch (connState) 
+    	{
+    		case  CONN_STATE_BEGINCONNECTING:
+    		{
+    			mShowProgressDlg(true);
+    		}
+    		break;
+    		case  CONN_STATE_DISCONNECT:
+    		{
+    			mShowProgressDlg(false);
+    			if(bShowToast)
+    				Toast.makeText(getApplicationContext(), "BT Disconnect", Toast.LENGTH_SHORT).show();
+    			break;
+    		}
+    		case  CONN_STATE_CONNECTERR:
+    		{
+    			if(mBuildConn != null)
+    				mBuildConn.setNoneDev();
+    			mShowProgressDlg(false);
+    			if(bShowToast)
+    				Toast.makeText(getApplicationContext(), "BT Connect error", Toast.LENGTH_SHORT).show();
+    		}
+    		break;
+    		case  CONN_STATE_CONNECTED:
+    		{
+    			mBtnBTMode.setEnabled(false);
+    			ICipherConnBTDevice device = mCipherConnectService.GetConnDevice();
+    			if(mBuildConn != null && device != null)
+    				mBuildConn.setLastDev(device.getDeviceName(), device.getAddress());
+    			mShowProgressDlg(false);
+    			if(bShowToast)
+    				Toast.makeText(getApplicationContext(), "BT Connected", Toast.LENGTH_SHORT).show();
+    		}
+    		default:
+    			mBtnBTMode.setEnabled(true);
+    		break;
+    	}  
     }
 
     /*
@@ -547,7 +582,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     	Log.d(TAG, "onResume()");
         super.onResume();
         registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter());
-        mUpdateUI();
+        mUpdateUI(false);
     }
     
     @Override
@@ -620,10 +655,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * @Name: ServiceReceiver()
      * @Description: Receiver the Bluetooth Turn on/off event.  
      *   Handles various events fired by the CipherConnectManagerService.
-     *   ACTION_BT_BEGIN_CONNECTING: begin connecting to BT device.
-     *   ACTION_BT_CONNECTING: connecting to BT device.
-     *   ACTION_BT_CONNECTED: connected to BT device.
-     *   ACTION_BT_DISCONNECTED: disconnect BT device.
+     *   ACTION_CONN_STATE_CHANGED.
      * @param: N/A
      * @param: N/A
      * return: N/A 
@@ -647,47 +679,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             }
             //Connection state change
             else if (CipherConnectManagerService.ACTION_CONN_STATE_CHANGED.equals(action)) 
-            {
-            	ICipherConnectManagerService.CONN_STATE connstate = mCipherConnectService.GetConnState();  	
-            	switch (connstate) 
-            	{
-	            	case  CONN_STATE_BEGINCONNECTING:
-	            	case  CONN_STATE_CONNECTING:
-	        		{
-	        			mShowProgressDlg(true);
-	        		}
-	        		break;	
-            		case  CONN_STATE_CONNECTERR:
-            		{
-            			if(mBuildConn != null)
-            				mBuildConn.setNoneDev();
-            			mShowProgressDlg(false);
-            			Toast.makeText(getApplicationContext(), "BT Connect error", Toast.LENGTH_SHORT).show();
-            		}
-            		break;
-            		case CONN_STATE_DISCONNECT:
-            		{
-            			mShowProgressDlg(false);
-                    	Toast.makeText(getApplicationContext(), "BT Disconnected", Toast.LENGTH_SHORT).show();
-            		}
-            		break;
-            		case  CONN_STATE_CONNECTED:
-            		{
-            			ICipherConnBTDevice device = mCipherConnectService.GetConnDevice();
-            			if(mBuildConn != null && device != null)
-            			{
-            				mBuildConn.setLastDev(device.getDeviceName(), device.getAddress());
-            			}
-            			mShowProgressDlg(false);
-                    	Toast.makeText(getApplicationContext(), "BT Connected", Toast.LENGTH_SHORT).show();
-            		}
-            		default:
-            		{	
-            			
-            		}
-            		break;
-            	}  	
-            	mUpdateUI();
+            {	
+            	mUpdateUI(true);
             }
             // server status change
             else if(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED.equals(action))
