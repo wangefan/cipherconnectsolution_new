@@ -183,8 +183,11 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
 	@Override
  	protected void onDestroy() 
     {
-		mClassicDeviceListAdapter.clear();
-		mClassicDeviceListAdapter = null;
+		if(mClassicDeviceListAdapter != null)
+		{
+			mClassicDeviceListAdapter.clear();
+			mClassicDeviceListAdapter = null;
+		}
 		super.onDestroy();
     }
 
