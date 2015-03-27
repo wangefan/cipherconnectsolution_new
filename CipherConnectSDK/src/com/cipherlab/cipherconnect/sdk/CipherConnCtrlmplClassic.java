@@ -244,13 +244,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 			return null;
 		}
 		Set<BluetoothDevice> dericeList = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
-		if(dericeList==null || dericeList.size()<=0){
-			this.fireCipherConnectControlError(
-					null, 
-					CipherConnectControlResource.can_not_find_any_bluetooth_device_id,
-					CipherConnectControlResource.can_not_find_any_bluetooth_device);
-			
-		}
 		return dericeList;
 	}
 	
