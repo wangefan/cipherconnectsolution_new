@@ -29,6 +29,7 @@ public class BuildConnMethodPreference extends Preference
 	private ToggleButton mbtnConnMathod = null;
 	private OnPreferenceClickListener mOnPreferenceClickListener;
 	private Button.OnClickListener mOnPreferenceClickScanListener ;
+	private TextView mtvLastDevNameTitle = null;
 	private TextView mtvLastDevName = null;
 	
 	//member functions
@@ -103,10 +104,11 @@ public class BuildConnMethodPreference extends Preference
 				mbtnScanDev.setOnClickListener(mClickScan);
 			}			
 		}
+		if(mtvLastDevNameTitle == null)
+			mtvLastDevNameTitle = (TextView) mLinearView.findViewById(R.id.tvTitle);
 		if(mtvLastDevName == null)
-		{
 			mtvLastDevName = (TextView) mLinearView.findViewById(R.id.tvwLastDevice);
-		}
+		
 		
 		mStrDefaultMode = getContext().getResources().getString(R.string.Str_defaultMode);
 		mStrDefaultDevName = getContext().getResources().getString(R.string.Str_defaultDevName);
@@ -150,23 +152,27 @@ public class BuildConnMethodPreference extends Preference
 			return;
 		if(mIsSlaveConn)
 		{
+			mbtnScanDev.setVisibility(View.GONE);
+			mtvLastDevNameTitle.setVisibility(View.GONE);
+			mtvLastDevName.setVisibility(View.GONE);
 			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
 	    	{
 				mbtnBuildConn.setEnabled(true);
 	    		mbtnBuildConn.setText(R.string.strDisconnect);
 	    		mbtnConnMathod.setEnabled(false);
-				mbtnScanDev.setEnabled(false);
 	    	}
 	    	else
 	    	{
 	    		mbtnBuildConn.setEnabled(true);
-	    		mbtnBuildConn.setText(R.string.setting_buildconnect);
-	    		mbtnScanDev.setEnabled(false);
+	    		mbtnBuildConn.setText(R.string.setting_waitconnect);
 	    		mbtnConnMathod.setEnabled(true);	    		
 	    	}
 		}
 		else	//Master mode
 		{
+			mbtnScanDev.setVisibility(View.VISIBLE);
+			mtvLastDevNameTitle.setVisibility(View.VISIBLE);
+			mtvLastDevName.setVisibility(View.VISIBLE);
 			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
 	    	{
 				mbtnBuildConn.setEnabled(true);

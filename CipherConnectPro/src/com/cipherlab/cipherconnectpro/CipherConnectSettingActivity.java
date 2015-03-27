@@ -355,6 +355,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     	switch (connState) 
     	{
     		case  CONN_STATE_BEGINCONNECTING:
+    		case  CONN_STATE_CONNECTING:
     		{
     			mShowProgressDlg(true);
     		}
