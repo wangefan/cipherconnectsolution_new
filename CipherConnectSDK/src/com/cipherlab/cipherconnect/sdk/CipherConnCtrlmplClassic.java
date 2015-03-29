@@ -45,7 +45,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		mResetListenThread();
 	}
 	
-	protected void fireCipherConnectControlError(ICipherConnBTDevice device, CipherConnectErrException e){
+	protected void fireCipherConnectControlError(ICipherConnBTDevice device, Exception e){
 		if(mListenerList == null)
 			return;
 		for (ICipherConnectControlListener l : this.mListenerList) {
@@ -101,7 +101,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 			return false;
 		if(mIsConnected)
 		{
-			mServrState= STATE_ONLINE;
+			mServrState = STATE_ONLINE;
 			return true;
 		}
 		
@@ -486,7 +486,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         	if(mServrState != STATE_ONLINE)
         		return;
         	
-        	mIsConnected = false;
+        	SetConnected(false);
         	
             Log.d(mTAG, "Socket Type: " + mSocketType + "BEGIN ListenAndConnThread" + this);
             setName("ListenAndConnThread" + mSocketType);
@@ -520,8 +520,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 mProcessBarcode(buffer, device);
                 buffer = null;
                 
+                SetConnected(true);
                 fireConnected(device);
-                mIsConnected = true;
                 
                 buffer = new byte[1024];
                 // Keep listening to the InputStream while connected
@@ -563,11 +563,14 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 Log.d(mTAG, "Socket Type: " + mSocketType + " CipherConnectErrException", e);
                 fireCipherConnectControlError(device, e);
             } 
+            catch (Exception e) {
+                Log.d(mTAG, "Socket Type: " + mSocketType + " Exception occurs");
+                fireCipherConnectControlError(device, e);
+            } 
             finally {
             	Log.d(mTAG, "Close Listen thread");
             	mCloseInStream();
             	mCloseSocket();
-            	mIsConnected = false;
             	if(mServrState == STATE_ONLINE)
             	{
             		mMainThrdHandler.post(
@@ -581,6 +584,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             			}
             		);
             	}
+            	SetConnected(false);
             }       
          
             Log.d(mTAG, "END ListenAndConnThread, socket Type: " + mSocketType);

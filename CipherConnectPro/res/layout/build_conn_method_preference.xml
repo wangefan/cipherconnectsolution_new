@@ -30,10 +30,10 @@
 	    android:layout_height="wrap_content" >
 
 		<Button
-		    android:id="@+id/btnScanDevice"
+		    android:id="@+id/btnSearchDevice"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:text="@string/menu_scan" />
+		    android:text="@string/str_search" />
 
 		<TextView
 		    android:id="@+id/tvTitle"

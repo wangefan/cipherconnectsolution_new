@@ -25,7 +25,7 @@ public class BuildConnMethodPreference extends Preference
 	private String  mDeviceName = "";
 	private String  mDeviceAddr = "";
 	private Button mbtnBuildConn = null;
-	private Button mbtnScanDev = null;
+	private Button mbtnSearchDev = null;
 	private ToggleButton mbtnConnMathod = null;
 	private OnPreferenceClickListener mOnPreferenceClickListener;
 	private Button.OnClickListener mOnPreferenceClickScanListener ;
@@ -96,12 +96,12 @@ public class BuildConnMethodPreference extends Preference
 			}			
 		}
 		
-		if(mbtnScanDev == null)
+		if(mbtnSearchDev == null)
 		{
-			mbtnScanDev = (Button) mLinearView.findViewById(R.id.btnScanDevice);
-			if(mbtnScanDev != null)
+			mbtnSearchDev = (Button) mLinearView.findViewById(R.id.btnSearchDevice);
+			if(mbtnSearchDev != null)
 			{
-				mbtnScanDev.setOnClickListener(mClickScan);
+				mbtnSearchDev.setOnClickListener(mClickScan);
 			}			
 		}
 		if(mtvLastDevNameTitle == null)
@@ -152,7 +152,7 @@ public class BuildConnMethodPreference extends Preference
 			return;
 		if(mIsSlaveConn)
 		{
-			mbtnScanDev.setVisibility(View.GONE);
+			mbtnSearchDev.setVisibility(View.GONE);
 			mtvLastDevNameTitle.setVisibility(View.GONE);
 			mtvLastDevName.setVisibility(View.GONE);
 			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
@@ -170,7 +170,7 @@ public class BuildConnMethodPreference extends Preference
 		}
 		else	//Master mode
 		{
-			mbtnScanDev.setVisibility(View.VISIBLE);
+			mbtnSearchDev.setVisibility(View.VISIBLE);
 			mtvLastDevNameTitle.setVisibility(View.VISIBLE);
 			mtvLastDevName.setVisibility(View.VISIBLE);
 			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
@@ -178,7 +178,7 @@ public class BuildConnMethodPreference extends Preference
 				mbtnBuildConn.setEnabled(true);
 	    		mbtnBuildConn.setText(R.string.strDisconnect);
 	    		mbtnConnMathod.setEnabled(false);
-	    		mbtnScanDev.setEnabled(false);
+	    		mbtnSearchDev.setEnabled(false);
 	    	}
 			else
 			{
@@ -192,7 +192,7 @@ public class BuildConnMethodPreference extends Preference
 				mbtnBuildConn.setText(R.string.setting_buildconnect);
 				
 				mbtnConnMathod.setEnabled(true);
-				mbtnScanDev.setEnabled(true);
+				mbtnSearchDev.setEnabled(true);
 			}
 		}
 	}

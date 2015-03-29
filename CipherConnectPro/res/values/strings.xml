@@ -118,6 +118,7 @@
 	<string name="Str_defaultDevAddr">addrNone</string>
 	<string name="Str_BT_Classic">Classic</string>
 	<string name="Str_BT_LE">Low Energy</string>
+	<string name="str_search">Search</string>
 	<string name="menu_scan">Scan</string>
 	<string name="menu_stop">Stop</string>
 	<string name="unknown_device">unknown device</string>
