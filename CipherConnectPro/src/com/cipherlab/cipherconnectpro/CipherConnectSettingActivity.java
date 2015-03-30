@@ -23,6 +23,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 
@@ -43,25 +45,23 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	private static final int REQUEST_GET_CLE_BT = 2;
 		
 	private BluetoothAdapter mBluetoothAdapter;
+	private ICipherConnectManagerService mCipherConnectService;
 	private ServiceReceiver mServiceActionReceiver = new ServiceReceiver();
 	private ProgressDialog mPDialog = null;
+	
+	//controls
 	private BuildConnMethodPreference mBuildConn = null;
-	private ListPreference   mBtnBTMode = null;  // visual,2012/4/18,Open BT-Setting for 3.x, Yifan,2015/01/27,support Low energy mode.
-	private ListPreference lstSendBarcodeInterval = null;  // william, 2012/09/13
-	private ListPreference lstLanguage = null;             // william, 2012/09/18
-	private CheckBoxPreference ckbMinimum = null;	//Minimize keyboard 
-    
-	// miller,2012/8/27 for suspend screen backlight
+	private ListPreference   mBtnBTMode = null; 
 	private CheckBoxPreference ckbScreenBacklight = null;
-
-    private ICipherConnectManagerService mCipherConnectService;
+	private CheckBoxPreference ckbMinimum = null;	//Minimize keyboard 
+	private ListPreference lstSendBarcodeInterval = null;  
+	private ListPreference lstLanguage = null;             
     
     private ServiceConnection mSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mCipherConnectService = ((CipherConnectManagerService.LocalBinder) service).getService();                                    
             init_UI();         
             mUpdateUI(false);
-            mSetConnService();
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -105,6 +105,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	Log.d(TAG, "onCreate begin");
         super.onCreate(savedInstanceState);
         
         addPreferencesFromResource(R.layout.cipherconnect_setting_activity);     
@@ -186,6 +187,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 				{
                 					String devName = mBuildConn.getLastDevName(), 
                 						   devAddr = mBuildConn.getLastDevAddr();	
+                					boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
+                					mCipherConnectService.setAutoConnect(bNeedAutoReConn);
                 					try {
 										mCipherConnectService.connect(devName, devAddr);
 									} catch (Exception e) {										
@@ -205,6 +208,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 				{
                 					String devName = mBuildConn.getLastDevName(), 
                  						   devAddr = mBuildConn.getLastDevAddr();	
+                					boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
+                					mCipherConnectService.setAutoConnect(bNeedAutoReConn);
                  					try {
  										mCipherConnectService.connect(devName, devAddr);
  									} catch (Exception e) {										
@@ -235,6 +240,16 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         		        startActivityForResult(getBtDeviceIntent, REQUEST_GET_CLE_BT);
         			}
         		}
+        	});
+        	
+        	mBuildConn.setPreferenceAutoChangeListener(new CheckBox.OnCheckedChangeListener()
+        	{
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
+				{
+					if(mCipherConnectService != null)
+						mCipherConnectService.setAutoConnect(isChecked);
+				}
         	});
         	
         	mBuildConn.setService(mCipherConnectService);
@@ -405,28 +420,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     private void enableUI() {
         if (KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name) == true) {
             ckbMinimum.setEnabled(true);
-            boolean AutoConnectFlag = CipherConnectSettingInfo.isAutoConnect(this);
-            
         }
-    }
-
-    private void mSetConnService()
-    {
-    	if(mBuildConn != null && mBuildConn.IsSlaveConn())
-    	{
-            if(mCipherConnectService != null)
-            	mCipherConnectService.StopListenConn();		
-    	}
-    	
-    	String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
-    	if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_Classic)))
-		{
-    		mCipherConnectService.SetBLEMode(false);
-		}
-    	else if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_LE)))
-    	{
-    		mCipherConnectService.SetBLEMode(true);
-    	}
     }
     
     /*
@@ -559,7 +553,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             		CipherConnectSettingActivity.this.finish();
 
             		if (mCipherConnectService != null) {
-            			mCipherConnectService.AutoConnect(false, null);
                 		mCipherConnectService.stopSelf();
                 	}
 
@@ -603,6 +596,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         	{
         		registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter()); //ensure that can receive callback from connect
         		ICipherConnBTDevice device = (ICipherConnBTDevice) data.getSerializableExtra(KEY_GET_CLSC_BT_DEVICE);
+        		boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
+				mCipherConnectService.setAutoConnect(bNeedAutoReConn);
         		mConnectBT(device);
         		super.onActivityResult(requestCode, resultCode, data);        		
         	}
@@ -614,6 +609,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         	{
         		registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter()); //ensure that can receive callback from connect
         		ICipherConnBTDevice device = (ICipherConnBTDevice) data.getSerializableExtra(KEY_GET_LE_BT_DEVICE);
+        		boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
+				mCipherConnectService.setAutoConnect(bNeedAutoReConn);
         		mConnectBT(device);
         		super.onActivityResult(requestCode, resultCode, data);        		
         	}

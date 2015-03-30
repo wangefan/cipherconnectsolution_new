@@ -35,7 +35,7 @@ public interface ICipherConnectManagerService {
     public void disConnect();
     public void AddListener(ICipherConnectManagerListener l);
     public void RemoveListener(ICipherConnectManagerListener l);
-    public void AutoConnect(boolean enable, ICipherConnBTDevice device);
+    public void setAutoConnect(boolean enable);
     public boolean isAuotConnect();
     public void stopSelf();
     public boolean IsBLEModeSupported();

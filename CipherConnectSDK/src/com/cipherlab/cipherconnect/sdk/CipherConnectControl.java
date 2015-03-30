@@ -87,9 +87,9 @@ public class CipherConnectControl implements ICipherConnectControl {
 		mListenerList.add(listener);
 	}
 	
-	public void setAutoReconnect(boolean enable, ICipherConnBTDevice device)throws NullPointerException
+	public void setAutoReconnect(boolean enable)throws NullPointerException
 	{
-		mCipherConnCtrlImpl.setAutoReconnect(enable, device);
+		mCipherConnCtrlImpl.setAutoReconnect(enable);
 	}
 	
 	public boolean isAutoReconnect()

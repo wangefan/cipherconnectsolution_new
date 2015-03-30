@@ -112,10 +112,12 @@
 	<string name="Classic_scan_title">Bluetooth Device Scan</string>
 	<string name="Str_connect_to">Scan Devices and connect</string>
 	<string name="Str_wait_connect">Wait devices to connect</string>
-	<string name="Str_defaultBMPrefFormat">%1$s;%1$s|%1$s</string>
+	<!--default Build conn values: slave;none|addrNone@false -->
+	<string name="Str_BMPrefFormat">%1$s;%2$s|%3$s@%4$b</string>
 	<string name="Str_defaultMode">slave</string>
 	<string name="Str_defaultDevName">none</string>
 	<string name="Str_defaultDevAddr">addrNone</string>
+	<string name="Str_defaultAutoReConn">false</string>
 	<string name="Str_BT_Classic">Classic</string>
 	<string name="Str_BT_LE">Low Energy</string>
 	<string name="str_search">Search</string>

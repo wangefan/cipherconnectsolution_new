@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -17,11 +19,12 @@ public class BuildConnMethodPreference extends Preference
 	final private String SLAVE = "slave";
 	final private String MASTER = "master";
 	private ICipherConnectManagerService mCipherConnectService = null;
-	private String mStrDefaultMode = "";
+	private String mStrDefaultValues = "";
 	private String mStrDefaultDevName = "";
 	private String mStrDefaultDevAddr = "";
 	private LinearLayout mLinearView = null;
 	private boolean mIsSlaveConn = true;
+	private boolean mIsAutoReConn = false;
 	private String  mDeviceName = "";
 	private String  mDeviceAddr = "";
 	private Button mbtnBuildConn = null;
@@ -29,6 +32,8 @@ public class BuildConnMethodPreference extends Preference
 	private ToggleButton mbtnConnMathod = null;
 	private OnPreferenceClickListener mOnPreferenceClickListener;
 	private Button.OnClickListener mOnPreferenceClickScanListener ;
+	private CheckBox.OnCheckedChangeListener mOnAutoCheckedChangeListener;
+	private CheckBox mckAutoReConn = null;
 	private TextView mtvLastDevNameTitle = null;
 	private TextView mtvLastDevName = null;
 	
@@ -67,6 +72,19 @@ public class BuildConnMethodPreference extends Preference
     		}
 		}
     };
+    
+    private CheckBox.OnCheckedChangeListener mOnCheckedChangeListener = new CheckBox.OnCheckedChangeListener()
+    {
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,	boolean isChecked) 
+		{
+			mIsAutoReConn = isChecked;
+			mPersistValuses();
+			if (mOnAutoCheckedChangeListener != null)
+				mOnAutoCheckedChangeListener.onCheckedChanged(buttonView, isChecked);
+		}
+    	
+    };
 	
 	private void mInitCtrls()
 	{
@@ -104,46 +122,39 @@ public class BuildConnMethodPreference extends Preference
 				mbtnSearchDev.setOnClickListener(mClickScan);
 			}			
 		}
+		if(mckAutoReConn == null)
+		{
+			mckAutoReConn = (CheckBox) mLinearView.findViewById(R.id.ckAutoReConn);
+			mckAutoReConn.setOnCheckedChangeListener(mOnCheckedChangeListener);
+		}
 		if(mtvLastDevNameTitle == null)
 			mtvLastDevNameTitle = (TextView) mLinearView.findViewById(R.id.tvTitle);
 		if(mtvLastDevName == null)
 			mtvLastDevName = (TextView) mLinearView.findViewById(R.id.tvwLastDevice);
 		
 		
-		mStrDefaultMode = getContext().getResources().getString(R.string.Str_defaultMode);
+		String strDefaultMode = getContext().getResources().getString(R.string.Str_defaultMode);
 		mStrDefaultDevName = getContext().getResources().getString(R.string.Str_defaultDevName);
 		mStrDefaultDevAddr = getContext().getResources().getString(R.string.Str_defaultDevAddr);
+		boolean bDefaultAutoReConn = Boolean.parseBoolean(getContext().getResources().getString(R.string.Str_defaultAutoReConn));
+		String strFormat = getContext().getResources().getString(R.string.Str_BMPrefFormat);
+		mStrDefaultValues = String.format(strFormat, strDefaultMode, mStrDefaultDevName, mStrDefaultDevAddr, bDefaultAutoReConn);
+		
 		mDeviceName = mStrDefaultDevName;
 		mDeviceAddr = mStrDefaultDevAddr;
+		mIsAutoReConn = bDefaultAutoReConn;
 	}
 	
 	//combine values to single string to save.
-	private String mGeneratePersisString(boolean IsSlaveMode, String devName, String devAddr)
+	private String mGeneratePersisString(boolean IsSlaveMode, String devName, String devAddr, boolean bAutoReConn)
 	{
-		String strValuse = (IsSlaveMode ? SLAVE : MASTER) + ";" + devName + "|" + devAddr;
+		String strValuse = (IsSlaveMode ? SLAVE : MASTER) + ";" + devName + "|" + devAddr + "@" + ((Boolean)mIsAutoReConn).toString();
 		return strValuse;
-	}
-	
-	private void mGetPersistValues()
-	{
-		String strDefFormat = getContext().getResources().getString(R.string.Str_defaultBMPrefFormat);
-		String formatVal = getPersistedString(strDefFormat);
-		String strVal = String.format(formatVal, mStrDefaultMode, mStrDefaultDevName, mStrDefaultDevAddr);
-		int nPosBreak = strVal.indexOf(";", 0);
-		String strMode = strVal.substring(0, nPosBreak);
-		String strDevName = strVal.substring(nPosBreak + 1, strVal.indexOf("|", 0));
-		nPosBreak = strVal.indexOf("|", 0);
-		String strAddr = strVal.substring(nPosBreak + 1);
-		mIsSlaveConn = strMode.equals(SLAVE) ? true : false;
-		mDeviceName = strDevName;
-		mDeviceAddr = strAddr;
-		if(mtvLastDevName != null)
-			mtvLastDevName.setText(mDeviceName);
 	}
 	
 	private void mPersistValuses()
 	{
-		persistString(mGeneratePersisString(mIsSlaveConn, mDeviceName, mDeviceAddr));
+		persistString(mGeneratePersisString(mIsSlaveConn, mDeviceName, mDeviceAddr, mIsAutoReConn));
 	}
 	
 	public void updateButtons()
@@ -155,6 +166,7 @@ public class BuildConnMethodPreference extends Preference
 			mbtnSearchDev.setVisibility(View.GONE);
 			mtvLastDevNameTitle.setVisibility(View.GONE);
 			mtvLastDevName.setVisibility(View.GONE);
+			mckAutoReConn.setVisibility(View.GONE);
 			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
 	    	{
 				mbtnBuildConn.setEnabled(true);
@@ -173,6 +185,7 @@ public class BuildConnMethodPreference extends Preference
 			mbtnSearchDev.setVisibility(View.VISIBLE);
 			mtvLastDevNameTitle.setVisibility(View.VISIBLE);
 			mtvLastDevName.setVisibility(View.VISIBLE);
+			mckAutoReConn.setVisibility(View.VISIBLE);
 			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
 	    	{
 				mbtnBuildConn.setEnabled(true);
@@ -183,9 +196,8 @@ public class BuildConnMethodPreference extends Preference
 			else
 			{
 				//disable build connection button if no selection device. 
-				String strDefValue = mGeneratePersisString(false, mStrDefaultDevName, mStrDefaultDevAddr);
-				String strCurValue = mGeneratePersisString(mIsSlaveConn, mDeviceName, mDeviceAddr);
-				if(strCurValue.equals(strDefValue))
+				if(mDeviceName.equals(mStrDefaultDevName) && 
+				   mDeviceAddr.equals(mStrDefaultDevAddr)	)
 					mbtnBuildConn.setEnabled(false);
 				else
 					mbtnBuildConn.setEnabled(true);
@@ -232,10 +244,16 @@ public class BuildConnMethodPreference extends Preference
     	mOnPreferenceClickScanListener = onPreferenceClickScanListener;
     }
     
+    public void setPreferenceAutoChangeListener(CheckBox.OnCheckedChangeListener listener)
+    {
+    	mOnAutoCheckedChangeListener = listener;
+    }
+    
     public void setService(ICipherConnectManagerService cipherConnectService)
     {
     	mCipherConnectService = cipherConnectService;
     }
+
     
     public void setNoneDev()
     {
@@ -263,18 +281,35 @@ public class BuildConnMethodPreference extends Preference
     	return mDeviceAddr;
     }
     
+    public boolean getAutoReConn() 
+    {
+    	return mIsAutoReConn;
+    }
+    
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         if (restorePersistedValue) {
             // Restore existing state
-        	mGetPersistValues();
+        	String strVals = getPersistedString(mStrDefaultValues);
+    		
+    		int nPosBreak = strVals.indexOf(";", 0);
+    		String strMode = strVals.substring(0, nPosBreak);
+    		String strDevName = strVals.substring(nPosBreak + 1, strVals.indexOf("|", 0));
+    		nPosBreak = strVals.indexOf("|", 0);
+    		String strAddr = strVals.substring(nPosBreak + 1, strVals.indexOf("@", 0));
+    		nPosBreak = strVals.indexOf("@", 0);
+    		String strAutoReConn = strVals.substring(nPosBreak + 1);
+    		mIsSlaveConn = strMode.equals(SLAVE) ? true : false;
+    		mDeviceName = strDevName;
+    		mDeviceAddr = strAddr;
+    		mIsAutoReConn = Boolean.parseBoolean(strAutoReConn);
+    		if(mtvLastDevName != null)
+    			mtvLastDevName.setText(mDeviceName);
+    		if(mckAutoReConn != null)
+    			mckAutoReConn.setChecked(mIsAutoReConn);
         } else {
             // Set default state from the XML attribute
-        	String strDefaultVal = (String) defaultValue;
-        	if(strDefaultVal != null)
-        	{
-        		persistString(strDefaultVal);
-        	}
+        	persistString(mStrDefaultValues);
         }
     }
 

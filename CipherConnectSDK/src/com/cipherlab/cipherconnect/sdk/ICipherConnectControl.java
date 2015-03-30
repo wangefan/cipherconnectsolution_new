@@ -122,14 +122,14 @@ public interface ICipherConnectControl {
 	 * <DD>
 	 * //Set auto Reconnect.<br>
 	 * try{<br>
-	 * 		_control.setAuotReconnect(true, device);<br>
+	 * 		_control.setAuotReconnect(true);<br>
 	 * }<br>
 	 * catch(NullPointerException e){<br>
 	 * 		System.out.println(e);<br>
 	 * }<br>
 	 * //Set autoReconnect stop. <br>
 	 * try{<br>
-	 * 		_control.setAuotReconnect(false,null);<br>
+	 * 		_control.setAuotReconnect(false);<br>
 	 * }<br>
 	 * catch(NullPointerException e){<br>
 	 * 		System.out.println(e);<br>
@@ -139,7 +139,7 @@ public interface ICipherConnectControl {
 	 * @param device BT scanner device and have been identified with this OS. 
 	 * @throws NullPointerException If device is null, CipherConnectControl throws a NullPointerException. 
 	 */
-	public void setAutoReconnect(boolean enable, ICipherConnBTDevice device)throws NullPointerException;
+	public void setAutoReconnect(boolean enable)throws NullPointerException;
 	
 	/**
 	 * Get the status of AutoReconnect.

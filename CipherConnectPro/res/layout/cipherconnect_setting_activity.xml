@@ -3,7 +3,7 @@
 	<PreferenceCategory android:title="@string/ime_connection" >
 	    <com.cipherlab.cipherconnectpro.BuildConnMethodPreference
 	        android:key="btnBT_buildConn"
-	        android:defaultValue="@string/Str_defaultBMPrefFormat"/>
+	        android:defaultValue="@string/Str_BMPrefFormat"/>
 	   	
 	    <ListPreference
 	    	android:key="btnBT_Mode"
@@ -15,11 +15,6 @@
 	</PreferenceCategory>
 	
     <PreferenceCategory android:title="@string/ime_setting_name" >
-         
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="ckbAutoConnect"
-            android:title="@string/setting_autoconnect" />
 
     	<CheckBoxPreference
 	    	android:key="ckbSuspend_Enable"

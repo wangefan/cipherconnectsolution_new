@@ -38,6 +38,7 @@ public class CipherConnectManagerService extends Service
     
     @Override
     public void onCreate() {
+    	Log.d(TAG, "onCreate(): begin");
     	mBinder = new LocalBinder();
 
         CipherConnectControl_init();
@@ -47,9 +48,8 @@ public class CipherConnectManagerService extends Service
 
     @Override
     public void onDestroy() {
+    	Log.d(TAG, "onDestroy(): begin");
         super.onDestroy();
-
-        bt_setAutoConnect(false, null);  // Stop auto connect
         
         if (mCipherConnectControl.isConnected())
         	mCipherConnectControl.disconnect();
@@ -134,8 +134,8 @@ public class CipherConnectManagerService extends Service
             bt_RemoveListener(l);
         }
 
-        public void AutoConnect(boolean enable, ICipherConnBTDevice device) {
-			bt_setAutoConnect(enable, device);
+        public void setAutoConnect(boolean enable) {
+			bt_setAutoConnect(enable);
 		}
 		
 		public boolean isAuotConnect() {
@@ -202,7 +202,7 @@ public class CipherConnectManagerService extends Service
     {
     	CipherConnectWakeLock.initial(this);
     	mCipherConnectControl = new CipherConnectControl(this);
-    	mCipherConnectControl.addCipherConnectControlListener(new ICipherConnectControlListener() 
+		mCipherConnectControl.addCipherConnectControlListener(new ICipherConnectControlListener() 
     	{
     		public void onListenServerOnline() {
     			CipherConnectControl_onListenServerOnline();
@@ -332,7 +332,6 @@ public class CipherConnectManagerService extends Service
      * <!----------------------------------------------------------------->
      * */
     private void bt_stopSelf() {
-        this.bt_setAutoConnect(false, null);
 
 		if (mCipherConnectControl.isConnected())
 				mCipherConnectControl.disconnect();
@@ -441,14 +440,13 @@ public class CipherConnectManagerService extends Service
      * @Description: Set auto connect.
      *  
      * @param: boolean enable
-     * @param: device
      * return: N/A 
      * <!----------------------------------------------------------------->
      * */
-    public synchronized void bt_setAutoConnect(boolean enable, ICipherConnBTDevice device) {
+    public synchronized void bt_setAutoConnect(boolean enable) {
     	Log.d(this.getResources().getString(R.string.ime_name), "The AutoConnectis: "+ enable);
     	
-    	mCipherConnectControl.setAutoReconnect(enable, device);
+    	mCipherConnectControl.setAutoReconnect(enable);
     }
     
     private boolean bt_StartListenConn()

@@ -30,36 +30,11 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	private BluetoothGattCharacteristic mBTCharct = null;
 	private ArrayList<ICipherConnBTDevice> mbtDericeList = null;
 	private ICipherConnBTDevice mDestBTLEDevice = null;
-	private ICipherConnBTDevice mAutoConnDevice = null;
 	private ConnStatus mConnStatus = ConnStatus.CONN_STATE_IDLE;
-	private boolean mBAuoReconnect = false;
-	private Handler mHandlerToRunOnThread = new Handler();
+	
 	private Handler mHandlerConnTimeout = new Handler();
-	private Handler mHandlerCheckConn = new Handler();
 	private synchronized void mSetConnectedStatus(ConnStatus connStatus) {
 		mConnStatus = connStatus;
-	}
-	
-	// @param: boolean bSetTimer
-	// true: set timer with 10secs and connect immediately, 
-	// false: remove timer and all pending runnable.
-	private void mSetCheckConnTimer(boolean bSetTimer) {
-		if(bSetTimer) {
-			final int CHECK_TIME_STAMP = 8000;
-			Runnable checkConn = new Runnable() {
-				@Override
-				public void run(){
-					
-					connect(mAutoConnDevice);
-					mHandlerCheckConn.postDelayed(this, CHECK_TIME_STAMP);
-				}
-			};
-			
-			mHandlerCheckConn.postDelayed(checkConn, CHECK_TIME_STAMP);
-		}
-		else {
-			mHandlerCheckConn.removeCallbacksAndMessages(null);
-		}
 	}
 	
 	private synchronized boolean mIsConnected() {
@@ -72,7 +47,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	}
 	
 	private void mDisconnectFromWorkerThread() {
-		mHandlerToRunOnThread.post(new Runnable(){
+		mMainThrdHandler.post(new Runnable(){
 		    @Override
 		    public void run() {
 		    	mDisconnect();
@@ -98,7 +73,6 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		super(context);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mbtDericeList = new ArrayList<ICipherConnBTDevice>();
-        mBAuoReconnect = false;
 	}
 	
 	//================ Server functions begin=============
@@ -288,9 +262,9 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	public void connect(ICipherConnBTDevice device) throws NullPointerException {
 		if(mIsConnected() || device == null || device.getDeviceName() == null)
 			return;
+		mSetConnectedStatus(ConnStatus.CONN_STATE_CONNECTING);
 		String deviceName = device.getDeviceName();
 		fireCipherBeginConnectControl(device);
-		mSetConnectedStatus(ConnStatus.CONN_STATE_CONNECTING);
 		fireConnecting(device);
 		
 		try {
@@ -344,29 +318,6 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	public void disconnect() {
 		mDisconnect();
 		fireDisconnected(mDestBTLEDevice);
-	}
-
-	@Override
-	public void setAutoReconnect(boolean enable, ICipherConnBTDevice device)
-			throws NullPointerException {
-		if(enable){
-			if(device == null || device.getDeviceName() == null)
-				throw new NullPointerException("setAuotReconnect, null deviceName");
-			
-			mBAuoReconnect = true;
-			connect(device);
-			mAutoConnDevice = device;
-			mSetCheckConnTimer(true);
-		}
-		else {
-			mBAuoReconnect = false;
-			mSetCheckConnTimer(false);
-		}
-	}
-
-	@Override
-	public boolean isAutoReconnect() {
-		return mBAuoReconnect;
 	}
 
 	@Override

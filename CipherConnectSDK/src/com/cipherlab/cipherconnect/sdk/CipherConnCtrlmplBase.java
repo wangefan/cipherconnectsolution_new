@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.os.Handler;
 
 abstract public class CipherConnCtrlmplBase {
 	//Data members
@@ -19,15 +20,24 @@ abstract public class CipherConnCtrlmplBase {
 	protected Bitmap mMACAddressBitmap = null;
 	protected Bitmap mResetConnBitmap = null;
 	protected Bitmap mSettingConnBitmap = null;
+	protected boolean  mBHasConnection = false;
 	
+	//for auto re-connect
+	protected boolean mBAuoReconnect = false;
+	private Handler mHandlerCheckConn = new Handler();
+	protected ICipherConnBTDevice mAutoConnDevice = null;
+	//for auto re-connect end
+	
+	protected Handler mMainThrdHandler = new Handler();
 	public CipherConnCtrlmplBase(Context context) {
 		mContext = context;
+		mBAuoReconnect = false;
 	}
 	
 	public void Reset() {
 		SetCipherConnectControlListener(null);
 		disconnect();
-		setAutoReconnect(false, null);
+		mBHasConnection = false;
 	}
 	
 	public void SetCipherConnectControlListener(ArrayList<ICipherConnectControlListener> listenerList) throws NullPointerException {
@@ -136,6 +146,17 @@ abstract public class CipherConnCtrlmplBase {
 		}
 	}
 	
+	protected void setHasConnectionInMainThrd(boolean bHasConn) 
+	{
+		final boolean bPass = bHasConn;
+		mMainThrdHandler.post(new  Runnable() {
+			public void run()
+			{
+				mBHasConnection = bPass;
+			}
+		});
+	}
+	
 	private Bitmap mGenerateBCodeBMP(String strContent, int nWidth, int nHeight)
 	{
 		final int WHITE = 0xFFFFFFFF;
@@ -178,14 +199,43 @@ abstract public class CipherConnCtrlmplBase {
 	public abstract void connect(String deviceName, String deviceAddr)throws NullPointerException;
 	    
 	public abstract void disconnect();
-		
-	public abstract void setAutoReconnect(boolean enable, ICipherConnBTDevice device)throws NullPointerException;
-		
-	public abstract boolean isAutoReconnect();
 	
 	public abstract boolean StartListening();
 	
 	public abstract void StopListening();
+	
+	// @param: boolean bSetTimer
+	// true: set timer with 8secs to connect again, 
+	// false: remove timer and all pending runnable.
+	protected void mSetCheckConnTimer(boolean bSetTimer) {
+		if(bSetTimer) {
+			final int CHECK_TIME_STAMP = 8000;
+			Runnable checkConn = new Runnable() {
+				@Override
+				public void run(){
+					
+					connect(mAutoConnDevice);
+					
+				}
+			};
+			
+			mHandlerCheckConn.postDelayed(checkConn, CHECK_TIME_STAMP);
+		}
+		else {
+			mHandlerCheckConn.removeCallbacksAndMessages(null);
+		}
+	}
+	
+	public void setAutoReconnect(boolean enable) throws NullPointerException 
+	{
+		mBAuoReconnect = enable;
+		if(mBAuoReconnect == false)
+			mSetCheckConnTimer(false);
+	}
+
+	public boolean isAutoReconnect() {
+		return mBAuoReconnect;
+	}
 	
 	public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight)
 	{
