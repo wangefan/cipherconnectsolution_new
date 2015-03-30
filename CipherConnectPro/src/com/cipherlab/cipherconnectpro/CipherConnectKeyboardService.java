@@ -36,6 +36,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
 
     @Override
     public void onCreate() {
+    	Log.d(TAG, "onCreate(): begin");
         super.onCreate();
 
         if (CipherConnectSettingInfo._DEBUG)

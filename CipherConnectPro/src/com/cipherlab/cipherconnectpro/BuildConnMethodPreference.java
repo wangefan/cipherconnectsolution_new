@@ -34,8 +34,6 @@ public class BuildConnMethodPreference extends Preference
 	private Button.OnClickListener mOnPreferenceClickScanListener ;
 	private CheckBox.OnCheckedChangeListener mOnAutoCheckedChangeListener;
 	private CheckBox mckAutoReConn = null;
-	private TextView mtvLastDevNameTitle = null;
-	private TextView mtvLastDevName = null;
 	
 	//member functions
 	private Button.OnClickListener mClickBuildConn = new Button.OnClickListener()
@@ -127,11 +125,6 @@ public class BuildConnMethodPreference extends Preference
 			mckAutoReConn = (CheckBox) mLinearView.findViewById(R.id.ckAutoReConn);
 			mckAutoReConn.setOnCheckedChangeListener(mOnCheckedChangeListener);
 		}
-		if(mtvLastDevNameTitle == null)
-			mtvLastDevNameTitle = (TextView) mLinearView.findViewById(R.id.tvTitle);
-		if(mtvLastDevName == null)
-			mtvLastDevName = (TextView) mLinearView.findViewById(R.id.tvwLastDevice);
-		
 		
 		String strDefaultMode = getContext().getResources().getString(R.string.Str_defaultMode);
 		mStrDefaultDevName = getContext().getResources().getString(R.string.Str_defaultDevName);
@@ -164,8 +157,6 @@ public class BuildConnMethodPreference extends Preference
 		if(mIsSlaveConn)
 		{
 			mbtnSearchDev.setVisibility(View.GONE);
-			mtvLastDevNameTitle.setVisibility(View.GONE);
-			mtvLastDevName.setVisibility(View.GONE);
 			mckAutoReConn.setVisibility(View.GONE);
 			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
 	    	{
@@ -183,8 +174,6 @@ public class BuildConnMethodPreference extends Preference
 		else	//Master mode
 		{
 			mbtnSearchDev.setVisibility(View.VISIBLE);
-			mtvLastDevNameTitle.setVisibility(View.VISIBLE);
-			mtvLastDevName.setVisibility(View.VISIBLE);
 			mckAutoReConn.setVisibility(View.VISIBLE);
 			if(mCipherConnectService.GetConnState() == ICipherConnectManagerService.CONN_STATE.CONN_STATE_CONNECTED)
 	    	{
@@ -201,8 +190,9 @@ public class BuildConnMethodPreference extends Preference
 					mbtnBuildConn.setEnabled(false);
 				else
 					mbtnBuildConn.setEnabled(true);
-				mbtnBuildConn.setText(R.string.setting_buildconnect);
-				
+				String strConnFormat = getContext().getResources().getString(R.string.setting_buildconnect);
+				String strText = String.format(strConnFormat, mDeviceName);
+				mbtnBuildConn.setText(strText);
 				mbtnConnMathod.setEnabled(true);
 				mbtnSearchDev.setEnabled(true);
 			}
@@ -259,7 +249,6 @@ public class BuildConnMethodPreference extends Preference
     {
 		mDeviceName = mStrDefaultDevName;
 		mDeviceAddr = mStrDefaultDevAddr;
-		mtvLastDevName.setText(mDeviceName);
 		mPersistValuses();
     }
     
@@ -267,7 +256,6 @@ public class BuildConnMethodPreference extends Preference
     {
 		mDeviceName = devName;
 		mDeviceAddr = devAddr;
-		mtvLastDevName.setText(devName);
 		mPersistValuses();
     }
     
@@ -303,8 +291,6 @@ public class BuildConnMethodPreference extends Preference
     		mDeviceName = strDevName;
     		mDeviceAddr = strAddr;
     		mIsAutoReConn = Boolean.parseBoolean(strAutoReConn);
-    		if(mtvLastDevName != null)
-    			mtvLastDevName.setText(mDeviceName);
     		if(mckAutoReConn != null)
     			mckAutoReConn.setChecked(mIsAutoReConn);
         } else {

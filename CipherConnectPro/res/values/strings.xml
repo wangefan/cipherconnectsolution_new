@@ -19,7 +19,7 @@
 	<string name="ime_connection">Connect devices</string>
 	<string name="strLastDevNameTitle">Last Connect:</string>	
 	<string name="ime_setting_name">CipherConnect Pro settings</string>
-	<string name="setting_buildconnect">Connect Bluetooth device</string>
+	<string name="setting_buildconnect">Connect to %s</string>
 	<string name="setting_waitconnect">Wait connection</string>
 	<string name="setting_bluetooth_device_status">Bluetooth device status</string>
 	<string name="setting_bluetooth_device_connected">Connected</string>
