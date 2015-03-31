@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="strServiceFail">Bind Service fail</string>
-    <string name="strServiceOn">Wait service is online&#8230;</string>
-    <string name="strServiceOff">Wait service is offline&#8230;</string>
+    <string name="strWaitConnOn">Start waitting connection&#8230;</string>
+    <string name="strWaitConnOff">Stop waitting connection</string>
+    <string name="strServiceIdel">Idle</string>
     <string name="strConnecting">connecting&#8230;</string>
     <string name="strConnectingMsg">Device is connecting, please wait&#8230;</string>
     <string name="error_bluetooth_not_turnon">Not turn on bluetooth</string>
@@ -46,7 +47,7 @@
 	<string name="the_bluetooth_device_beginConnecting">Begin connect Bluetooth device&#8230;</string>
 	<string name="the_bluetooth_device_connecting">Bluetooth connecting</string>
 	<string name="the_bluetooth_device_connected">Connected</string>
-	<string name="the_bluetooth_device_disconnected">Not connected</string>
+	<string name="the_bluetooth_device_disconnected">disconnected</string>
 	<string name="the_bluetooth_device_connected_error">Bluetooth connection error</string>
 	<string name="the_bluetooth_device_verify_fail">The device is not CipherLab product.</string>
 	<!-- Title for Latin keyboard  -->

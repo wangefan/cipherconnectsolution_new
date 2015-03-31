@@ -17,9 +17,11 @@ import com.cipherlab.cipherconnect.sdk.ICipherConnectControlListener;
 import com.cipherlab.cipherconnectpro.ICipherConnectManagerService.CONN_STATE;
 import com.cipherlab.cipherconnectpro.ICipherConnectManagerService.SERVER_STATE;
 import com.cipherlab.cipherconnectpro.R;
+import com.cipherlab.util.NotificationUtil;
 
 public class CipherConnectManagerService extends Service 
 {
+	private final int ONGOING_NOTIFICATION_ID = 1;
     private SERVER_STATE mServerState = SERVER_STATE.SERVER_STATE_OFFLINE;
     private CONN_STATE mConnState = CONN_STATE.CONN_STATE_DISCONNECT;
     private ICipherConnBTDevice mDevice = null;
@@ -42,7 +44,10 @@ public class CipherConnectManagerService extends Service
     	mBinder = new LocalBinder();
 
         CipherConnectControl_init();
-        
+        startForeground(NotificationUtil.NOTIFY_ID, NotificationUtil.GetNotificaion(R.drawable.idle, this, 
+        										getResources().getString(R.string.ime_name), 
+        										getResources().getString(R.string.ime_name),
+        		                                      CipherConnectNotification.intent_cipherconnectproSettings()));
         super.onCreate();
     }
 
@@ -58,6 +63,7 @@ public class CipherConnectManagerService extends Service
         mCipherConnectControl = null;
 
         CipherConnectSettingInfo.destroy();
+        stopForeground(true);
     }
     
     @Override
@@ -237,11 +243,13 @@ public class CipherConnectManagerService extends Service
     
     public void CipherConnectControl_onDisconnected(ICipherConnBTDevice device) 
     {
-    	//Log.d(TAG, "CipherConnectControl_onDisconnected("+deviceName);
-        String device_name = CipherConnectSettingInfo.getLastDeviceName(CipherConnectManagerService.this);
-		String message = device_name
-						+ " "
-						+ this.getResources().getString(R.string.the_bluetooth_device_disconnected);
+    	String message = "";
+    	if(device != null)
+		{
+    		message = device.getDeviceName()
+    				+ " "
+					+ this.getResources().getString(R.string.the_bluetooth_device_disconnected);
+		}
 		
 		CipherConnectWakeLock.disable();
 		CipherConnectNotification.error_notify(CipherConnectManagerService.this, 
@@ -310,14 +318,16 @@ public class CipherConnectManagerService extends Service
 	{
 		CipherConnectNotification.online_notify(CipherConnectManagerService.this,
 				CipherConnectNotification.intent_cipherconnectproServerOnlive(),
-                this.getResources().getString(R.string.ime_name), "server online");
+                getResources().getString(R.string.ime_name), 
+                getResources().getString(R.string.strWaitConnOn));
 		mBroadcastServerChange(SERVER_STATE.SERVER_STATE_ONLINE);
 	}
 	
 	public void CipherConnectControl_onListenServerOffline() {
 		CipherConnectNotification.offline_notify(CipherConnectManagerService.this,
 				CipherConnectNotification.intent_cipherconnectproServerOfflive(),
-                this.getResources().getString(R.string.ime_name), "server offline");
+                getResources().getString(R.string.ime_name),
+                getResources().getString(R.string.strWaitConnOff));
 		mBroadcastServerChange(SERVER_STATE.SERVER_STATE_OFFLINE);
 	}
 	

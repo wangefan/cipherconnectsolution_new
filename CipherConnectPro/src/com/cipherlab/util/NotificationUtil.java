@@ -15,7 +15,7 @@ import android.os.Build;
  */
 public class NotificationUtil {
 	public static final String TAG = "NotificationUtil";
-	private static int NOTIFY_ID = R.drawable.btn_default;
+	public final static int NOTIFY_ID = R.drawable.btn_default;
 
     public static void notifyWithIntent(int icon, Context context, Intent intent, String title, String message) 
     {

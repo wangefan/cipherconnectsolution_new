@@ -51,10 +51,10 @@ public class SalveModeActivity extends BTSettingActivity
             	switch (servertate)
             	{
             	case SERVER_STATE_ONLINE:
-            		Toast.makeText(SalveModeActivity.this, R.string.strServiceOn, Toast.LENGTH_LONG).show();
+            		Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
             		break;
             	case SERVER_STATE_OFFLINE:
-            		Toast.makeText(SalveModeActivity.this, R.string.strServiceOff, Toast.LENGTH_LONG).show();
+            		Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOff, Toast.LENGTH_LONG).show();
             		break;
             	}
             	mUpdateUI(); 	
@@ -135,7 +135,7 @@ public class SalveModeActivity extends BTSettingActivity
     			mTvwBCodeAddress.setVisibility( View.VISIBLE);
     			
     			mImageBTConn.setImageResource(R.drawable.btdisconnect);
-    			mTvwDeviceName.setText(R.string.strServiceOn);
+    			mTvwDeviceName.setText(R.string.strWaitConnOn);
     		}
     		break;
     		case  SERVER_STATE_OFFLINE:

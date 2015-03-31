@@ -47,7 +47,7 @@ public class CipherConnectNotification {
     }
     
     public static void offline_notify(Context context, Intent intent, String title, String message) {
-        mIcon = R.drawable.offline;
+        mIcon = R.drawable.idle;
         mMessage = message;
         NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage);
     }
