@@ -21,7 +21,6 @@ import com.cipherlab.util.NotificationUtil;
 
 public class CipherConnectManagerService extends Service 
 {
-	private final int ONGOING_NOTIFICATION_ID = 1;
     private SERVER_STATE mServerState = SERVER_STATE.SERVER_STATE_OFFLINE;
     private CONN_STATE mConnState = CONN_STATE.CONN_STATE_DISCONNECT;
     private ICipherConnBTDevice mDevice = null;
