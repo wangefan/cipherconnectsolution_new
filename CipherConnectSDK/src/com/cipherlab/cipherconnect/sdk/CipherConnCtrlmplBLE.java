@@ -117,7 +117,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
     				
     				//fire to listener.
     				if(mListenerList != null) {
-    					for (ICipherConnectControlListener connListener : mListenerList) 
+    					for (ICipherConnectControl2Listener connListener : mListenerList) 
     	    	    		connListener.onGetLEDevice(cBTDeivce);
     				}	
         		}

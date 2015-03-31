@@ -6,21 +6,8 @@ package com.cipherlab.cipherconnect.sdk;
  * @version 1.0
  * 
  */
-public interface ICipherConnectControlListener {
-	/**
-	 * The user program will be notified
-	 *  while CipherConnectControl listen service
-	 * is online.
-	 */
-	public void onListenServerOnline();
-	
-	/**
-	 * The user program will be notified
-	 *  while CipherConnectControl listen service
-	 * is offline.
-	 */
-	public void onListenServerOffline();
-	
+public interface ICipherConnectControl2Listener 
+{
 	/**
 	 * The user program will be notified
 	 *  while CipherConnectControl is beginning

@@ -47,7 +47,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	protected void fireCipherConnectControlError(ICipherConnBTDevice device, Exception e){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
 				l.onCipherConnectControlError(device, 0, e.getMessage());
@@ -220,7 +220,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	}
 	
 	private void SetConnected(boolean connected){
-		synchronized (CipherConnectControl.class) {
+		synchronized (CipherConnCtrlmplClassic.class) {
 			this.mIsConnected = connected;
 		}
 	}

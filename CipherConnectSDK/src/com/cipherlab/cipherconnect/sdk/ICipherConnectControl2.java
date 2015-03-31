@@ -1,17 +1,15 @@
 package com.cipherlab.cipherconnect.sdk;
 
-import android.graphics.Bitmap;
-
 /**
- * Define the interface of CipherConnectControl.
+ * Define the interface of CipherConnectControl2.
  * <DT><B>code:</B><DT>
  * <DD>
- *    ICipherConnectControl _control =  CipherConnectControl.getCipherConnectControl();
+ *    ICipherConnectControl2 _control =  ICipherConnectControl2.createInst();
  * </DD>
  * @author visual.chen
  * @version 1.0
  */
-public interface ICipherConnectControl {
+public interface ICipherConnectControl2 {
 	/**
 	 * Get the version of CipherConnectControl.
 	 * <DT><B>code:</B><DT>
@@ -89,7 +87,7 @@ public interface ICipherConnectControl {
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * try{<br>
-	 * 		_control.addCipherConnectControlListener(new ICipherConnectControlListener(){<br>
+	 * 		_control.addCipherConnectControl2Listener(new ICipherConnectControl2Listener(){<br>
 	 * 				public void onReceivingBarcode(String deviceName,final String barcode) {<br>
 	 * 					System.out.println("onReceivingBarcode[deviceName="+deviceName+",barcode="+barcode+"]");<br>
 	 * 				}<br>
@@ -114,7 +112,8 @@ public interface ICipherConnectControl {
 	 * @param listener : the interface of CipherConnectControlListener.
 	 * @throws NullPointerException : if listener is null,  CipherConnectControl throws a NullPointerException. 
 	 */
-	public void addCipherConnectControlListener(ICipherConnectControlListener listener)throws NullPointerException;
+	
+	public void addCipherConnect2Listener(ICipherConnectControl2Listener listener)throws NullPointerException;
 	
 	/**
 	 * Set auto Reconnect.
@@ -216,53 +215,4 @@ public interface ICipherConnectControl {
 	 * @throws UnsupportedOperationException If not support low energy mode. 
 	 */
     public boolean StopScanLEDevices() throws UnsupportedOperationException;
-    
-    /**
-	 * start to listen connection from remote device.
-	 * <DT><B>code:</B><DT>
-	 * <DD>
-	 * //Start listen devices to connect.<br>
-	 * _control.StartListening();<br>
-	 * </DD>
-	 * @return 	true : Start asynchronous Listen<br>
-	 * 			false: Asynchronous Listen fail. 
-	 */
-    public boolean StartListening();
-    
-    /**
-	 * stop and clean all connections from remote device.
-	 * <DT><B>code:</B><DT>
-	 * <DD>
-	 * //Stop and clean all connections.<br>
-	 * _control.Stop();<br>
-	 * </DD>
-	 */
-    public void StopListening(); 
-    
-    /**
-	 * Generate MAC address code128 for Cipher device use. 
-	 * <DT><B>code:</B><DT>
-	 * <DD>
-	 * Bitmap img = _control.GetMacAddrBarcodeImage(nWidth, nHeight);<br>
-	 * </DD>
-	 */
-    public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight);
-    
-    /**
-	 * Generate Reset connection code128 command for Cipher device use. 
-	 * <DT><B>code:</B><DT>
-	 * <DD>
-	 * Bitmap img = _control.GetResetConnBarcodeImage(nWidth, nHeight);<br>
-	 * </DD>
-	 */
-    public Bitmap GetResetConnBarcodeImage(int nWidth, int nHeight); 
-    
-    /**
-	 * Generate setting connection code128 command for Cipher device use. 
-	 * <DT><B>code:</B><DT>
-	 * <DD>
-	 * Bitmap img = _control.GetSettingConnBarcodeImage(nWidth, nHeight);<br>
-	 * </DD>
-	 */
-    public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight); 
 }

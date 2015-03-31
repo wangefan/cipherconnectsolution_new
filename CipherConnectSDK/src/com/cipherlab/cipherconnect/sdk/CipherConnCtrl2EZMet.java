@@ -7,13 +7,23 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 
-public class CipherConnectControl implements ICipherConnectControl {
+public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
+{
+	private static CipherConnCtrl2EZMet mMe = null;
+	
+	public static CipherConnCtrl2EZMet getInstance(Context context)
+	{
+		if (mMe == null)
+			mMe = new CipherConnCtrl2EZMet(context);
+
+		return mMe;
+	}
 	
 	static public final int NClassicBTMode = 0;
 	static public final int NBLEBTMode = 1;
 	private int mNBTMode = NClassicBTMode;
 	private Context mContext = null;
-	protected ArrayList<ICipherConnectControlListener> mListenerList = null;
+	protected ArrayList<ICipherConnectControl2Listener> mCtrlListenerList = null;
 	
 	//Data members
 	private CipherConnCtrlmplBase    mCipherConnCtrlImpl = null;
@@ -22,9 +32,9 @@ public class CipherConnectControl implements ICipherConnectControl {
 	
 	//Default Ctr
 	
-	public CipherConnectControl(Context context) {
+	private CipherConnCtrl2EZMet(Context context) {
 		mContext = context;
-		mListenerList = new ArrayList<ICipherConnectControlListener>();
+		mCtrlListenerList = new ArrayList<ICipherConnectControl2Listener>();
 		mCipherConnCtrlImplClassic = new CipherConnCtrlmplClassic(mContext);
 		mCipherConnCtrlImplBle = new CipherConnCtrlmplBLE(mContext);
 		SetBLEMode(false);
@@ -44,7 +54,7 @@ public class CipherConnectControl implements ICipherConnectControl {
 		default:
 			throw new RuntimeException();
 		}
-		mCipherConnCtrlImpl.SetCipherConnectControlListener(mListenerList);
+		mCipherConnCtrlImpl.SetCipherConnectControlListener(mCtrlListenerList);
 	}
 	
 	@Override
@@ -78,13 +88,15 @@ public class CipherConnectControl implements ICipherConnectControl {
 	{
 		mCipherConnCtrlImpl.disconnect();
 	}
-	
-	public void addCipherConnectControlListener(ICipherConnectControlListener listener)throws NullPointerException
+
+	@Override
+	public void addCipherConnect2Listener(ICipherConnectControl2Listener listener) throws NullPointerException 
 	{
 		if(listener == null)
 			throw new NullPointerException();
 				
-		mListenerList.add(listener);
+		mCtrlListenerList.add(listener);
+		
 	}
 	
 	public void setAutoReconnect(boolean enable)throws NullPointerException

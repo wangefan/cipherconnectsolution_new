@@ -16,7 +16,7 @@ import android.os.Handler;
 abstract public class CipherConnCtrlmplBase {
 	//Data members
 	protected Context mContext = null;
-	protected ArrayList<ICipherConnectControlListener> mListenerList = null;
+	protected ArrayList<ICipherConnectControl2Listener> mListenerList = null;
 	protected Bitmap mMACAddressBitmap = null;
 	protected Bitmap mResetConnBitmap = null;
 	protected Bitmap mSettingConnBitmap = null;
@@ -40,7 +40,7 @@ abstract public class CipherConnCtrlmplBase {
 		mBHasConnection = false;
 	}
 	
-	public void SetCipherConnectControlListener(ArrayList<ICipherConnectControlListener> listenerList) throws NullPointerException {
+	public void SetCipherConnectControlListener(ArrayList<ICipherConnectControl2Listener> listenerList) throws NullPointerException {
 		mListenerList = listenerList;
 	}
 	
@@ -56,10 +56,11 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireCipherListenServerOnline() {
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
-			if(l!=null)
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
+			ICipherConnCtrl2EZMetListener lEZMet = (ICipherConnCtrl2EZMetListener) l ;
+			if(lEZMet!=null)
 			{
-				l.onListenServerOnline();
+				lEZMet.onListenServerOnline();
 			}
 		}
 	}
@@ -67,10 +68,11 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireCipherListenServerOffline() {
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
-			if(l!=null)
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
+			ICipherConnCtrl2EZMetListener lEZMet = (ICipherConnCtrl2EZMetListener) l ;
+			if(lEZMet!=null)
 			{
-				l.onListenServerOffline();
+				lEZMet.onListenServerOffline();
 			}
 		}
 	}
@@ -78,7 +80,7 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireCipherBeginConnectControl(ICipherConnBTDevice device) {
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
 				l.onBeginConnecting(device);
@@ -89,7 +91,7 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireReceivingBarcode(ICipherConnBTDevice device,String barcode){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
 				//Log.e("CipherConnectControl","fireReceivingBarcode(deviceName="+deviceName+", barcode="+barcode+")");
@@ -101,7 +103,7 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireConnecting(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
 				Log.e("CipherConnectControl","fireConnecting(deviceName="+device.getDeviceName()+")");
@@ -113,7 +115,7 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireConnected(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
 				Log.e("CipherConnectControl","fireConnected(deviceName="+device.getDeviceName()+")");
@@ -125,7 +127,7 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireCipherConnectControlError(ICipherConnBTDevice device, int id, String message){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
 				Log.e("CipherConnectControl","fireCipherConnectControlError(deviceName="+device.getDeviceName()+", id="+id+", message="+message+")");
@@ -137,7 +139,7 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireDisconnected(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
 				Log.e("CipherConnectControl","fireDisconnected(deviceName="+device.getDeviceName()+")");
