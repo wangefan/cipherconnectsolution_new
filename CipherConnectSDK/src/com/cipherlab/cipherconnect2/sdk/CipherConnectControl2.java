@@ -1,4 +1,4 @@
-package com.cipherlab.cipherconnect.sdk;
+package com.cipherlab.cipherconnect2.sdk;
 
 import java.util.ArrayList;
 

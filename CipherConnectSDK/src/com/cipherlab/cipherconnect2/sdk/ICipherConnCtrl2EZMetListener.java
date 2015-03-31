@@ -1,4 +1,4 @@
-package com.cipherlab.cipherconnect.sdk;
+package com.cipherlab.cipherconnect2.sdk;
 
 public interface ICipherConnCtrl2EZMetListener extends ICipherConnectControl2Listener 
 {

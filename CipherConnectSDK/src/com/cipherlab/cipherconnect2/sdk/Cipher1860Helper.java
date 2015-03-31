@@ -1,10 +1,9 @@
-package com.cipherlab.cipherconnect.sdk;
+package com.cipherlab.cipherconnect2.sdk;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -85,11 +84,7 @@ public class Cipher1860Helper {
         int TagDataLength = (buffer[13] << 8) + (buffer[14] & 0xFF);
         
         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-        
-        //String date = s.format(new Date(year, month, day, hour, min, second)) + " ";
-        GregorianCalendar calender = new GregorianCalendar(year, month, day, hour, min, second);
-        Date temp_date = new Date(calender.getTimeInMillis());
-        String date = s.format(temp_date);
+        String date = s.format(new Date(year, month, day, hour, min, second)) + " ";
         
 		StringBuffer sb = new StringBuffer(); 
 		sb.append(date);

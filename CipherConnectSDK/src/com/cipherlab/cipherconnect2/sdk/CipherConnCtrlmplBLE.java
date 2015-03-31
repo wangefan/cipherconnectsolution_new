@@ -1,10 +1,11 @@
-package com.cipherlab.cipherconnect.sdk;
+package com.cipherlab.cipherconnect2.sdk;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -13,8 +14,10 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	final private static UUID mSUUIDString = UUID.fromString("00001801-0000-1000-8000-00805f9b34fb");
 	final private static UUID mCUUIDString = UUID.fromString("cc330a40-fb09-11e1-a84d-0002a5d5c51b");
@@ -27,35 +30,11 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	private BluetoothGattCharacteristic mBTCharct = null;
 	private ArrayList<ICipherConnBTDevice> mbtDericeList = null;
 	private ICipherConnBTDevice mDestBTLEDevice = null;
-	private String mStrAutoConnDeviceName = "";
 	private ConnStatus mConnStatus = ConnStatus.CONN_STATE_IDLE;
-	private boolean mBAuoReconnect = false;
-	private Handler mHandlerToRunOnThread = new Handler();
+	
 	private Handler mHandlerConnTimeout = new Handler();
-	private Handler mHandlerCheckConn = new Handler();
 	private synchronized void mSetConnectedStatus(ConnStatus connStatus) {
 		mConnStatus = connStatus;
-	}
-	
-	// @param: boolean bSetTimer
-	// true: set timer with 10secs and connect immediately, 
-	// false: remove timer and all pending runnable.
-	private void mSetCheckConnTimer(boolean bSetTimer) {
-		if(bSetTimer) {
-			final int CHECK_TIME_STAMP = 8000;
-			Runnable checkConn = new Runnable() {
-				public void run(){
-					
-					connect(mStrAutoConnDeviceName);
-					mHandlerCheckConn.postDelayed(this, CHECK_TIME_STAMP);
-				}
-			};
-			
-			mHandlerCheckConn.postDelayed(checkConn, CHECK_TIME_STAMP);
-		}
-		else {
-			mHandlerCheckConn.removeCallbacksAndMessages(null);
-		}
 	}
 	
 	private synchronized boolean mIsConnected() {
@@ -68,7 +47,8 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	}
 	
 	private void mDisconnectFromWorkerThread() {
-		mHandlerToRunOnThread.post(new Runnable(){
+		mMainThrdHandler.post(new Runnable(){
+		    @Override
 		    public void run() {
 		    	mDisconnect();
 		    }            
@@ -93,7 +73,6 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		super(context);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mbtDericeList = new ArrayList<ICipherConnBTDevice>();
-        mBAuoReconnect = false;
 	}
 	
 	//================ Server functions begin=============
@@ -113,6 +92,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
     private BluetoothAdapter.LeScanCallback mLeScanCallback =
             new BluetoothAdapter.LeScanCallback() {
 
+        @Override
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) 
         {
         	// check if has device already?
@@ -128,14 +108,19 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
         	
         	if(bAdd) 
         	{
-        		CipherConnBTDevice cBTDeivce = new CipherConnBTDevice(device.getName(), device.getAddress());
-				mbtDericeList.add(cBTDeivce);
-				
-				//fire to listener.
-				if(mListenerList != null) {
-					for (ICipherConnectControlListener connListener : mListenerList) 
-	    	    		connListener.onGetLEDevice(cBTDeivce);
-				}
+        		String name = device.getName();
+        		String add = device.getAddress();
+        		if(name != null && add != null)
+        		{
+            		CipherConnBTDevice cBTDeivce = new CipherConnBTDevice(name, add);
+    				mbtDericeList.add(cBTDeivce);
+    				
+    				//fire to listener.
+    				if(mListenerList != null) {
+    					for (ICipherConnectControl2Listener connListener : mListenerList) 
+    	    	    		connListener.onGetLEDevice(cBTDeivce);
+    				}	
+        		}
         	}
         }
     };
@@ -147,16 +132,16 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
             	if(mBluetoothGatt!= null && true == mBluetoothGatt.discoverServices())
-            		CipherConnCtrlmplBLE.this.fireConnecting(CipherConnCtrlmplBLE.this.mDestBTLEDevice.getDeviceName());
+            		CipherConnCtrlmplBLE.this.fireConnecting(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
             	else {
             		mDisconnectFromWorkerThread();
-            		CipherConnCtrlmplBLE.this.fireDisconnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice.getDeviceName());
+            		CipherConnCtrlmplBLE.this.fireDisconnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
             		if(mBAuoReconnect)
         	        	mSetCheckConnTimer(true);
             	}
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
             	mDisconnectFromWorkerThread();
-            	CipherConnCtrlmplBLE.this.fireDisconnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice.getDeviceName());
+            	CipherConnCtrlmplBLE.this.fireDisconnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
     	        if(mBAuoReconnect)
     	        	mSetCheckConnTimer(true);
             }
@@ -190,7 +175,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
                 			}
                 			mHandlerConnTimeout.removeCallbacksAndMessages(null);
                 			mSetConnectedStatus(ConnStatus.CONN_STATE_CONNECTED);
-                			CipherConnCtrlmplBLE.this.fireConnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice.getDeviceName());
+                			CipherConnCtrlmplBLE.this.fireConnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
                 			if(mBAuoReconnect)
                 	        	mSetCheckConnTimer(false);
                 			return;
@@ -201,7 +186,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
             
             //discover no services.
             mDisconnectFromWorkerThread();
-        	CipherConnCtrlmplBLE.this.fireCipherConnectControlError(CipherConnCtrlmplBLE.this.mDestBTLEDevice.getDeviceName(),
+        	CipherConnCtrlmplBLE.this.fireCipherConnectControlError(CipherConnCtrlmplBLE.this.mDestBTLEDevice,
         					CipherConnectControlResource.can_not_find_any_services_id,
         					CipherConnectControlResource.can_not_find_any_services);
             if(mBAuoReconnect)
@@ -213,7 +198,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-            	CipherConnCtrlmplBLE.this.fireConnecting(CipherConnCtrlmplBLE.this.mDestBTLEDevice.getDeviceName());
+            	CipherConnCtrlmplBLE.this.fireConnecting(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
             }
             else {
             	mDisconnectFromWorkerThread();
@@ -230,7 +215,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
     			
     			StringTokenizer st = new StringTokenizer(barcode,"\n");
                 if(st.countTokens()==1){
-                	fireReceivingBarcode("", barcode);
+                	fireReceivingBarcode(null, barcode);
                 }
                 else{
                 	
@@ -238,7 +223,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
                 	for(int i=0;i<count;i++)
                 	{
                 		String code = (String)st.nextElement();
-                		fireReceivingBarcode("",code);
+                		fireReceivingBarcode(null,code);
                 		
                 		try {
     						Thread.sleep(300);
@@ -257,33 +242,39 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	}
 
 	@Override
-	public String[] getBluetoothDeviceNames() {
-		if(mbtDericeList.size() <= 0)
-			return null;
-		String[] deviceNames = new String[mbtDericeList.size()];
-		int idxDevicesName = 0;
+	public ICipherConnBTDevice[] getBtDevices() 
+	{
+		ICipherConnBTDevice[] devices = new ICipherConnBTDevice[mbtDericeList.size()];
+		int idxDevices = 0;
 		for (ICipherConnBTDevice device : mbtDericeList) {
-			deviceNames[idxDevicesName++]=device.getDeviceName();
+			devices[idxDevices++] = new CipherConnBTDevice(device);
 		}
-		return deviceNames;
+		return devices;
+	}
+	
+	@Override
+	public void connect(String deviceName, String deviceAddr) throws NullPointerException {
+		ICipherConnBTDevice device = new CipherConnBTDevice(deviceName, deviceAddr);
+		connect(device);
 	}
 
 	@Override
-	public void connect(String deviceName) throws NullPointerException {
-		if(mIsConnected())
+	public void connect(ICipherConnBTDevice device) throws NullPointerException {
+		if(mIsConnected() || device == null || device.getDeviceName() == null)
 			return;
-		fireCipherBeginConnectControl(deviceName);
 		mSetConnectedStatus(ConnStatus.CONN_STATE_CONNECTING);
-		fireConnecting(deviceName);
+		String deviceName = device.getDeviceName();
+		fireCipherBeginConnectControl(device);
+		fireConnecting(device);
 		
 		try {
 			if(mBluetoothAdapter == null || deviceName.length() <= 0)
 				throw new NullPointerException("mBluetoothAdapter == null or empty deviceName ");
 			
 			mDestBTLEDevice = null;
-			for (ICipherConnBTDevice device : mbtDericeList) {
-				if(device.getDeviceName().equals(deviceName)) {
-					mDestBTLEDevice = device;
+			for (ICipherConnBTDevice itrDevice : mbtDericeList) {
+				if(itrDevice.getAddress().equals(device.getAddress())) {
+					mDestBTLEDevice = itrDevice;
 					break;
 				}
 			}
@@ -305,10 +296,11 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	        //disconnect if timeout
 	        final long SCAN_PERIOD = 10000;
 	        mHandlerConnTimeout.postDelayed(new Runnable() {
+                @Override
                 public void run() {
                     if(ConnStatus.CONN_STATE_CONNECTED != mConnStatus) {
                     	mDisconnect();
-                    	fireCipherConnectControlError(mDestBTLEDevice.getDeviceName(),
+                    	fireCipherConnectControlError(mDestBTLEDevice,
                     			CipherConnectControlResource.bluetooth_connection_error_id,
                     			CipherConnectControlResource.bluetooth_connection_error);
             	        if(mBAuoReconnect)
@@ -319,39 +311,13 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		}
 		catch (Exception e) {
 			mDisconnect();
-        	fireCipherConnectControlError(deviceName, 0, e.getMessage());
+        	fireCipherConnectControlError(device, 0, e.getMessage());
 		}
 	}
 	@Override
 	public void disconnect() {
 		mDisconnect();
-		String strDeviceName = "";
-		if(mDestBTLEDevice != null)
-			strDeviceName = mDestBTLEDevice.getDeviceName();
-		fireDisconnected(strDeviceName);
-	}
-
-	@Override
-	public void setAuotReconnect(boolean enable, String deviceName)
-			throws NullPointerException {
-		if(enable){
-			if(deviceName == null || deviceName.length() <= 0)
-				throw new NullPointerException("setAuotReconnect, null deviceName");
-			
-			mBAuoReconnect = true;
-			mStrAutoConnDeviceName = deviceName;
-			connect(mStrAutoConnDeviceName);
-			mSetCheckConnTimer(true);
-		}
-		else {
-			mBAuoReconnect = false;
-			mSetCheckConnTimer(false);
-		}
-	}
-
-	@Override
-	public boolean isAutoReconnect() {
-		return mBAuoReconnect;
+		fireDisconnected(mDestBTLEDevice);
 	}
 
 	@Override
@@ -363,7 +329,6 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		return false;
 	}
 	
-	@Override
 	public boolean StopScanLEDevices() throws UnsupportedOperationException {
 		if(mBluetoothAdapter != null) {
 			mBluetoothAdapter.stopLeScan(mLeScanCallback);

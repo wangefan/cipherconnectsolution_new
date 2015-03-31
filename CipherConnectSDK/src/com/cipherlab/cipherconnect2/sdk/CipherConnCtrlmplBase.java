@@ -1,4 +1,4 @@
-package com.cipherlab.cipherconnect.sdk;
+package com.cipherlab.cipherconnect2.sdk;
 
 import java.util.ArrayList;
 
@@ -11,26 +11,36 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.os.Handler;
 
 abstract public class CipherConnCtrlmplBase {
 	//Data members
 	protected Context mContext = null;
-	protected ArrayList<ICipherConnectControlListener> mListenerList = null;
+	protected ArrayList<ICipherConnectControl2Listener> mListenerList = null;
 	protected Bitmap mMACAddressBitmap = null;
 	protected Bitmap mResetConnBitmap = null;
 	protected Bitmap mSettingConnBitmap = null;
+	protected boolean  mBHasConnection = false;
 	
+	//for auto re-connect
+	protected boolean mBAuoReconnect = false;
+	private Handler mHandlerCheckConn = new Handler();
+	protected ICipherConnBTDevice mAutoConnDevice = null;
+	//for auto re-connect end
+	
+	protected Handler mMainThrdHandler = new Handler();
 	public CipherConnCtrlmplBase(Context context) {
 		mContext = context;
+		mBAuoReconnect = false;
 	}
 	
 	public void Reset() {
 		SetCipherConnectControlListener(null);
 		disconnect();
-		setAuotReconnect(false, "");
+		mBHasConnection = false;
 	}
 	
-	public void SetCipherConnectControlListener(ArrayList<ICipherConnectControlListener> listenerList) throws NullPointerException {
+	public void SetCipherConnectControlListener(ArrayList<ICipherConnectControl2Listener> listenerList) throws NullPointerException {
 		mListenerList = listenerList;
 	}
 	
@@ -46,10 +56,11 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireCipherListenServerOnline() {
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
-			if(l!=null)
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
+			ICipherConnCtrl2EZMetListener lEZMet = (ICipherConnCtrl2EZMetListener) l ;
+			if(lEZMet!=null)
 			{
-				l.onListenServerOnline();
+				lEZMet.onListenServerOnline();
 			}
 		}
 	}
@@ -57,83 +68,95 @@ abstract public class CipherConnCtrlmplBase {
 	protected void fireCipherListenServerOffline() {
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
-			if(l!=null)
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
+			ICipherConnCtrl2EZMetListener lEZMet = (ICipherConnCtrl2EZMetListener) l ;
+			if(lEZMet!=null)
 			{
-				l.onListenServerOffline();
+				lEZMet.onListenServerOffline();
 			}
 		}
 	}
 	
-	protected void fireCipherBeginConnectControl(String deviceName) {
+	protected void fireCipherBeginConnectControl(ICipherConnBTDevice device) {
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				l.onBeginConnecting(deviceName);
+				l.onBeginConnecting(device);
 			}
 		}
 	}
 	
-	protected void fireReceivingBarcode(String deviceName,String barcode){
+	protected void fireReceivingBarcode(ICipherConnBTDevice device,String barcode){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
 				//Log.e("CipherConnectControl","fireReceivingBarcode(deviceName="+deviceName+", barcode="+barcode+")");
-				l.onReceivingBarcode(deviceName, barcode);
+				l.onReceivingBarcode(device, barcode);
 			}
 		}
 	}
 	
-	protected void fireConnecting(String deviceName){
+	protected void fireConnecting(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireConnecting(deviceName="+deviceName+")");
-				l.onConnecting(deviceName);
+				Log.e("CipherConnectControl","fireConnecting(deviceName="+device.getDeviceName()+")");
+				l.onConnecting(device);
 			}
 		}
 	}
 	
-	protected void fireConnected(String deviceName){
+	protected void fireConnected(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireConnected(deviceName="+deviceName+")");
-				l.onConnected(deviceName);
+				Log.e("CipherConnectControl","fireConnected(deviceName="+device.getDeviceName()+")");
+				l.onConnected(device);
 			}
 		}
 	}
 	
-	protected void fireCipherConnectControlError(String deviceName, int id, String message){
+	protected void fireCipherConnectControlError(ICipherConnBTDevice device, int id, String message){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireCipherConnectControlError(deviceName="+deviceName+", id="+id+", message="+message+")");
-				l.onCipherConnectControlError(deviceName, id, message);
+				Log.e("CipherConnectControl","fireCipherConnectControlError(deviceName="+device.getDeviceName()+", id="+id+", message="+message+")");
+				l.onCipherConnectControlError(device, id, message);
 			}
 		}
 	}
 
-	protected void fireDisconnected(String deviceName){
+	protected void fireDisconnected(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;
-		for (ICipherConnectControlListener l : this.mListenerList) {
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireDisconnected(deviceName="+deviceName+")");
-				l.onDisconnected(deviceName);
+				Log.e("CipherConnectControl","fireDisconnected(deviceName="+device.getDeviceName()+")");
+				l.onDisconnected(device);
 			}
 		}
+	}
+	
+	protected void setHasConnectionInMainThrd(boolean bHasConn) 
+	{
+		final boolean bPass = bHasConn;
+		mMainThrdHandler.post(new  Runnable() {
+			public void run()
+			{
+				mBHasConnection = bPass;
+			}
+		});
 	}
 	
 	private Bitmap mGenerateBCodeBMP(String strContent, int nWidth, int nHeight)
@@ -170,20 +193,51 @@ abstract public class CipherConnCtrlmplBase {
 	
 	//abstract methods
 	public abstract boolean isConnected();
+	
+	public abstract ICipherConnBTDevice[] getBtDevices();
 		
-	public abstract String[] getBluetoothDeviceNames();
-		
-	public abstract void connect(String deviceName)throws NullPointerException;	
+	public abstract void connect(ICipherConnBTDevice device)throws NullPointerException;	
+	
+	public abstract void connect(String deviceName, String deviceAddr)throws NullPointerException;
 	    
 	public abstract void disconnect();
-		
-	public abstract void setAuotReconnect(boolean enable,String deviceName)throws NullPointerException;
-		
-	public abstract boolean isAutoReconnect();
 	
 	public abstract boolean StartListening();
 	
 	public abstract void StopListening();
+	
+	// @param: boolean bSetTimer
+	// true: set timer with 8secs to connect again, 
+	// false: remove timer and all pending runnable.
+	protected void mSetCheckConnTimer(boolean bSetTimer) {
+		if(bSetTimer) {
+			final int CHECK_TIME_STAMP = 8000;
+			Runnable checkConn = new Runnable() {
+				@Override
+				public void run(){
+					
+					connect(mAutoConnDevice);
+					
+				}
+			};
+			
+			mHandlerCheckConn.postDelayed(checkConn, CHECK_TIME_STAMP);
+		}
+		else {
+			mHandlerCheckConn.removeCallbacksAndMessages(null);
+		}
+	}
+	
+	public void setAutoReconnect(boolean enable) throws NullPointerException 
+	{
+		mBAuoReconnect = enable;
+		if(mBAuoReconnect == false)
+			mSetCheckConnTimer(false);
+	}
+
+	public boolean isAutoReconnect() {
+		return mBAuoReconnect;
+	}
 	
 	public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight)
 	{
@@ -209,7 +263,7 @@ abstract public class CipherConnCtrlmplBase {
 	{
 		if(mResetConnBitmap == null)
 		{
-			String strResetConnCmd = "#@109919#";
+			String strResetConnCmd = "#@100003#";
 			mResetConnBitmap = mGenerateBCodeBMP(strResetConnCmd, nWidth, nHeight);
 		}
 		

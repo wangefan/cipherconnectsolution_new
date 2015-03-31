@@ -1,15 +1,17 @@
 package com.cipherlab.cipherconnect.sdk;
 
+import android.graphics.Bitmap;
+
 /**
- * Define the interface of CipherConnectControl2.
+ * Define the interface of CipherConnectControl.
  * <DT><B>code:</B><DT>
  * <DD>
- *    ICipherConnectControl2 _control =  ICipherConnectControl2.createInst();
+ *    ICipherConnectControl _control =  CipherConnectControl.getCipherConnectControl();
  * </DD>
  * @author visual.chen
  * @version 1.0
  */
-public interface ICipherConnectControl2 {
+public interface ICipherConnectControl {
 	/**
 	 * Get the version of CipherConnectControl.
 	 * <DT><B>code:</B><DT>
@@ -32,46 +34,30 @@ public interface ICipherConnectControl2 {
 	public boolean isConnected();
 	
 	/**
-	 * Get the all Bluetooth devices which have been identified with the OS.
+	 * Get the names of all Bluetooth devices which have been identified with the OS.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
-	 * ICipherConnBTDevice[] sNames = _control.getBtDevices();
+	 * String[] sNames = _control.getBluetoothDeviceNames();
 	 * </DD>
+	 * @return {"1661DM5065535","1661xxxx"...}
 	 */
-	public ICipherConnBTDevice[] getBtDevices();
+	public String[] getBluetoothDeviceNames();
 	
 	/**
-	 * Connect to the BT scanner device by device.
+	 * Connect to the BT scanner device by deviceName.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * try{<br>
-	 * 		_control.connect(device);<br>
+	 * 		_control.connect("1661DM5065535");<br>
 	 * }<br>
 	 * catch(NullPointerException e){<br>
 	 *      System.out.println(e);<br>
 	 * }<br>
 	 * </DD>
-	 * @param device: BT scanner device and have been identified with this OS. 
-	 * @throws NullPointerException : if device is null, CipherConnectControl throws a NullPointerException.
+	 * @param deviceName : BT scanner device name  "1661DM5065535" and have been identified with this OS. 
+	 * @throws NullPointerException : if deviceName is null, CipherConnectControl throws a NullPointerException.
 	 */
-    public void connect(ICipherConnBTDevice device)throws NullPointerException;	
-    
-    /**
-	 * Connect to the BT scanner device by MAC address.
-	 * <DT><B>code:</B><DT>
-	 * <DD>
-	 * try{<br>
-	 * 		_control.connect(deviceName, deviceAddr);<br>
-	 * }<br>
-	 * catch(NullPointerException e){<br>
-	 *      System.out.println(e);<br>
-	 * }<br>
-	 * </DD>
-	 * @param deviceName: BT name and have been identified with this OS.
-	 * @param deviceAddr: BT MAC address and have been identified with this OS. 
-	 * @throws NullPointerException : if device is null, CipherConnectControl throws a NullPointerException.
-	 */
-    public void connect(String deviceName, String deviceAddr)throws NullPointerException;	
+    public void connect(String deviceName)throws NullPointerException;	
     
     /**
      * Disconnect from the BT scanner device.
@@ -87,7 +73,7 @@ public interface ICipherConnectControl2 {
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * try{<br>
-	 * 		_control.addCipherConnectControl2Listener(new ICipherConnectControl2Listener(){<br>
+	 * 		_control.addCipherConnectControlListener(new ICipherConnectControlListener(){<br>
 	 * 				public void onReceivingBarcode(String deviceName,final String barcode) {<br>
 	 * 					System.out.println("onReceivingBarcode[deviceName="+deviceName+",barcode="+barcode+"]");<br>
 	 * 				}<br>
@@ -112,8 +98,7 @@ public interface ICipherConnectControl2 {
 	 * @param listener : the interface of CipherConnectControlListener.
 	 * @throws NullPointerException : if listener is null,  CipherConnectControl throws a NullPointerException. 
 	 */
-	
-	public void addCipherConnect2Listener(ICipherConnectControl2Listener listener)throws NullPointerException;
+	public void addCipherConnectControlListener(ICipherConnectControlListener listener)throws NullPointerException;
 	
 	/**
 	 * Set auto Reconnect.
@@ -121,24 +106,24 @@ public interface ICipherConnectControl2 {
 	 * <DD>
 	 * //Set auto Reconnect.<br>
 	 * try{<br>
-	 * 		_control.setAuotReconnect(true);<br>
+	 * 		_control.setAuotReconnect(true,"1661DM5065535");<br>
 	 * }<br>
 	 * catch(NullPointerException e){<br>
 	 * 		System.out.println(e);<br>
 	 * }<br>
 	 * //Set autoReconnect stop. <br>
 	 * try{<br>
-	 * 		_control.setAuotReconnect(false);<br>
+	 * 		_control.setAuotReconnect(false,null);<br>
 	 * }<br>
 	 * catch(NullPointerException e){<br>
 	 * 		System.out.println(e);<br>
 	 * } <br>
 	 * </DD>
 	 * @param enable true | false 
-	 * @param device BT scanner device and have been identified with this OS. 
-	 * @throws NullPointerException If device is null, CipherConnectControl throws a NullPointerException. 
+	 * @param deviceName BT scanner device name "1661DM5065535" and have been identified with this OS. 
+	 * @throws NullPointerException If deviceName is null, CipherConnectControl throws a NullPointerException. 
 	 */
-	public void setAutoReconnect(boolean enable)throws NullPointerException;
+	public void setAuotReconnect(boolean enable,String deviceName)throws NullPointerException;
 	
 	/**
 	 * Get the status of AutoReconnect.
@@ -215,4 +200,53 @@ public interface ICipherConnectControl2 {
 	 * @throws UnsupportedOperationException If not support low energy mode. 
 	 */
     public boolean StopScanLEDevices() throws UnsupportedOperationException;
+    
+    /**
+	 * start to listen connection from remote device.
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * //Start listen devices to connect.<br>
+	 * _control.StartListening();<br>
+	 * </DD>
+	 * @return 	true : Start asynchronous Listen<br>
+	 * 			false: Asynchronous Listen fail. 
+	 */
+    public boolean StartListening();
+    
+    /**
+	 * stop and clean all connections from remote device.
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * //Stop and clean all connections.<br>
+	 * _control.Stop();<br>
+	 * </DD>
+	 */
+    public void StopListening(); 
+    
+    /**
+	 * Generate MAC address code128 for Cipher device use. 
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * Bitmap img = _control.GetMacAddrBarcodeImage(nWidth, nHeight);<br>
+	 * </DD>
+	 */
+    public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight);
+    
+    /**
+	 * Generate Reset connection code128 command for Cipher device use. 
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * Bitmap img = _control.GetResetConnBarcodeImage(nWidth, nHeight);<br>
+	 * </DD>
+	 */
+    public Bitmap GetResetConnBarcodeImage(int nWidth, int nHeight); 
+    
+    /**
+	 * Generate setting connection code128 command for Cipher device use. 
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * Bitmap img = _control.GetSettingConnBarcodeImage(nWidth, nHeight);<br>
+	 * </DD>
+	 */
+    public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight); 
 }

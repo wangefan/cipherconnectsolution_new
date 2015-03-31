@@ -7,23 +7,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 
-public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
-{
-	private static CipherConnCtrl2EZMet mMe = null;
-	
-	public static CipherConnCtrl2EZMet getInstance(Context context)
-	{
-		if (mMe == null)
-			mMe = new CipherConnCtrl2EZMet(context);
-
-		return mMe;
-	}
+public class CipherConnectControl implements ICipherConnectControl {
 	
 	static public final int NClassicBTMode = 0;
 	static public final int NBLEBTMode = 1;
 	private int mNBTMode = NClassicBTMode;
 	private Context mContext = null;
-	protected ArrayList<ICipherConnectControl2Listener> mCtrlListenerList = null;
+	protected ArrayList<ICipherConnectControlListener> mListenerList = null;
 	
 	//Data members
 	private CipherConnCtrlmplBase    mCipherConnCtrlImpl = null;
@@ -32,9 +22,9 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 	
 	//Default Ctr
 	
-	private CipherConnCtrl2EZMet(Context context) {
+	public CipherConnectControl(Context context) {
 		mContext = context;
-		mCtrlListenerList = new ArrayList<ICipherConnectControl2Listener>();
+		mListenerList = new ArrayList<ICipherConnectControlListener>();
 		mCipherConnCtrlImplClassic = new CipherConnCtrlmplClassic(mContext);
 		mCipherConnCtrlImplBle = new CipherConnCtrlmplBLE(mContext);
 		SetBLEMode(false);
@@ -54,10 +44,9 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		default:
 			throw new RuntimeException();
 		}
-		mCipherConnCtrlImpl.SetCipherConnectControlListener(mCtrlListenerList);
+		mCipherConnCtrlImpl.SetCipherConnectControlListener(mListenerList);
 	}
 	
-	@Override
 	public String getVersion()
 	{
 		return CipherConnectControlResource.lib_version;
@@ -69,39 +58,32 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		return mCipherConnCtrlImpl.isConnected();
 	}
 	
-	public ICipherConnBTDevice[] getBtDevices()
+	public String[] getBluetoothDeviceNames()
 	{
-		return mCipherConnCtrlImpl.getBtDevices();
+		return mCipherConnCtrlImpl.getBluetoothDeviceNames();
 	}
 	
-    public void connect(ICipherConnBTDevice device)throws NullPointerException
+    public void connect(String deviceName)throws NullPointerException
     {
-		mCipherConnCtrlImpl.connect(device);
-	}
-    
-    public void connect(String deviceName, String deviceAddr)throws NullPointerException
-    {
-		mCipherConnCtrlImpl.connect(deviceName, deviceAddr);
+		mCipherConnCtrlImpl.connect(deviceName);
 	}
     
 	public void disconnect()
 	{
 		mCipherConnCtrlImpl.disconnect();
 	}
-
-	@Override
-	public void addCipherConnect2Listener(ICipherConnectControl2Listener listener) throws NullPointerException 
+	
+	public void addCipherConnectControlListener(ICipherConnectControlListener listener)throws NullPointerException
 	{
 		if(listener == null)
 			throw new NullPointerException();
 				
-		mCtrlListenerList.add(listener);
-		
+		mListenerList.add(listener);
 	}
 	
-	public void setAutoReconnect(boolean enable)throws NullPointerException
+	public void setAuotReconnect(boolean enable,String deviceName)throws NullPointerException
 	{
-		mCipherConnCtrlImpl.setAutoReconnect(enable);
+		mCipherConnCtrlImpl.setAuotReconnect(enable, deviceName);
 	}
 	
 	public boolean isAutoReconnect()
