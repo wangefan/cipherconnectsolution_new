@@ -2,7 +2,7 @@ package com.cipherlab.cipherconnectpro;
 
 import java.util.ArrayList;
 
-import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
+import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
 
 import android.content.Intent;
 import android.os.Bundle;

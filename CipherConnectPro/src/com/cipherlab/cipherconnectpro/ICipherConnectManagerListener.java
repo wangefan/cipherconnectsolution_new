@@ -1,5 +1,5 @@
 package com.cipherlab.cipherconnectpro;
-import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
+import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
 
 public interface ICipherConnectManagerListener {
     public void onBarcode(String barcode);

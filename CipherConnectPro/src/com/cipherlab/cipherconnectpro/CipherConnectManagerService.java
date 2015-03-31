@@ -10,10 +10,10 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.cipherlab.cipherconnect.sdk.CipherConnectControl;
-import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
-import com.cipherlab.cipherconnect.sdk.ICipherConnectControl;
-import com.cipherlab.cipherconnect.sdk.ICipherConnectControlListener;
+import com.cipherlab.cipherconnect2.sdk.CipherConnCtrl2EZMet;
+import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
+import com.cipherlab.cipherconnect2.sdk.ICipherConnCtrl2EZMet;
+import com.cipherlab.cipherconnect2.sdk.ICipherConnCtrl2EZMetListener;
 import com.cipherlab.cipherconnectpro.ICipherConnectManagerService.CONN_STATE;
 import com.cipherlab.cipherconnectpro.ICipherConnectManagerService.SERVER_STATE;
 import com.cipherlab.cipherconnectpro.R;
@@ -32,7 +32,7 @@ public class CipherConnectManagerService extends Service
             "com.cipherEZMet.cipherconnectpro.CipherConnectManagerService.ConnectionState_CHANGED";
 	
 	private static final String TAG = "CipherConnectManagerService()";
-	public static ICipherConnectControl mCipherConnectControl;
+	public static ICipherConnCtrl2EZMet mCipherConnectControl;
 	private ArrayList<ICipherConnectManagerListener> mListenerList = 
             new ArrayList<ICipherConnectManagerListener>();
     private LocalBinder mBinder;
@@ -206,8 +206,8 @@ public class CipherConnectManagerService extends Service
     private void CipherConnectControl_init()
     {
     	CipherConnectWakeLock.initial(this);
-    	mCipherConnectControl = new CipherConnectControl(this);
-		mCipherConnectControl.addCipherConnectControlListener(new ICipherConnectControlListener() 
+    	mCipherConnectControl = CipherConnCtrl2EZMet.getInstance(this);
+		mCipherConnectControl.addCipherConnect2Listener(new ICipherConnCtrl2EZMetListener() 
     	{
     		public void onListenServerOnline() {
     			CipherConnectControl_onListenServerOnline();

@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-import com.cipherlab.cipherconnect.sdk.ICipherConnBTDevice;
+import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
 import com.cipherlab.cipherconnectpro.R;
 import com.cipherlab.util.KeyboardUtil;
 import com.example.android.softkeyboard.SoftKeyboard;
