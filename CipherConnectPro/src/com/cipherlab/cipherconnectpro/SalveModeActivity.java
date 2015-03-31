@@ -265,7 +265,11 @@ public class SalveModeActivity extends BTSettingActivity
 	@Override
 	protected void onDestroy() 
 	{	
-		mCipherConnectService = null;
+        if(mCipherConnectService != null)
+        {
+        	mCipherConnectService.StopListenConn();	
+        	mCipherConnectService = null;
+        }
 		super.onDestroy();
 	}
 
