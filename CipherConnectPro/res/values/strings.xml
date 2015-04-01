@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="strServiceFail">Bind Service fail</string>
-    <string name="strWaitConnOn">Start waitting connection&#8230;</string>
-    <string name="strWaitConnOff">Stop waitting connection</string>
+    <string name="strWaitConnOn">Waiting connection…</string>
+    <string name="strWaitConnOff">Idle</string>
     <string name="strServiceIdel">Idle</string>
     <string name="strConnecting">connecting&#8230;</string>
     <string name="strConnectingMsg">Device is connecting, please wait&#8230;</string>
@@ -72,11 +72,10 @@
 	<string name="remove_lite_dialog_body">This input method may conflict with application CipherConnect Lite. Please remove CipherConnect Lite.</string>
 	<string name="remove_lite_quit_button">Exit</string>
 	<string name="setting_minimum">Minimize keyboard</string>
-	<string name="Bluetooth_Mode_Title">Bluetooth mode select</string>
-	<string name="Bluetooth_Mode_Summary">Select Bluetooth Mode(Classic) </string>
-	<string name="Bluetooth_Mode_BLE_Summary">Select Bluetooth Mode(Low energy)</string>
+	<string name="Bluetooth_Mode_Title">Select Bluetooth mode</string>
+	<string name="Bluetooth_Mode_Summary">Classic </string>
+	<string name="Bluetooth_Mode_BLE_Summary">Low energy</string>
 	<string name="Bluetooth_Title">Bluetooth</string>
-	<string name="Bluetooth_Mode_BLE_Title">Bluetooth mode select(LE)</string>
 	<string name="Backlight_Suspend_Title">Stay awake</string>
 	<string name="Exit_Title">Exit CiperConnect</string>
 	<string name="Bluetooth_TurnOn">Turn on Bluetooth</string>
@@ -110,9 +109,7 @@
 	<string name="ble_not_supported">BLE is not supported</string>
 	<string name="ble_bind_service_fail">Inter initialize fail, please try again</string>
 	<string name="LE_scan_title">BLE Device Scan</string>
-	<string name="Classic_scan_title">Bluetooth Device Scan</string>
-	<string name="Str_connect_to">Scan Devices and connect</string>
-	<string name="Str_wait_connect">Wait devices to connect</string>
+	<string name="Classic_scan_title">Discover Low Energy Devices</string>
 	<!--default Build conn values: slave;none|addrNone@false -->
 	<string name="Str_BMPrefFormat">%1$s;%2$s|%3$s@%4$b</string>
 	<string name="Str_defaultMode">slave</string>
@@ -126,15 +123,6 @@
 	<string name="menu_stop">Stop</string>
 	<string name="unknown_device">unknown device</string>
 	<string name="none_device">none</string>
-	<string-array name="ConnMode_entries">
-		<item>@string/Str_connect_to</item>
-	    <item>@string/Str_wait_connect</item>
-	</string-array>
-	<string-array name="ConnMode_entries_value">
-		<item>@string/Str_connect_to</item>
-	    <item>@string/Str_wait_connect</item>
-	</string-array>
-	
 	<string-array name="ScanMode_entries">
 		<item>@string/Str_BT_Classic</item>
 	    <item>@string/Str_BT_LE</item>
