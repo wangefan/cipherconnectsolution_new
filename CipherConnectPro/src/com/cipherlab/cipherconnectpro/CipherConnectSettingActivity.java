@@ -138,6 +138,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     @SuppressWarnings("deprecation")
 	private void init_UI()
 	{
+    	Log.d(TAG, "init_UI begin");
     	Boolean btStatus = false;
     	Boolean checkStatus = KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name);
 
@@ -273,11 +274,9 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
             	{
             		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_Summary);
-            		mBtnBTMode.setTitle(R.string.Bluetooth_Mode_Title);
             	}
             	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
             		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_BLE_Summary);
-            		mBtnBTMode.setTitle(R.string.Bluetooth_Mode_BLE_Title);
             	}
             	mBtnBTMode.setEnabled(true);
             	mBtnBTMode.setOnPreferenceChangeListener(new OnPreferenceChangeListener() 
@@ -418,6 +417,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * <!----------------------------------------------------------------->
      * */
     private void enableUI() {
+    	 Log.d(TAG, "enableUI begin");
         if (KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name) == true) {
             ckbMinimum.setEnabled(true);
         }
@@ -442,13 +442,11 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	    if(0 == strMode.compareTo(getResources().getString(R.string.Str_BT_Classic))) {
 	    	mCipherConnectService.SetBLEMode(false);
 	    	preference.setSummary(R.string.Bluetooth_Mode_Summary);
-	    	preference.setTitle(R.string.Bluetooth_Mode_Title);
 	    	CipherConnectSettingInfo.setBTMode(this, strMode);
 	    }
 	    else if (0 == strMode.compareTo(getResources().getString(R.string.Str_BT_LE))) {
 	    	mCipherConnectService.SetBLEMode(true);
 	    	preference.setSummary(R.string.Bluetooth_Mode_BLE_Summary);
-	    	preference.setTitle(R.string.Bluetooth_Mode_BLE_Title);
 	    	CipherConnectSettingInfo.setBTMode(this, strMode);   	
 	    }
 	    else {
@@ -514,11 +512,13 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * <!----------------------------------------------------------------->
      * */
     public boolean exit_onPreferenceChange(Preference preference) {
+    	Log.d(TAG, "exit_onPreferenceChange begin");
         if (!KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name)) {
             mCipherConnectService.stopSelf();
         }
 
         this.finish();
+        Log.d(TAG, "exit_onPreferenceChange end");
         return true;
     }
     
@@ -542,6 +542,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     }
 
     private void remove_ime_conflic() {
+    	Log.d(TAG, "remove_ime_conflic begin");
         if (KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name_conflict)) {
             
         	Builder builder = DialogUtil.newAlertDialog(this,
