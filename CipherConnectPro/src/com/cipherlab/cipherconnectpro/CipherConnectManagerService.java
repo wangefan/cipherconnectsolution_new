@@ -48,7 +48,15 @@ public class CipherConnectManagerService extends Service
         										getResources().getString(R.string.ime_name),
         		                                      CipherConnectNotification.intent_cipherconnectproSettings()));
         super.onCreate();
+        Log.d(TAG, "onCreate(): end");
     }
+    
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) 
+	{
+		Log.d(TAG, "onStartCommand called");
+		return START_NOT_STICKY;	//means not re-create service if no call startService explicitly
+	}
 
     @Override
     public void onDestroy() {
@@ -63,6 +71,7 @@ public class CipherConnectManagerService extends Service
 
         CipherConnectSettingInfo.destroy();
         stopForeground(true);
+        Log.d(TAG, "onDestroy(): end");
     }
     
     @Override
