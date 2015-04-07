@@ -17,11 +17,11 @@
     <string name="strConnected">Connected</string>
     <string name="strConnectErr">Connect error!</string>
 	<string name="ime_name">CipherConnect Pro</string>
-	<string name="ime_connection">Connect devices</string>
+	<string name="ime_connection">Connection type</string>
 	<string name="strLastDevNameTitle">Last Connect:</string>	
-	<string name="ime_setting_name">CipherConnect Pro settings</string>
+	<string name="ime_setting_name">Settings</string>
 	<string name="setting_buildconnect">Connect to %s</string>
-	<string name="setting_waitconnect">Wait connection</string>
+	<string name="setting_waitconnect">Tap to display scanner`s setup barcodes</string>
 	<string name="setting_bluetooth_device_status">Bluetooth device status</string>
 	<string name="setting_bluetooth_device_connected">Connected</string>
 	<string name="setting_bluetooth_device_connecting">Connecting&#8230;</string>
@@ -72,7 +72,7 @@
 	<string name="remove_lite_dialog_body">This input method may conflict with application CipherConnect Lite. Please remove CipherConnect Lite.</string>
 	<string name="remove_lite_quit_button">Exit</string>
 	<string name="setting_minimum">Minimize keyboard</string>
-	<string name="Bluetooth_Mode_Title">Select Bluetooth mode</string>
+	<string name="Bluetooth_Mode_Title">Classic Bluetooth/Low Energy</string>
 	<string name="Bluetooth_Mode_Summary">Classic </string>
 	<string name="Bluetooth_Mode_BLE_Summary">Low energy</string>
 	<string name="Bluetooth_Title">Bluetooth</string>
@@ -118,7 +118,7 @@
 	<string name="Str_defaultAutoReConn">false</string>
 	<string name="Str_BT_Classic">Classic</string>
 	<string name="Str_BT_LE">Low Energy</string>
-	<string name="str_search">Search</string>
+	<string name="str_discover">Discover</string>
 	<string name="menu_scan">Scan</string>
 	<string name="menu_stop">Stop</string>
 	<string name="unknown_device">unknown device</string>

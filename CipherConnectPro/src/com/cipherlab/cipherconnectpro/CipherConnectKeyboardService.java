@@ -54,6 +54,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
                   "CipherConnectSettingActivity.ConnectStatus_bt_startService:",
                   e);
         }
+        Log.d(TAG, "onCreate(): end");
     }
 
     private void init_ScannerService() {
@@ -114,12 +115,14 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
 
     @Override
     public void onFinishInputView(boolean finishingInput) {
+    	Log.d(TAG, "onFinishInputView(): begin");
         super.onFinishInputView(finishingInput);
         this.isOnStartInputView = false;
     }
 
     @Override
     public void onDestroy() {
+    	Log.d(TAG, "onDestroy(): begin");
         this.unbindService(this.mSConnection);
 
         if (!KeyboardUtil
@@ -131,6 +134,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         this.mCipherConnectManagerService = null;
 
         super.onDestroy();
+        Log.d(TAG, "onDestroy(): end");
     }
 
     @Override
@@ -252,6 +256,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
             }
         }
         super.onUnbindInput();
+        Log.d("xxxx", "onUnbindInput end");
     }
 
     /*
