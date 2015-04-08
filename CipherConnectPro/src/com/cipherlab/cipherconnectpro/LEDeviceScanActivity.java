@@ -33,6 +33,10 @@ public class LEDeviceScanActivity extends BTSettingActivity {
 	    	
 	    }
 	    
+	    public void onMinimizeCmd() {
+	    	
+	    }
+	    
 	    public void onConnecting() {
 	    	
 	    }

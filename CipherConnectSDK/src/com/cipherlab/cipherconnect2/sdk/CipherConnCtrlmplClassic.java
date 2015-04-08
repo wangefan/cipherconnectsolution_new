@@ -252,6 +252,16 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		setHasConnectionInMainThrd(false);
 	}
 	
+	private boolean mIsMinimizeCmd(String strReceive)
+	{
+        final String strMinimizeCmd = "109900\n"; 
+        if(strReceive.equals(strMinimizeCmd))
+    	{
+    		return true;
+    	}
+        return false;
+	}
+	
 	private void mProcessBarcode(byte[] buffer, ICipherConnBTDevice device) throws UnsupportedEncodingException{
     	if(buffer==null || buffer.length==0)
     		return ;
@@ -285,40 +295,35 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
     	}
 	
         String barcode = sb.toString();
-		
-		StringTokenizer st = new StringTokenizer(barcode,"\n");
-        if(st.countTokens()==1){
-        	fireReceivingBarcode(device, barcode);
-        }
-        else{
-        	
-        	int count = st.countTokens();
-        	for(int i=0;i<count;i++)
-        	{
-        		String code = (String)st.nextElement();
-        		if(i<count-1)
-        			fireReceivingBarcode(device,code +"\n");
-        		else
-        			fireReceivingBarcode(device,code);
-        		
-        		try {
-					Thread.sleep(300);
-				} 
-				catch (Exception e) {
-				}
-        	}
-        	/*
-        	while (st.hasMoreElements()) {
-        		String code = (String)st.nextElement();
-        		fireReceivingBarcode(mDeviceName+"B",code +"\n");
-        		//fireReceivingBarcode(mDeviceName+"B",code);
-				try {
-					Thread.sleep(300);
-				} 
-				catch (Exception e) {
-				}
-			}
-			*/
+        
+        if(mIsMinimizeCmd(barcode))
+    	{
+    		fireMinimizeCmd();
+    	}
+        else 
+        {
+        	StringTokenizer st = new StringTokenizer(barcode,"\n");
+            if(st.countTokens()==1){
+            	fireReceivingBarcode(device, barcode);
+            }
+            else{
+            	
+            	int count = st.countTokens();
+            	for(int i=0;i<count;i++)
+            	{
+            		String code = (String)st.nextElement();
+            		if(i<count-1)
+            			fireReceivingBarcode(device,code +"\n");
+            		else
+            			fireReceivingBarcode(device,code);
+            		
+            		try {
+    					Thread.sleep(300);
+    				} 
+    				catch (Exception e) {
+    				}
+            	}
+            }	
         }
     }
 	

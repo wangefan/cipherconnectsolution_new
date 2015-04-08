@@ -25,6 +25,12 @@ public interface ICipherConnectControl2Listener
 	public void onReceivingBarcode(ICipherConnBTDevice device, String barcode);
 	
 	/**
+	 * The user program will be notified When BT scanner device sends minimize keyboard command.
+	 *
+	 */
+	public void onMinimizeCmd();
+	
+	/**
 	 * The user program will be notified
 	 *  when the exception or error occurs
 	 *   in CipherConnectControl while CipherConnectControl

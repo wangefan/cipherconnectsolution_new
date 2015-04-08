@@ -82,7 +82,23 @@ public class SoftKeyboard extends InputMethodService implements
     private LatinKeyboard mCurKeyboard;
 
     private String mWordSeparators;
-
+    
+    protected void setKeyboardMinimize(boolean bSetMin)
+    {
+    	if(bSetMin)
+    	{
+    		mMode = TURN_ON;
+    		mCurKeyboard = mOneLineKeyboard;
+    	}
+    	else
+    	{
+    		mMode = TURN_OFF;
+    		mCurKeyboard = mQwertyKeyboard;
+    	}
+    	CipherConnectSettingInfo.setMinimum(this, bSetMin);
+    	if(mInputView != null)
+    		mInputView.setKeyboard(mCurKeyboard);
+    }
     
     /**
      * Main initialization of the input method component. Be sure to call to
@@ -267,14 +283,7 @@ public class SoftKeyboard extends InputMethodService implements
             // normal alphabetic keyboard, and assume that we should
             // be doing predictive text (showing candidates as the
             // user types).
-            boolean flag = CipherConnectSettingInfo.isMinimum(this);
-            if (flag == true) {
-                mMode = TURN_ON;
-                mCurKeyboard = mOneLineKeyboard;
-            } else {
-                mMode = TURN_OFF;
-                mCurKeyboard = mQwertyKeyboard;
-            }
+            setKeyboardMinimize(CipherConnectSettingInfo.isMinimum(this));
 
             mPredictionOn = true;
 
@@ -652,7 +661,7 @@ public class SoftKeyboard extends InputMethodService implements
             if (mMode == TURN_ON) {
                 if (current == mOneLineKeyboard)
                 {
-                	current = mQwertyKeyboard;                	
+                	current = mQwertyKeyboard;    
                 }
                 else if (current == mSymbolsKeyboard
                          || current == mSymbolsShiftedKeyboard) {
@@ -660,6 +669,9 @@ public class SoftKeyboard extends InputMethodService implements
                 } else {
                     current = mSymbolsKeyboard;
                 }
+                mMode = TURN_OFF;
+                CipherConnectSettingInfo.setMinimum(this, false);
+                mCurKeyboard = mQwertyKeyboard;
             } else {
                 if (current == mSymbolsKeyboard
                         || current == mSymbolsShiftedKeyboard) {

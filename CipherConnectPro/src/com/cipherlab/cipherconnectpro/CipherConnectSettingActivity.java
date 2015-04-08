@@ -53,7 +53,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	private BuildConnMethodPreference mBuildConn = null;
 	private ListPreference   mBtnBTMode = null; 
 	private CheckBoxPreference ckbScreenBacklight = null;
-	private CheckBoxPreference ckbMinimum = null;	//Minimize keyboard 
+	private CheckBoxPreference mCkbAcceptMinimum = null;	//Accept o receive Minimize keyboard command from scanner 
 	private ListPreference lstSendBarcodeInterval = null;  
 	private ListPreference lstLanguage = null;             
     
@@ -305,19 +305,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         });
         
         /* Minimum keyboard */
-        ckbMinimum = (CheckBoxPreference) findPreference("ckbMinimum");
-        if (checkStatus == true && btStatus == true) {
-            ckbMinimum.setEnabled(true);
-        } else {
-            ckbMinimum.setEnabled(false);
-        }
-        
-		ckbMinimum.setChecked(CipherConnectSettingInfo.isMinimum(this));
-		ckbMinimum
-				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		mCkbAcceptMinimum = (CheckBoxPreference) findPreference("ckbMinimum");
+		mCkbAcceptMinimum.setChecked(CipherConnectSettingInfo.isAcceptMinimum(this));
+		mCkbAcceptMinimum.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-                return Minimum_onPreferenceChange(preference, newValue);
+                return AcpMinimum_onPreferenceChange(preference, newValue);
             }
         });
         
@@ -407,37 +400,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     		break;
     	}  
     }
-
-    /*
-     * <!----------------------------------------------------------------->
-     * @Name: enableUI()
-     * @Description: Enable Cipherconnect setting menu. 
-     *   
-     * @param: N/A
-     * @param: N/A
-     * return: N/A 
-     * <!----------------------------------------------------------------->
-     * */
-    private void enableUI() {
-    	 Log.d(TAG, "enableUI begin");
-        if (KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name) == true) {
-            ckbMinimum.setEnabled(true);
-        }
-    }
-    
-    /*
-     * <!----------------------------------------------------------------->
-     * @Name: disableUI()
-     * @Description: Disable Connect status / Choose BT device / Auto connect  
-     *               and Minmum keyboard on Setting menu.
-     * @param: N/A
-     * @param: N/A
-     * return: N/A 
-     * <!----------------------------------------------------------------->
-     * */
-    private void disableUI() {
-        ckbMinimum.setEnabled(false);
-    }
     
     public boolean BTMode_onPreferenceClick(Preference preference, Object newValue) {
     	String strMode = (String) newValue;
@@ -526,7 +488,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     /*
      * <!----------------------------------------------------------------->
-     * @Name: Minimum_onPreferenceChange()
+     * @Name: AcpMinimum_onPreferenceChange()
      * @Description: Set Minimum keyboard. 
      *   
      * @param: Preference preference
@@ -534,11 +496,11 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * return: boolean 
      * <!----------------------------------------------------------------->
      * */
-    public boolean Minimum_onPreferenceChange(Preference preference, Object newValue) {
+    public boolean AcpMinimum_onPreferenceChange(Preference preference, Object newValue) {
         Boolean b = (Boolean) newValue;
         
-        if (CipherConnectSettingInfo.isMinimum(this) != b)
-            CipherConnectSettingInfo.setMinimum(this, b);
+        if (CipherConnectSettingInfo.isAcceptMinimum(this) != b)
+            CipherConnectSettingInfo.setAcceptMinimum(this, b);
         
         return true;
     }
@@ -623,22 +585,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         	super.onActivityResult(requestCode, resultCode, data);
         }        
     }
-   
-    @Override
-    protected void onRestart() {
-    	Log.d(TAG, "onRestart()"); 
-    	
-        if (mBluetoothAdapter != null) {
-            if (mBluetoothAdapter.isEnabled() == false) {
-
-                disableUI();
-            } else {
-
-                enableUI();
-            }
-        }
-        super.onRestart();
-    }
   
     @Override
 	protected void onDestroy() 
@@ -654,8 +600,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     /*
      * <!----------------------------------------------------------------->
      * @Name: ServiceReceiver()
-     * @Description: Receiver the Bluetooth Turn on/off event.  
-     *   Handles various events fired by the CipherConnectManagerService.
+     * @Description: Handles various events fired by the CipherConnectManagerService.
      *   ACTION_CONN_STATE_CHANGED.
      * @param: N/A
      * @param: N/A
@@ -667,19 +612,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         public void onReceive(Context context, Intent intent) {
         	final String action = intent.getAction();
 
-            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                                               BluetoothAdapter.ERROR);
-                if (state == BluetoothAdapter.STATE_ON) {
-
-                    enableUI();
-                } else if (state == BluetoothAdapter.STATE_OFF) {
-
-                    disableUI();
-                }
-            }
             //Connection state change
-            else if (CipherConnectManagerService.ACTION_CONN_STATE_CHANGED.equals(action)) 
+            if (CipherConnectManagerService.ACTION_CONN_STATE_CHANGED.equals(action)) 
             {	
             	mUpdateUI(true);
             }

@@ -100,6 +100,18 @@ abstract public class CipherConnCtrlmplBase {
 		}
 	}
 	
+	protected void fireMinimizeCmd()
+	{
+		if(mListenerList == null)
+			return;
+		for (ICipherConnectControl2Listener l : this.mListenerList) {
+			if(l!=null)
+			{
+				l.onMinimizeCmd();
+			}
+		}
+	}
+	
 	protected void fireConnecting(ICipherConnBTDevice device){
 		if(mListenerList == null)
 			return;

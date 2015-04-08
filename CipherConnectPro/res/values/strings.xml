@@ -71,7 +71,7 @@
     <string name="remove_lite_dialog_title">Attention</string>
 	<string name="remove_lite_dialog_body">This input method may conflict with application CipherConnect Lite. Please remove CipherConnect Lite.</string>
 	<string name="remove_lite_quit_button">Exit</string>
-	<string name="setting_minimum">Minimize keyboard</string>
+	<string name="setting_minimum">Accecpt Minimize keyboard</string>
 	<string name="Bluetooth_Mode_Title">Classic Bluetooth/Low Energy</string>
 	<string name="Bluetooth_Mode_Summary">Classic </string>
 	<string name="Bluetooth_Mode_BLE_Summary">Low energy</string>
@@ -108,8 +108,8 @@
 	
 	<string name="ble_not_supported">BLE is not supported</string>
 	<string name="ble_bind_service_fail">Inter initialize fail, please try again</string>
-	<string name="LE_scan_title">BLE Device Scan</string>
-	<string name="Classic_scan_title">Discover Low Energy Devices</string>
+	<string name="LE_scan_title">Low Energy Devices</string>
+	<string name="Classic_scan_title">Classic Bluetooth</string>
 	<!--default Build conn values: slave;none|addrNone@false -->
 	<string name="Str_BMPrefFormat">%1$s;%2$s|%3$s@%4$b</string>
 	<string name="Str_defaultMode">slave</string>
@@ -118,8 +118,8 @@
 	<string name="Str_defaultAutoReConn">false</string>
 	<string name="Str_BT_Classic">Classic</string>
 	<string name="Str_BT_LE">Low Energy</string>
-	<string name="str_discover">Discover</string>
-	<string name="menu_scan">Scan</string>
+	<string name="str_search">Search</string>
+	<string name="menu_scan">Search</string>
 	<string name="menu_stop">Stop</string>
 	<string name="unknown_device">unknown device</string>
 	<string name="none_device">none</string>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.inputmethodservice.Keyboard;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -20,6 +21,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     private boolean isOnStartInputView = false;
     private static final String TAG = "CipherConnectKeyboardService()";
 	private ICipherConnectManagerService mCipherConnectManagerService;
+	private Handler mMainThrdHandler = new Handler();
    
     private ServiceConnection mSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -76,6 +78,21 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
                 sendBarcode(barcode);
             }
             
+            public void onMinimizeCmd()
+            {
+            	 //Handle Minimize Command
+                if(CipherConnectSettingInfo.isAcceptMinimum(CipherConnectKeyboardService.this))
+            	{
+            		mMainThrdHandler.post(new Runnable(){
+            			public void run()
+            			{
+            				boolean bSetMin = !CipherConnectSettingInfo.isMinimum(CipherConnectKeyboardService.this);	
+                    		setKeyboardMinimize(bSetMin);
+            			}
+            		});
+            	}
+            }
+            
             public void onGetLEDevice(final ICipherConnBTDevice device) {
             	
             }
@@ -87,29 +104,6 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     	Log.d(TAG, "onStartInputView(): restarting= "+restarting);
     	
         super.onStartInputView(info, restarting);
-
-        /*
-        if (this.mCipherConnectManagerService.isConnected() == false) {
-        	ICipherConnBTDevice[] devices = this.mCipherConnectManagerService
-                                   .getBtDevices();
-            if (devices != null && devices.length > 0) {
-                String device_name = CipherConnectSettingInfo
-                                     .getLastDeviceName(this);
-                try {
-                    this.mCipherConnectManagerService.connect(device_name);
-                } catch (Exception e) {
-                    Log.e(this.getResources().getString(R.string.ime_name),
-                          "CipherConnectService.onStartInputView:", e);
-                }
-            }
-        }
-
-        if (CipherConnectSettingInfo.isAutoConnect(this)) {
-            if (!this.mCipherConnectManagerService.isAuotConnect())
-                this.mCipherConnectManagerService.AuotConnect(true, CipherConnectSettingInfo.getLastDeviceName(this));
-        }
-        */
-
         this.isOnStartInputView = true;
     }
 
@@ -177,8 +171,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
 
     public synchronized void sendBarcode(String barcode) {
     	//Log.d(TAG, "sendBarcode(): barcode= "+barcode);
-    	
-        if (this.isOnStartInputView) {
+    	if (this.isOnStartInputView) {
             if (barcode == null)
                 return;
             if (barcode.length() == 0)
