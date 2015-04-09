@@ -52,4 +52,13 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
 	 * </DD>
 	 */
     public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight); 
+    
+    /**
+   	 * Generate setting connection 2D code command for connecting Cipher device use. 
+   	 * <DT><B>code:</B><DT>
+   	 * <DD>
+   	 * Bitmap img = _control.GetSettingConnQRCodeImage(nWidth, nHeight);<br>
+   	 * </DD>
+   	 */
+     public Bitmap GetSettingConnQRCodeImage(int nWidth, int nHeight);
 }

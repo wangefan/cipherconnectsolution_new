@@ -22,7 +22,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:orientation="vertical" >
 
 			<ImageView
@@ -43,7 +43,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:orientation="vertical" >
 
 	         <ImageView
@@ -59,7 +59,7 @@
 	             android:layout_gravity="center_horizontal"
 	             android:text="@string/strSetConn" />
 
-         </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,29 +79,52 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/strMacAdd" />
-
         </LinearLayout>
-         
-          <LinearLayout
+        
+         <LinearLayout
               android:layout_width="match_parent"
               android:layout_height="0dp"
               android:layout_weight="1"
               android:orientation="vertical" >
 
 	        <ImageView
-	            android:id="@+id/imageBTConn"
-	            android:layout_width="@dimen/BTICWidth"
-	            android:layout_height="@dimen/BTICHeight"
+	            android:id="@+id/imageQRCodeConn"
+	            android:layout_width="@dimen/QRcodeWidth"
+	            android:layout_height="@dimen/QRcodeHeight"
 	            android:layout_gravity="center_horizontal" />
 	
 	        <TextView
-	            android:id="@+id/tvwDeviceName"
+	            android:id="@+id/tvwQRConn"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_gravity="center_horizontal"
-	            android:text="@string/strBTNoDeviceName" />
-
+	            android:text="@string/strOneScanTile" />
 		</LinearLayout>
-    </LinearLayout>
+         
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="vertical" >
 
+	        <ImageView
+	            android:id="@+id/imageBTConn"
+	            android:layout_width="@dimen/BTICWidth"
+	            android:layout_height="@dimen/BTICHeight"
+	            android:layout_centerHorizontal="true"
+	            android:layout_gravity="center_horizontal" />
+
+	        <TextView
+	        android:id="@+id/tvwDeviceName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/strBTNoDeviceName" />
+		</RelativeLayout>
+		
+	
+		    
+    </LinearLayout>
 </RelativeLayout>

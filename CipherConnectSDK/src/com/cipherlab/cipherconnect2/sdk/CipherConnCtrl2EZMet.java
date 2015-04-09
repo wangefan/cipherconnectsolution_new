@@ -163,4 +163,11 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 			return mCipherConnCtrlImpl.GetSettingConnBarcodeImage(nWidth, nHeight);
     	return null;
     }
+    
+    public Bitmap GetSettingConnQRCodeImage(int nWidth, int nHeight)
+    {
+    	if(mCipherConnCtrlImpl != null)
+			return mCipherConnCtrlImpl.GetSettingConnQRCodeImage(nWidth, nHeight);
+    	return null;
+    }
 }

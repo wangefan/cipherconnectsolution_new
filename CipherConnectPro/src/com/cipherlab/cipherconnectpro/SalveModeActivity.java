@@ -22,6 +22,8 @@ public class SalveModeActivity extends BTSettingActivity
 	private TextView mTvwSetConnBCode;
 	private ImageView mBCodeAddressImage;
 	private TextView mTvwBCodeAddress;
+	private ImageView mQRCodeConnImage;
+	private TextView mTvwQRCodeConn;
 	private ImageView mImageBTConn;
 	private ProgressDialog mPDialog = null;
 	
@@ -112,11 +114,16 @@ public class SalveModeActivity extends BTSettingActivity
     		{	   			
     			float fWidthPxl = 300.0f;
     			float fHeightPxl = 100.0f;
+    			
+    			float fQRWidthPxl = 90.0f;
+    			float fQRHeightPxl = 90.0f;
     			Resources rsc = getResources();
     			if(rsc != null)
     			{
     				fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
     				fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
+    				fQRWidthPxl = rsc.getDimension(R.dimen.QRcodeWidth);
+    				fQRHeightPxl = rsc.getDimension(R.dimen.QRcodeHeight);
     			}
     					
     			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
@@ -134,6 +141,11 @@ public class SalveModeActivity extends BTSettingActivity
     			mBCodeAddressImage.setVisibility(View.VISIBLE);
     			mTvwBCodeAddress.setVisibility( View.VISIBLE);
     			
+    			Bitmap bmpQRCodeConn = mCipherConnectService.GetSettingConnQRcodeImage((int)fQRWidthPxl, (int)fQRHeightPxl);
+    			mQRCodeConnImage.setImageBitmap(bmpQRCodeConn);
+    			mQRCodeConnImage.setVisibility(View.VISIBLE);
+    			mTvwQRCodeConn.setVisibility( View.VISIBLE);
+    			
     			mImageBTConn.setImageResource(R.drawable.btdisconnect);
     			mTvwDeviceName.setText(R.string.strWaitConnOn);
     		}
@@ -146,6 +158,8 @@ public class SalveModeActivity extends BTSettingActivity
     			mBCodeSettingConnImage.setVisibility( View.INVISIBLE);
     			mTvwSetConnBCode.setVisibility( View.INVISIBLE);
     			mBCodeAddressImage.setVisibility( View.INVISIBLE);
+    			mTvwQRCodeConn.setVisibility( View.INVISIBLE);
+    			mQRCodeConnImage.setVisibility(View.INVISIBLE);
     			mTvwBCodeAddress.setVisibility( View.INVISIBLE);
     			mImageBTConn.setImageResource(R.drawable.btdisconnect);
     		}
@@ -184,6 +198,8 @@ public class SalveModeActivity extends BTSettingActivity
     			mTvwSetConnBCode.setVisibility( View.INVISIBLE);
     			mBCodeAddressImage.setVisibility( View.INVISIBLE);
     			mTvwBCodeAddress.setVisibility( View.INVISIBLE);
+    			mQRCodeConnImage.setVisibility(View.INVISIBLE);
+    			mTvwQRCodeConn.setVisibility( View.INVISIBLE);
     			mImageBTConn.setImageResource(R.drawable.btconnected);	
     			String strMag = mCipherConnectService.GetConnDevice().getDeviceName() + " connected";
     			mTvwDeviceName.setText(strMag);  			
@@ -221,6 +237,10 @@ public class SalveModeActivity extends BTSettingActivity
 		
 		mBCodeAddressImage = (ImageView)findViewById(R.id.imageMACAdd);
 		mTvwBCodeAddress = (TextView) findViewById(R.id.tvwAddress);
+		
+		mQRCodeConnImage = (ImageView)findViewById(R.id.imageQRCodeConn);
+		mTvwQRCodeConn = (TextView) findViewById(R.id.tvwQRConn);
+		
 		mImageBTConn = (ImageView)findViewById(R.id.imageBTConn);
 		mTvwDeviceName = (TextView) findViewById(R.id.tvwDeviceName);
 	}

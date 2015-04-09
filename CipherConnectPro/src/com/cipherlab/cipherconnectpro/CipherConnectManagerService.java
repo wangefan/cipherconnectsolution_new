@@ -117,6 +117,11 @@ public class CipherConnectManagerService extends Service
     	public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight) {
     		return bt_GetSettingConnBarcodeImage(nWidth, nHeight);
     	}
+    	
+    	public Bitmap GetSettingConnQRcodeImage(int nWidth, int nHeight)
+    	{
+    		return bt_GetSettingConnQRCodeImage(nWidth, nHeight);
+    	}
     	//Server service end
     	
 		public boolean connect(ICipherConnBTDevice device) throws Exception {
@@ -526,6 +531,13 @@ public class CipherConnectManagerService extends Service
 	{
 		if(mCipherConnectControl != null)
 			return mCipherConnectControl.GetSettingConnBarcodeImage(nWidth, nHeight);
+		return null;
+	}
+    
+    private Bitmap bt_GetSettingConnQRCodeImage(int nWidth, int nHeight)
+	{
+		if(mCipherConnectControl != null)
+			return mCipherConnectControl.GetSettingConnQRCodeImage(nWidth, nHeight);
 		return null;
 	}
 }

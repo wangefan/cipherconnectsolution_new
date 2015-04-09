@@ -6,10 +6,12 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.Log;
 import android.os.Handler;
 
@@ -20,6 +22,7 @@ abstract public class CipherConnCtrlmplBase {
 	protected Bitmap mMACAddressBitmap = null;
 	protected Bitmap mResetConnBitmap = null;
 	protected Bitmap mSettingConnBitmap = null;
+	protected Bitmap mSettingConnQRCodeBitmap = null;
 	protected boolean  mBHasConnection = false;
 	
 	//for auto re-connect
@@ -203,6 +206,26 @@ abstract public class CipherConnCtrlmplBase {
 	    return bmp; 
 	}
 	
+	private Bitmap mGenerateQRCodeBMP(String strContent, int nWidth, int nHeight)
+	{
+		BarcodeFormat barcodeFormat = BarcodeFormat.QR_CODE;
+		QRCodeWriter  qrCodeWriter = new QRCodeWriter();
+		BitMatrix result = null;
+	    try {
+	    	result = qrCodeWriter.encode(strContent, barcodeFormat, nWidth, nHeight);
+        } catch (WriterException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	    Bitmap bmp = Bitmap.createBitmap(nWidth, nHeight, Bitmap.Config.RGB_565);
+	    for (int x = 0; x < nWidth; x++){
+	        for (int y = 0; y < nHeight; y++){
+	            bmp.setPixel(x, y, result.get(x,y) ? Color.BLACK : Color.WHITE);
+	        }
+	    }
+	    return bmp; 
+	}
+	
 	//abstract methods
 	public abstract boolean isConnected();
 	
@@ -292,4 +315,25 @@ abstract public class CipherConnCtrlmplBase {
 		
 		return mSettingConnBitmap;
 	}
+	
+	public Bitmap GetSettingConnQRCodeImage(int nWidth, int nHeight)
+    {
+		if(mSettingConnQRCodeBitmap == null)
+		{
+			BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+			if(btAdapter == null)
+				return null; 
+					
+		    String strLocalMACAdres = btAdapter.getAddress();
+		    if(strLocalMACAdres == null || strLocalMACAdres.isEmpty())
+		    	return null; 
+		    
+		    strLocalMACAdres = strLocalMACAdres.replace(":", "");
+		    strLocalMACAdres = "0X" + strLocalMACAdres;
+		    final String strFullCmd =  "#@CipherLab88686471166254" + strLocalMACAdres+"/r";
+		    mSettingConnQRCodeBitmap = mGenerateQRCodeBMP(strFullCmd, nWidth, nHeight);
+		}
+		
+		return mSettingConnQRCodeBitmap;
+    }
 }
