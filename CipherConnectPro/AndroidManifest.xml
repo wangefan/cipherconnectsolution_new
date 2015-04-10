@@ -31,7 +31,8 @@
 		
 		<service android:name="com.cipherlab.cipherconnectpro.CipherConnectManagerService" android:enabled="true" />
 		
-		<activity android:name="com.cipherlab.cipherconnectpro.CipherConnectSettingActivity">
+		<activity android:name="com.cipherlab.cipherconnectpro.CipherConnectSettingActivity"
+		          android:screenOrientation="portrait">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
