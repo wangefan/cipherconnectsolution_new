@@ -4,6 +4,10 @@ import android.bluetooth.BluetoothDevice;
 
 public class CipherConnBTDevice implements ICipherConnBTDevice {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//Data members
 	private String mStrDeviceName = null;
 	private String mStrDeviceAddress = null;

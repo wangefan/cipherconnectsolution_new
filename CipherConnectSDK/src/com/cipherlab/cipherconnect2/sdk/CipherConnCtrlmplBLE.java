@@ -73,6 +73,155 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		super(context);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mbtDericeList = new ArrayList<ICipherConnBTDevice>();
+        
+        //
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+        {
+        	mLeScanCallback =
+                    new BluetoothAdapter.LeScanCallback() {
+
+                @Override
+                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) 
+                {
+                	// check if has device already?
+                	boolean bAdd = true; 
+                	for(int idxCBTDevice = 0; idxCBTDevice < mbtDericeList.size(); ++idxCBTDevice) {
+                		ICipherConnBTDevice cBTDevice = mbtDericeList.get(idxCBTDevice);
+        				String strSrcDevice = cBTDevice.getAddress();
+        				if(true == device.getAddress().equals(strSrcDevice)) {
+        					bAdd = false;
+        					break;
+        				}
+        			}
+                	
+                	if(bAdd) 
+                	{
+                		String name = device.getName();
+                		String add = device.getAddress();
+                		if(name != null && add != null)
+                		{
+                    		CipherConnBTDevice cBTDeivce = new CipherConnBTDevice(name, add);
+            				mbtDericeList.add(cBTDeivce);
+            				
+            				//fire to listener.
+            				if(mListenerList != null) {
+            					for (ICipherConnectControl2Listener connListener : mListenerList) 
+            	    	    		connListener.onGetLEDevice(cBTDeivce);
+            				}	
+                		}
+                	}
+                }
+            };
+            
+            mGattCallback = new BluetoothGattCallback() {
+                @Override
+                public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                    if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    	if(mBluetoothGatt!= null && true == mBluetoothGatt.discoverServices())
+                    		CipherConnCtrlmplBLE.this.fireConnecting(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
+                    	else {
+                    		mDisconnectFromWorkerThread();
+                    		CipherConnCtrlmplBLE.this.fireDisconnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
+                    		if(mBAuoReconnect)
+                	        	mSetCheckConnTimer(true);
+                    	}
+                    } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    	mDisconnectFromWorkerThread();
+                    	CipherConnCtrlmplBLE.this.fireDisconnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
+            	        if(mBAuoReconnect)
+            	        	mSetCheckConnTimer(true);
+                    }
+                }
+
+                @Override
+                public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                    if (status == BluetoothGatt.GATT_SUCCESS) {
+                    	//Set Characteristic Notification
+                    	List<BluetoothGattService> lstServices = gatt.getServices();
+                    	for(BluetoothGattService btService : lstServices) 
+                    	{	
+                    		if(btService.getUuid().equals(mSUUIDString) ) {
+                    			BluetoothGattCharacteristic btCharct = btService.getCharacteristic(mCUUIDString);
+                    			if(btCharct != null) 
+                    			{
+                        			final int charaProp = btCharct.getProperties();
+                        			mResetCharacteristic();
+                        			// Characteristic has read property
+                        			if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
+                                        // If there is an active notification on a characteristic, clear
+                                        // it first so it doesn't update the data field on the user interface.
+                        				mBluetoothGatt.readCharacteristic(btCharct);
+                                    }
+                        			
+                        			// Characteristic has notify property
+                        			if(0 < (btCharct.getProperties() | BluetoothGattCharacteristic.PROPERTY_NOTIFY))
+                        			{            					
+                        				//To trigger that can receive data from callback "onCharacteristicChanged"
+                        				mBluetoothGatt.setCharacteristicNotification(btCharct, true);
+                        			}
+                        			mHandlerConnTimeout.removeCallbacksAndMessages(null);
+                        			mSetConnectedStatus(ConnStatus.CONN_STATE_CONNECTED);
+                        			CipherConnCtrlmplBLE.this.fireConnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
+                        			if(mBAuoReconnect)
+                        	        	mSetCheckConnTimer(false);
+                        			return;
+                    			}
+                    		}
+                    	}
+                    }
+                    
+                    //discover no services.
+                    mDisconnectFromWorkerThread();
+                	CipherConnCtrlmplBLE.this.fireCipherConnectControlError(CipherConnCtrlmplBLE.this.mDestBTLEDevice,
+                					CipherConnectControlResource.can_not_find_any_services_id,
+                					CipherConnectControlResource.can_not_find_any_services);
+                    if(mBAuoReconnect)
+        	        	mSetCheckConnTimer(true);
+                }
+
+                @Override
+                public void onCharacteristicRead(BluetoothGatt gatt,
+                                                 BluetoothGattCharacteristic characteristic,
+                                                 int status) {
+                    if (status == BluetoothGatt.GATT_SUCCESS) {
+                    	CipherConnCtrlmplBLE.this.fireConnecting(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
+                    }
+                    else {
+                    	mDisconnectFromWorkerThread();
+                    }
+                }
+
+                @Override
+                public void onCharacteristicChanged(BluetoothGatt gatt,
+                                                    BluetoothGattCharacteristic characteristic) {
+                	final byte[] data = characteristic.getValue();
+                    if (data != null && data.length > 0) {
+
+                        String barcode = new String(data);
+            			
+            			StringTokenizer st = new StringTokenizer(barcode,"\n");
+                        if(st.countTokens()==1){
+                        	fireReceivingBarcode(null, barcode);
+                        }
+                        else{
+                        	
+                        	int count = st.countTokens();
+                        	for(int i=0;i<count;i++)
+                        	{
+                        		String code = (String)st.nextElement();
+                        		fireReceivingBarcode(null,code);
+                        		
+                        		try {
+            						Thread.sleep(300);
+            					} 
+            					catch (Exception e) {
+            					}
+                        	}
+                        }
+                    }
+                }
+            };
+        }
 	}
 	
 	//================ Server functions begin=============
@@ -89,152 +238,11 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		//================ Server functions end=============
 	
     // Device scan callback.
-    private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            new BluetoothAdapter.LeScanCallback() {
-
-        @Override
-        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) 
-        {
-        	// check if has device already?
-        	boolean bAdd = true; 
-        	for(int idxCBTDevice = 0; idxCBTDevice < mbtDericeList.size(); ++idxCBTDevice) {
-        		ICipherConnBTDevice cBTDevice = mbtDericeList.get(idxCBTDevice);
-				String strSrcDevice = cBTDevice.getAddress();
-				if(true == device.getAddress().equals(strSrcDevice)) {
-					bAdd = false;
-					break;
-				}
-			}
-        	
-        	if(bAdd) 
-        	{
-        		String name = device.getName();
-        		String add = device.getAddress();
-        		if(name != null && add != null)
-        		{
-            		CipherConnBTDevice cBTDeivce = new CipherConnBTDevice(name, add);
-    				mbtDericeList.add(cBTDeivce);
-    				
-    				//fire to listener.
-    				if(mListenerList != null) {
-    					for (ICipherConnectControl2Listener connListener : mListenerList) 
-    	    	    		connListener.onGetLEDevice(cBTDeivce);
-    				}	
-        		}
-        	}
-        }
-    };
+    private BluetoothAdapter.LeScanCallback mLeScanCallback = null;
     
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
-    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-            	if(mBluetoothGatt!= null && true == mBluetoothGatt.discoverServices())
-            		CipherConnCtrlmplBLE.this.fireConnecting(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
-            	else {
-            		mDisconnectFromWorkerThread();
-            		CipherConnCtrlmplBLE.this.fireDisconnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
-            		if(mBAuoReconnect)
-        	        	mSetCheckConnTimer(true);
-            	}
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-            	mDisconnectFromWorkerThread();
-            	CipherConnCtrlmplBLE.this.fireDisconnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
-    	        if(mBAuoReconnect)
-    	        	mSetCheckConnTimer(true);
-            }
-        }
-
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-            	//Set Characteristic Notification
-            	List<BluetoothGattService> lstServices = gatt.getServices();
-            	for(BluetoothGattService btService : lstServices) 
-            	{	
-            		if(btService.getUuid().equals(mSUUIDString) ) {
-            			BluetoothGattCharacteristic btCharct = btService.getCharacteristic(mCUUIDString);
-            			if(btCharct != null) 
-            			{
-                			final int charaProp = btCharct.getProperties();
-                			mResetCharacteristic();
-                			// Characteristic has read property
-                			if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                                // If there is an active notification on a characteristic, clear
-                                // it first so it doesn't update the data field on the user interface.
-                				mBluetoothGatt.readCharacteristic(btCharct);
-                            }
-                			
-                			// Characteristic has notify property
-                			if(0 < (btCharct.getProperties() | BluetoothGattCharacteristic.PROPERTY_NOTIFY))
-                			{            					
-                				//To trigger that can receive data from callback "onCharacteristicChanged"
-                				mBluetoothGatt.setCharacteristicNotification(btCharct, true);
-                			}
-                			mHandlerConnTimeout.removeCallbacksAndMessages(null);
-                			mSetConnectedStatus(ConnStatus.CONN_STATE_CONNECTED);
-                			CipherConnCtrlmplBLE.this.fireConnected(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
-                			if(mBAuoReconnect)
-                	        	mSetCheckConnTimer(false);
-                			return;
-            			}
-            		}
-            	}
-            }
-            
-            //discover no services.
-            mDisconnectFromWorkerThread();
-        	CipherConnCtrlmplBLE.this.fireCipherConnectControlError(CipherConnCtrlmplBLE.this.mDestBTLEDevice,
-        					CipherConnectControlResource.can_not_find_any_services_id,
-        					CipherConnectControlResource.can_not_find_any_services);
-            if(mBAuoReconnect)
-	        	mSetCheckConnTimer(true);
-        }
-
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt,
-                                         BluetoothGattCharacteristic characteristic,
-                                         int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-            	CipherConnCtrlmplBLE.this.fireConnecting(CipherConnCtrlmplBLE.this.mDestBTLEDevice);
-            }
-            else {
-            	mDisconnectFromWorkerThread();
-            }
-        }
-
-        @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt,
-                                            BluetoothGattCharacteristic characteristic) {
-        	final byte[] data = characteristic.getValue();
-            if (data != null && data.length > 0) {
-
-                String barcode = new String(data);
-    			
-    			StringTokenizer st = new StringTokenizer(barcode,"\n");
-                if(st.countTokens()==1){
-                	fireReceivingBarcode(null, barcode);
-                }
-                else{
-                	
-                	int count = st.countTokens();
-                	for(int i=0;i<count;i++)
-                	{
-                		String code = (String)st.nextElement();
-                		fireReceivingBarcode(null,code);
-                		
-                		try {
-    						Thread.sleep(300);
-    					} 
-    					catch (Exception e) {
-    					}
-                	}
-                }
-            }
-        }
-    };
+    private BluetoothGattCallback mGattCallback = null;
 	
 	@Override
 	public boolean isConnected() {

@@ -31,7 +31,7 @@
 	<string name="setting_barcode_input">Inter-character delay</string>
 	<string name="setting_language">Second language</string>
 	<string name="setting_mode">Scan mode</string>
-	<string name="setting_autoconnect">Auto connect</string>
+	<string name="setting_autoconnect">Auto Reconnect</string>
 	<string name="setting_about">About</string>
 	<string name="about_company">Company</string>
 	<string name="about_company_value">CipherLab Co., Ltd.</string>
@@ -119,7 +119,7 @@
 	<string name="Str_defaultAutoReConn">false</string>
 	<string name="Str_BT_Classic">Classic</string>
 	<string name="Str_BT_LE">Low Energy</string>
-	<string name="str_search">Search</string>
+	<string name="str_chooseScanner">Scanner</string>
 	<string name="menu_scan">Search</string>
 	<string name="menu_stop">Stop</string>
 	<string name="unknown_device">unknown device</string>

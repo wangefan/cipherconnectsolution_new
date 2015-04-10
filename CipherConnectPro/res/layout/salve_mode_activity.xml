@@ -102,16 +102,16 @@
 		</LinearLayout>
          
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:orientation="vertical" >
 
 	        <ImageView
 	            android:id="@+id/imageBTConn"
 	            android:layout_width="@dimen/BTICWidth"
 	            android:layout_height="@dimen/BTICHeight"
+	            
 	            android:layout_centerHorizontal="true"
 	            android:layout_gravity="center_horizontal" />
 

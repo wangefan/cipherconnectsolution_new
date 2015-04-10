@@ -11,15 +11,15 @@
 	    <Button
 	        android:id="@+id/btnBuildConn"
 	        android:layout_width="0dp"
-	        android:layout_height="60dp"
+	        android:layout_height="match_parent"
 	        android:layout_weight="80"
 	        android:gravity="start|center_vertical"
 	        android:text="@string/setting_buildconnect" />
 	
 	    <ToggleButton
 	        android:id="@+id/btnConnMethod"
-	        android:layout_width="60dp"
-	        android:layout_height="60dp"
+	        android:layout_width="70dp"
+	        android:layout_height="70dp"
 	        android:background="@drawable/conn_method"
 	        android:textOff=""
 	        android:textOn="" />
@@ -33,7 +33,7 @@
 		    android:id="@+id/btnSearchDevice"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:text="@string/str_search" />
+		    android:text="@string/str_chooseScanner" />
 
 		<CheckBox
 		    android:id="@+id/ckAutoReConn"

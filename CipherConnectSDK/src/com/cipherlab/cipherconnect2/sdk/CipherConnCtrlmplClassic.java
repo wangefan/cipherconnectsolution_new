@@ -77,7 +77,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		mResetListenThread();
 		
 		try {
-			mListenAndConnThread = new ListenAndConnThread(true);
+			mListenAndConnThread = new ListenAndConnThread(false);
 		}
 		catch (CipherConnectErrException e) {
             e.printStackTrace();
