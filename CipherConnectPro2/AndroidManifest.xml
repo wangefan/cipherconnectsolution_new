@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest 	package="com.cipherlab.cipherconnectpro2" 
+    		xmlns:android="http://schemas.android.com/apk/res/android" 
+    		android:versionCode="15" 
+    		android:versionName="2.5.5">
+    		
+	<uses-sdk  android:minSdkVersion="11" android:targetSdkVersion="20"/>
+
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.BLUETOOTH" />
+	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="com.cipherlab.cipherconnectpro2.CipherConnectKeyboardService" />
+	<uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
+	<application android:label="@string/ime_name" 
+	             android:icon="@drawable/icon"
+	             android:allowBackup = "true"
+	             android:killAfterRestore="false" 
+	             android:theme="@android:style/Theme.Holo.Light">
+		<service 	android:name="com.cipherlab.cipherconnectpro2.CipherConnectKeyboardService"
+					android:label="@string/ime_name" 
+					android:enabled="true"
+					android:permission="android.permission.BIND_INPUT_METHOD">
+			
+			<intent-filter>
+				<action android:name="android.view.InputMethod" />
+			</intent-filter>
+			<meta-data android:name="android.view.im" android:resource="@xml/method" />
+		</service>
+		
+		<service android:name="com.cipherlab.cipherconnectpro2.CipherConnectManagerService" android:enabled="true" />
+		
+		<activity android:name="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"
+		          android:screenOrientation="portrait">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name="com.cipherlab.cipherconnectpro2.SalveModeActivity"
+		     	  android:parentActivityName="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"/>
+		<activity android:name="com.cipherlab.cipherconnectpro2.LEDeviceScanActivity"
+		     	  android:parentActivityName="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"/>
+		<activity android:name="com.cipherlab.cipherconnectpro2.ClassicBTDeviceScanActivity"
+		     	  android:parentActivityName="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"/>
+		<activity android:name="com.cipherlab.cipherconnectpro2.CipherConnectAboutActivity" android:label="@string/setting_about" 
+		          android:parentActivityName="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"/>
+	</application>
+
+</manifest> 
