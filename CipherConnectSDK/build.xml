@@ -16,7 +16,7 @@
     -->
     <!-- uncomment the above lines to use ANT outside of Eclipse -->
     <target name="main">
-        <fatjar.build output="..\CipherConnectPro\Libs\CipherConnectSDK.jar">
+        <fatjar.build output="..\CipherConnectPro2\Libs\CipherConnectSDK.jar">
             <fatjar.manifest/>
             <fatjar.filesource path=".\bin\classes" relpath=""/>
             <fatjar.jarsource file=".\libs\core-2.3.0.jar" relpath=""/>
