@@ -24,8 +24,8 @@
     <dimen name="candidate_vertical_padding">0sp</dimen>
     <dimen name="BarcodeWidth">300dp</dimen>
     <dimen name="BarcodeHeight">50dp</dimen>
-    <dimen name="QRcodeWidth">140dp</dimen>
-    <dimen name="QRcodeHeight">140dp</dimen>
+    <dimen name="QRcodeWidth">120dp</dimen>
+    <dimen name="QRcodeHeight">120dp</dimen>
     <dimen name="BTICWidth">20dp</dimen>
     <dimen name="BTICHeight">32dp</dimen> 
 </resources>
