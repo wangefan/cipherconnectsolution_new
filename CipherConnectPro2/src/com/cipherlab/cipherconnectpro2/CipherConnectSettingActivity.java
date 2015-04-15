@@ -401,8 +401,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     			if(bShowToast)
     				Toast.makeText(getApplicationContext(), "BT Connected", Toast.LENGTH_SHORT).show();
     		}
-    		default:
-    			mBtnBTMode.setEnabled(true);
     		break;
     	}  
     }
