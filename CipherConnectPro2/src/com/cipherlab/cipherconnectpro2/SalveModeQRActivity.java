@@ -18,18 +18,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SalveModeActivity extends BTSettingActivity 
+public class SalveModeQRActivity extends BTSettingActivity 
 {
 	final static String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
 	
-	private TextView mTvwDeviceName;
 	private ImageView mBCodeResetImage;
 	private TextView mTvwResetBCode;
-	private ImageView mBCodeSettingConnImage;
-	private TextView mTvwSetConnBCode;
-	private ImageView mBCodeAddressImage;
-	private TextView mTvwBCodeAddress;
+	private ImageView mQRCodeConnImage;
+	private TextView mTvwQRCodeConn;
 	private ImageView mImageBTConn;
+	private TextView mTvwDeviceName;
 	private ProgressDialog mPDialog = null;
 	
 	protected void mDoThingsOnServiceConnected()
@@ -59,10 +57,10 @@ public class SalveModeActivity extends BTSettingActivity
             	switch (servertate)
             	{
             	case SERVER_STATE_ONLINE:
-            		Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
+            		Toast.makeText(SalveModeQRActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
             		break;
             	case SERVER_STATE_OFFLINE:
-            		Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOff, Toast.LENGTH_LONG).show();
+            		Toast.makeText(SalveModeQRActivity.this, R.string.strWaitConnOff, Toast.LENGTH_LONG).show();
             		break;
             	}
             	mUpdateUI(); 	
@@ -75,11 +73,11 @@ public class SalveModeActivity extends BTSettingActivity
             	case CONN_STATE_CONNECTED:
             	{
             		String strMag = mCipherConnectService.GetConnDevice().getDeviceName() + " connected";
-            		Toast.makeText(SalveModeActivity.this, strMag, Toast.LENGTH_LONG).show();
+            		Toast.makeText(SalveModeQRActivity.this, strMag, Toast.LENGTH_LONG).show();
             	}
             	break;
             	case CONN_STATE_CONNECTERR:
-            		Toast.makeText(SalveModeActivity.this, R.string.strConnectErr, Toast.LENGTH_LONG).show();
+            		Toast.makeText(SalveModeQRActivity.this, R.string.strConnectErr, Toast.LENGTH_LONG).show();
             	default:
             	break;
             	}
@@ -171,18 +169,14 @@ public class SalveModeActivity extends BTSettingActivity
     					
     			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
     			mBCodeResetImage.setImageBitmap(bmpReset);
-    			mBCodeResetImage.setVisibility(View.VISIBLE);
+    			mBCodeResetImage.setVisibility(View.GONE);
     			mTvwResetBCode.setText(R.string.strResetConn);
+    			mTvwResetBCode.setVisibility(View.GONE);
     			
-    			Bitmap bmpSetConn = mCipherConnectService.GetSettingConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
-    			mBCodeSettingConnImage.setImageBitmap(bmpSetConn);
-    			mBCodeSettingConnImage.setVisibility(View.VISIBLE);
-    			mTvwSetConnBCode.setVisibility( View.VISIBLE);
-    			
-    			Bitmap bmpAddress = mCipherConnectService.GetMacAddrBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
-    			mBCodeAddressImage.setImageBitmap(bmpAddress);
-    			mBCodeAddressImage.setVisibility(View.VISIBLE);
-    			mTvwBCodeAddress.setVisibility( View.VISIBLE);
+    			Bitmap bmpQRCodeConn = mCipherConnectService.GetSettingConnQRcodeImage((int)fQRWidthPxl, (int)fQRHeightPxl);
+    			mQRCodeConnImage.setImageBitmap(bmpQRCodeConn);
+    			mQRCodeConnImage.setVisibility(View.VISIBLE);
+    			mTvwQRCodeConn.setVisibility( View.VISIBLE);
     			
     			mImageBTConn.setImageResource(R.drawable.btdisconnect);
     			mTvwDeviceName.setText(R.string.strWaitConnOn);
@@ -193,10 +187,8 @@ public class SalveModeActivity extends BTSettingActivity
     		{	
     			mBCodeResetImage.setVisibility(View.INVISIBLE);
     			mTvwResetBCode.setVisibility(View.INVISIBLE);
-    			mBCodeSettingConnImage.setVisibility( View.INVISIBLE);
-    			mTvwSetConnBCode.setVisibility( View.INVISIBLE);
-    			mBCodeAddressImage.setVisibility( View.INVISIBLE);
-    			mTvwBCodeAddress.setVisibility( View.INVISIBLE);
+    			mTvwQRCodeConn.setVisibility( View.INVISIBLE);
+    			mQRCodeConnImage.setVisibility(View.INVISIBLE);
     			mImageBTConn.setImageResource(R.drawable.btdisconnect);
     		}
     		break;
@@ -229,11 +221,11 @@ public class SalveModeActivity extends BTSettingActivity
     			}
     			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
     			mBCodeResetImage.setImageBitmap(bmpReset);
+    			mBCodeResetImage.setVisibility(View.VISIBLE);
     			mTvwResetBCode.setText(R.string.strDisconnect);
-    			mBCodeSettingConnImage.setVisibility( View.INVISIBLE);
-    			mTvwSetConnBCode.setVisibility( View.INVISIBLE);
-    			mBCodeAddressImage.setVisibility( View.INVISIBLE);
-    			mTvwBCodeAddress.setVisibility( View.INVISIBLE);
+    			mTvwResetBCode.setVisibility(View.VISIBLE);
+    			mQRCodeConnImage.setVisibility(View.INVISIBLE);
+    			mTvwQRCodeConn.setVisibility( View.INVISIBLE);
     			mImageBTConn.setImageResource(R.drawable.btconnected);	
     			String strMag = mCipherConnectService.GetConnDevice().getDeviceName() + " connected";
     			mTvwDeviceName.setText(strMag);  			
@@ -263,17 +255,14 @@ public class SalveModeActivity extends BTSettingActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.salve_mode_activity);
+		setContentView(R.layout.salve_mode_qr_activity);
         
 		//Init UI
 		mBCodeResetImage = (ImageView)findViewById(R.id.imageResetConn);
 		mTvwResetBCode = (TextView) findViewById(R.id.tvwReset);
 		
-		mBCodeSettingConnImage = (ImageView)findViewById(R.id.imageSetConn);
-		mTvwSetConnBCode = (TextView) findViewById(R.id.tvwSetConn);
-		
-		mBCodeAddressImage = (ImageView)findViewById(R.id.imageMACAdd);
-		mTvwBCodeAddress = (TextView) findViewById(R.id.tvwAddress);
+		mQRCodeConnImage = (ImageView)findViewById(R.id.imageQRCodeConn);
+		mTvwQRCodeConn = (TextView) findViewById(R.id.tvwQRConn);
 		
 		mImageBTConn = (ImageView)findViewById(R.id.imageBTConn);
 		mTvwDeviceName = (TextView) findViewById(R.id.tvwDeviceName);

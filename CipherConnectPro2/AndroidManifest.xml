@@ -40,6 +40,8 @@
 		</activity>
 		<activity android:name="com.cipherlab.cipherconnectpro2.SalveModeActivity"
 		     	  android:parentActivityName="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"/>
+		<activity android:name="com.cipherlab.cipherconnectpro2.SalveModeQRActivity"
+		     	  android:parentActivityName="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"/>
 		<activity android:name="com.cipherlab.cipherconnectpro2.LEDeviceScanActivity"
 		     	  android:parentActivityName="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"/>
 		<activity android:name="com.cipherlab.cipherconnectpro2.ClassicBTDeviceScanActivity"

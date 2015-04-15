@@ -175,7 +175,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 		}
                 		else if(bcPreference.GetBConnState().equals(BuildConnMethodPreference.BCEnum.SLAVE_QR))
                 		{
-                			
+                			Intent intent = new Intent(CipherConnectSettingActivity.this, SalveModeQRActivity.class);
+                			startActivity(intent);
                 		}
                 		else //Master connection
                 		{
