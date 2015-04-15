@@ -158,15 +158,11 @@ public class SalveModeActivity extends BTSettingActivity
     			float fWidthPxl = 300.0f;
     			float fHeightPxl = 100.0f;
     			
-    			float fQRWidthPxl = 90.0f;
-    			float fQRHeightPxl = 90.0f;
     			Resources rsc = getResources();
     			if(rsc != null)
     			{
     				fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
     				fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
-    				fQRWidthPxl = rsc.getDimension(R.dimen.QRcodeWidth);
-    				fQRHeightPxl = rsc.getDimension(R.dimen.QRcodeHeight);
     			}
     					
     			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
