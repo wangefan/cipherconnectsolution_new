@@ -17,7 +17,7 @@
     <string name="strBeginConn">Begin to connect&#8230;</string>
     <string name="strConnected">Connected</string>
     <string name="strConnectErr">Connect error!</string>
-	<string name="ime_name">CipherConnect Pro</string>
+	<string name="ime_name">CipherConnect Pro2</string>
 	<string name="ime_connection">Connection type</string>
 	<string name="strLastDevNameTitle">Last Connect:</string>	
 	<string name="ime_setting_name">Settings</string>
@@ -67,7 +67,7 @@
 	<string name="license_quit_button">Exit</string>
 
     <!-- Have same application -->
-    <string name="ime_service_name">com.cipherlab.cipherconnectpro.CipherConnectKeyboardService</string>
+    <string name="ime_service_name">com.cipherlab.cipherconnectpro2.CipherConnectKeyboardService</string>
     <string name="ime_service_name_conflict">com.cipherlab.cipherconnect.CipherConnectKeyboardService</string>
     <string name="remove_lite_dialog_title">Attention</string>
 	<string name="remove_lite_dialog_body">This input method may conflict with application CipherConnect Lite. Please remove CipherConnect Lite.</string>
