@@ -27,10 +27,12 @@ public class CipherConnectManagerService extends Service
         
 	//broadcast actions, broadcast to ConnectStatus_onPreferenceChange now.
     public static final String ACTION_SERVER_STATE_CHANGED =
-            "com.cipherEZMet.cipherconnectpro.CipherConnectManagerService.ServerState_CHANGED";
+            "com.cipherEZMet.cipherconnectpro2.CipherConnectManagerService.ServerState_CHANGED";
     public static final String ACTION_CONN_STATE_CHANGED =
-            "com.cipherEZMet.cipherconnectpro.CipherConnectManagerService.ConnectionState_CHANGED";
-	
+            "com.cipherEZMet.cipherconnectpro2.CipherConnectManagerService.ConnectionState_CHANGED";
+    public static final String ACTION_COMMAND =
+            "com.cipherEZMet.cipherconnectpro2.CipherConnectManagerService.Connection_Command";
+    
 	private static final String TAG = "CipherConnectManagerService()";
 	public static ICipherConnCtrl2EZMet mCipherConnectControl;
 	private ArrayList<ICipherConnectManagerListener> mListenerList = 
@@ -209,6 +211,21 @@ public class CipherConnectManagerService extends Service
     
     /*
      * <!----------------------------------------------------------------->
+     * @Name: mBroadcastCommand()
+     * @Description: Broadcast the special command to client.
+     * Client should use Servic.GetConnState() to get status
+     * @param: nConnState, defined as connection staus.
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    private void mBroadcastCommand()
+    {
+    	final Intent brdConnState = new Intent(ACTION_COMMAND);
+        sendBroadcast(brdConnState);
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
      * @Name: CipherConnectControl_init()
      * @Description: Initial CipherConnectControl callback SDK.
      *  
@@ -250,6 +267,7 @@ public class CipherConnectManagerService extends Service
 			public void onMinimizeCmd() {
 				for (ICipherConnectManagerListener listener :mListenerList)
 					listener.onMinimizeCmd();
+				mBroadcastCommand();
 			}
 			public void onGetLEDevice(final ICipherConnBTDevice device) {
 				for (ICipherConnectManagerListener listener :mListenerList)

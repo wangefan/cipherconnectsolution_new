@@ -72,7 +72,7 @@
     <string name="remove_lite_dialog_title">Attention</string>
 	<string name="remove_lite_dialog_body">This input method may conflict with application CipherConnect Lite. Please remove CipherConnect Lite.</string>
 	<string name="remove_lite_quit_button">Exit</string>
-	<string name="setting_minimum">Accecpt Minimize keyboard</string>
+	<string name="setting_minimum">Enable Minimize keyboard</string>
 	<string name="Bluetooth_Mode_Title">Classic Bluetooth/Low Energy</string>
 	<string name="Bluetooth_Mode_Summary">Classic </string>
 	<string name="Bluetooth_Mode_BLE_Summary">Low energy</string>

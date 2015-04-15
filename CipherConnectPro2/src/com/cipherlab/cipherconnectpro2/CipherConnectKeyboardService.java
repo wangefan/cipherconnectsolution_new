@@ -80,17 +80,15 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
             
             public void onMinimizeCmd()
             {
-            	 //Handle Minimize Command
-                if(CipherConnectSettingInfo.isAcceptMinimum(CipherConnectKeyboardService.this))
-            	{
-            		mMainThrdHandler.post(new Runnable(){
-            			public void run()
-            			{
-            				boolean bSetMin = !CipherConnectSettingInfo.isMinimum(CipherConnectKeyboardService.this);	
-                    		setKeyboardMinimize(bSetMin);
-            			}
-            		});
-            	}
+            	//Handle Minimize Command
+            	mMainThrdHandler.post(new Runnable(){
+	            	public void run()
+	            	{
+	            		boolean bSetMin = !CipherConnectSettingInfo.isMinimum(CipherConnectKeyboardService.this);	
+	                    setKeyboardMinimize(bSetMin);
+	                    CipherConnectSettingInfo.setMinimum(CipherConnectKeyboardService.this, bSetMin);
+	            	}
+            	});
             }
             
             public void onGetLEDevice(final ICipherConnBTDevice device) {

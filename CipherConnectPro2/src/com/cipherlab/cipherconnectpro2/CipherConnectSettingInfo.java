@@ -73,18 +73,6 @@ public class CipherConnectSettingInfo {
         editor.putBoolean("AutoConnect", enable);
         editor.commit();
     }
-    
-    public static boolean isAcceptMinimum(Context c) {
-        initSharedPreferences(c);
-        return _sp.getBoolean("AcceptMinimum", false);
-    }
-    
-    public static void setAcceptMinimum(Context c, boolean bEnable) {
-        initSharedPreferences(c);
-        Editor editor = _sp.edit();
-        editor.putBoolean("AcceptMinimum", bEnable);
-        editor.commit();
-    }
 	
     public static boolean isMinimum(Context c) {
         initSharedPreferences(c);

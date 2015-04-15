@@ -53,7 +53,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	private BuildConnMethodPreference mBuildConn = null;
 	private ListPreference   mBtnBTMode = null; 
 	private CheckBoxPreference ckbScreenBacklight = null;
-	private CheckBoxPreference mCkbAcceptMinimum = null;	//Accept o receive Minimize keyboard command from scanner 
+	private CheckBoxPreference mCKEnableMinimum = null;	
 	private ListPreference lstSendBarcodeInterval = null;  
 	private ListPreference lstLanguage = null;             
     
@@ -311,12 +311,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         });
         
         /* Minimum keyboard */
-		mCkbAcceptMinimum = (CheckBoxPreference) findPreference("ckbMinimum");
-		mCkbAcceptMinimum.setChecked(CipherConnectSettingInfo.isAcceptMinimum(this));
-		mCkbAcceptMinimum.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+		mCKEnableMinimum = (CheckBoxPreference) findPreference("ckbMinimum");
+		mCKEnableMinimum.setChecked(CipherConnectSettingInfo.isMinimum(this));
+		mCKEnableMinimum.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-                return AcpMinimum_onPreferenceChange(preference, newValue);
+                return EnableMinimum_onPreferenceChange(preference, newValue);
             }
         });
         
@@ -359,7 +359,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * return: N/A 
      * <!----------------------------------------------------------------->
      * */
-    private void mUpdateUI(boolean bShowToast) {
+    private void mUpdateUI(boolean bShowToast) 
+    {	
+    	mCKEnableMinimum = (CheckBoxPreference) findPreference("ckbMinimum");
+    	if(mCKEnableMinimum != null)
+			mCKEnableMinimum.setChecked(CipherConnectSettingInfo.isMinimum(this));
+		
         if(mBuildConn != null)
         	mBuildConn.updateButtons();
         
@@ -492,7 +497,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     /*
      * <!----------------------------------------------------------------->
-     * @Name: AcpMinimum_onPreferenceChange()
+     * @Name: EnableMinimum_onPreferenceChange()
      * @Description: Set Minimum keyboard. 
      *   
      * @param: Preference preference
@@ -500,11 +505,11 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * return: boolean 
      * <!----------------------------------------------------------------->
      * */
-    public boolean AcpMinimum_onPreferenceChange(Preference preference, Object newValue) {
+    public boolean EnableMinimum_onPreferenceChange(Preference preference, Object newValue) {
         Boolean b = (Boolean) newValue;
         
-        if (CipherConnectSettingInfo.isAcceptMinimum(this) != b)
-            CipherConnectSettingInfo.setAcceptMinimum(this, b);
+        if (CipherConnectSettingInfo.isMinimum(this) != b)
+            CipherConnectSettingInfo.setMinimum(this, b);
         
         return true;
     }
@@ -536,6 +541,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED);
         intentFilter.addAction(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED);
+        intentFilter.addAction(CipherConnectManagerService.ACTION_COMMAND);
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         return intentFilter;
     }
@@ -639,6 +645,10 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 		    		}
 		    		break;
 		        }
+            }
+            else if(CipherConnectManagerService.ACTION_COMMAND.equals(action))
+            {
+            	mUpdateUI(false);
             }
         }
     }
