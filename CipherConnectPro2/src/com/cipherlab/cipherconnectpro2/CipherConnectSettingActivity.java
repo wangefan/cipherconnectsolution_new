@@ -168,10 +168,14 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 	BuildConnMethodPreference bcPreference = (BuildConnMethodPreference)preference;
                 	if(bcPreference != null)
                 	{
-                		if(bcPreference.IsSlaveConn())
+                		if(bcPreference.GetBConnState().equals(BuildConnMethodPreference.BCEnum.SLAVE))
                 		{
                 			Intent intent = new Intent(CipherConnectSettingActivity.this, SalveModeActivity.class);
                 			startActivity(intent);
+                		}
+                		else if(bcPreference.GetBConnState().equals(BuildConnMethodPreference.BCEnum.SLAVE_QR))
+                		{
+                			
                 		}
                 		else //Master connection
                 		{

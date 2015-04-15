@@ -44,8 +44,8 @@
         <Preference
             android:title="@string/setting_about" >
             <intent 
-            	android:targetPackage="com.cipherlab.cipherconnectpro"
-            	android:targetClass="com.cipherlab.cipherconnectpro.CipherConnectAboutActivity"
+            	android:targetPackage="com.cipherlab.cipherconnectpro2"
+            	android:targetClass="com.cipherlab.cipherconnectpro2.CipherConnectAboutActivity"
             	android:action="prefs_display">
         	</intent>
         </Preference>
