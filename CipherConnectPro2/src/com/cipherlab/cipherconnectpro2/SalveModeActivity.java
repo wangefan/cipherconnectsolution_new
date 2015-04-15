@@ -267,7 +267,7 @@ public class SalveModeActivity extends BTSettingActivity
         intentFilter.addAction(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED);
         intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        intentFilter.addAction(ACTION_PAIRING_REQUEST);
+        //intentFilter.addAction(ACTION_PAIRING_REQUEST);
         return intentFilter;
     }
 	

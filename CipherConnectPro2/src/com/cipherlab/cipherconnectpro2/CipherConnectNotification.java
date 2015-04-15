@@ -83,22 +83,22 @@ public class CipherConnectNotification {
 
     public static Intent intent_cipherconnectproSettings() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.cipherlab.cipherconnectpro",
-                            "com.cipherlab.cipherconnectpro.CipherConnectSettingActivity");
+        intent.setClassName("com.cipherlab.cipherconnectpro2",
+                            "com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity");
         return intent;
     }
     
     public static Intent intent_cipherconnectproServerOnlive() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.cipherlab.cipherconnectpro",
-                            "com.cipherlab.cipherconnectpro.SalveModeActivity");
+        intent.setClassName("com.cipherlab.cipherconnectpro2",
+                            "com.cipherlab.cipherconnectpro2.SalveModeActivity");
         return intent;
     }
     
     public static Intent intent_cipherconnectproServerOfflive() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.cipherlab.cipherconnectpro",
-                            "com.cipherlab.cipherconnectpro.CipherConnectSettingActivity");
+        intent.setClassName("com.cipherlab.cipherconnectpro2",
+                            "com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity");
         return intent;
     }
 }

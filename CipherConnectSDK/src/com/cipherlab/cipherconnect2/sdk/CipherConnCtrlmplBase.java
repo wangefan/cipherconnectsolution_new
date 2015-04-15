@@ -330,7 +330,7 @@ abstract public class CipherConnCtrlmplBase {
 		    
 		    strLocalMACAdres = strLocalMACAdres.replace(":", "");
 		    strLocalMACAdres = "0X" + strLocalMACAdres;
-		    final String strFullCmd =  "#@CipherLab88686471166254" + strLocalMACAdres+"/r";
+		    final String strFullCmd =  "#@CipherLab10999310000710016110103988686471166254" + strLocalMACAdres;
 		    mSettingConnQRCodeBitmap = mGenerateQRCodeBMP(strFullCmd, nWidth, nHeight);
 		}
 		

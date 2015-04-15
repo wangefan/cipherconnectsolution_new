@@ -289,6 +289,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         			}
                 });
     		}
+    		mBtnBTMode.setEnabled(false);
     	}   	
      
         /* DisplaySetting */

@@ -254,8 +254,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	
 	private boolean mIsMinimizeCmd(String strReceive)
 	{
-        final String strMinimizeCmd = "109900\n"; 
-        if(strReceive.equals(strMinimizeCmd))
+        final String strMinimizeCmd = "#@KBD_SWITCH"; 
+        if(strReceive.contains(strMinimizeCmd))
     	{
     		return true;
     	}
