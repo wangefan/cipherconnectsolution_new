@@ -279,11 +279,9 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
             	{
             		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_Summary);
-            		mCipherConnectService.SetBLEMode(false);
             	}
             	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
             		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_BLE_Summary);
-            		mCipherConnectService.SetBLEMode(true);
             	}
             	mBtnBTMode.setEnabled(true);
             	mBtnBTMode.setOnPreferenceChangeListener(new OnPreferenceChangeListener() 

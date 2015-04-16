@@ -274,6 +274,14 @@ public class CipherConnectManagerService extends Service
 					listener.onGetLEDevice(device);
 			}
     	});
+		String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
+    	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
+    	{
+    		mCipherConnectControl.SetBLEMode(false);
+    	}
+    	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
+    		mCipherConnectControl.SetBLEMode(true);
+    	}
     }
     
     public void CipherConnectControl_onDisconnected(ICipherConnBTDevice device) 
