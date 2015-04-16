@@ -57,7 +57,7 @@ public class SalveModeQRActivity extends BTSettingActivity
             	switch (servertate)
             	{
             	case SERVER_STATE_ONLINE:
-            		Toast.makeText(SalveModeQRActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
+            		//Toast.makeText(SalveModeQRActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
             		break;
             	case SERVER_STATE_OFFLINE:
             		Toast.makeText(SalveModeQRActivity.this, R.string.strWaitConnOff, Toast.LENGTH_LONG).show();
@@ -77,7 +77,7 @@ public class SalveModeQRActivity extends BTSettingActivity
             	}
             	break;
             	case CONN_STATE_CONNECTERR:
-            		Toast.makeText(SalveModeQRActivity.this, R.string.strConnectErr, Toast.LENGTH_LONG).show();
+            		Toast.makeText(SalveModeQRActivity.this, R.string.setting_bluetooth_device_disconnected, Toast.LENGTH_LONG).show();
             	default:
             	break;
             	}
@@ -248,7 +248,7 @@ public class SalveModeQRActivity extends BTSettingActivity
         intentFilter.addAction(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED);
         intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        //intentFilter.addAction(ACTION_PAIRING_REQUEST);
+        intentFilter.addAction(ACTION_PAIRING_REQUEST);
         return intentFilter;
     }
 	

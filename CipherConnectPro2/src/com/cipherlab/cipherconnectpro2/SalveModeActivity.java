@@ -59,11 +59,13 @@ public class SalveModeActivity extends BTSettingActivity
             	switch (servertate)
             	{
             	case SERVER_STATE_ONLINE:
-            		Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
+            		//Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
             		break;
             	case SERVER_STATE_OFFLINE:
             		Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOff, Toast.LENGTH_LONG).show();
             		break;
+				default:
+					break;
             	}
             	mUpdateUI(); 	
             }
@@ -79,7 +81,7 @@ public class SalveModeActivity extends BTSettingActivity
             	}
             	break;
             	case CONN_STATE_CONNECTERR:
-            		Toast.makeText(SalveModeActivity.this, R.string.strConnectErr, Toast.LENGTH_LONG).show();
+            		Toast.makeText(SalveModeActivity.this, R.string.setting_bluetooth_device_disconnected, Toast.LENGTH_LONG).show();
             	default:
             	break;
             	}
@@ -243,7 +245,7 @@ public class SalveModeActivity extends BTSettingActivity
     private void mStartListenService()
     {
         if(mCipherConnectService != null)
-        	mCipherConnectService.StartListenConn();	
+        	mCipherConnectService.StartListenConn();
     }
     
     private static IntentFilter makeActionsIntentFilter() {
@@ -252,7 +254,7 @@ public class SalveModeActivity extends BTSettingActivity
         intentFilter.addAction(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED);
         intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        //intentFilter.addAction(ACTION_PAIRING_REQUEST);
+        intentFilter.addAction(ACTION_PAIRING_REQUEST);
         return intentFilter;
     }
 	

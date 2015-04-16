@@ -26,7 +26,7 @@
 	<string name="setting_bluetooth_device_status">Bluetooth device status</string>
 	<string name="setting_bluetooth_device_connected">Connected</string>
 	<string name="setting_bluetooth_device_connecting">Connecting&#8230;</string>
-	<string name="setting_bluetooth_device_disconnected">Disconnected</string>
+	<string name="setting_bluetooth_device_disconnected">Device disconnect</string>
 	<string name="setting_bluetooth_device">Bluetooth device</string>
 	<string name="setting_barcode_input">Inter-character delay</string>
 	<string name="setting_language">Second language</string>
