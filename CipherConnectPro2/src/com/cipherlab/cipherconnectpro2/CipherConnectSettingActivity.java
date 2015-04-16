@@ -180,9 +180,50 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 		}
                 		else //Master connection
                 		{
-                
+                			//String strCurMode = (String)mBtnBTMode.getEntry();
                 			
-                			
+                			//Classic
+                			//if(strCurMode.equals(getResources().getString(R.string.Str_BT_Classic)))
+                			{
+                				if(mCipherConnectService.isConnected())
+                				{
+                					mCipherConnectService.disConnect();
+                				}
+                				else
+                				{
+                					String devName = mBuildConn.getLastDevName(), 
+                						   devAddr = mBuildConn.getLastDevAddr();	
+                					boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
+                					mCipherConnectService.setAutoConnect(bNeedAutoReConn);
+                					try {
+										mCipherConnectService.connect(devName, devAddr);
+									} catch (Exception e) {										
+										e.printStackTrace();
+									}
+                					Log.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);
+                				}
+                			}
+                			//Low Energy
+                			/*else if(strCurMode.equals(getResources().getString(R.string.Str_BT_LE)))
+                			{
+                				if(mCipherConnectService.isConnected())
+                				{
+                					mCipherConnectService.disConnect();
+                				}
+                				else
+                				{
+                					String devName = mBuildConn.getLastDevName(), 
+                 						   devAddr = mBuildConn.getLastDevAddr();	
+                					boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
+                					mCipherConnectService.setAutoConnect(bNeedAutoReConn);
+                 					try {
+ 										mCipherConnectService.connect(devName, devAddr);
+ 									} catch (Exception e) {										
+ 										e.printStackTrace();
+ 									}
+                 					Log.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
+                				}
+                			}*/
                 		}
                 	}
                 	return true;
