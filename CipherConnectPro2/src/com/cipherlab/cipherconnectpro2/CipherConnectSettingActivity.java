@@ -115,8 +115,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         /* [Begin] Enable CipherConnectManagerService */ 
         try {
             Intent intent = new Intent(this, CipherConnectManagerService.class);
-            this.startService(intent);
-            this.bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);
+            bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);
         } catch (Exception e) {
             Log.e(this.getResources().getString(R.string.ime_name),
                   "CipherConnectSettingActivity.ConnectStatus_bt_startService:",

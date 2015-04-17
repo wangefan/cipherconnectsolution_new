@@ -52,21 +52,6 @@ public class CipherConnectNotification {
         NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage);
     }
 
-    public static void resume_notify(Context context) {
-        Log.d(TAG, "resume_notify isResume="+isResume);
-        if (isResume == true) 
-        {
-            isResume = false;
-            NotificationUtil.notifyWithIntent(mIcon, 
-            									context,
-            									intent_cipherconnectproSettings(), 
-            									context.getResources().getString(R.string.ime_name), 
-            									mMessage);
-            
-            Log.d(TAG, "isResume turn off");
-        }
-    }
-
     public static Intent intent_BluetoothSettings() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName("com.android.settings", 

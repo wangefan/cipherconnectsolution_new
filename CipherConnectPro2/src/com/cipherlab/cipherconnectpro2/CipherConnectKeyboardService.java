@@ -84,8 +84,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
 
         try {
             Intent intent = new Intent(this, CipherConnectManagerService.class);
-            this.startService(intent);
-            this.bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);
+            bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);
             
             if (CipherConnectSettingInfo._DEBUG)
             	Log.d(TAG, "onCreate(): start CipherConnectManagerService");
@@ -233,15 +232,6 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         catch (InterruptedException e) {
         	e.printStackTrace();
 		}
-    }
-
-    @Override
-    public void onBindInput() {
-        Log.d("xxxx", "onBindInput");
-        if (KeyboardUtil.isEnableingKeyboard(this, R.string.ime_service_name) == true) {
-            CipherConnectNotification.resume_notify(this);
-        }
-        super.onBindInput();
     }
 
     @Override
