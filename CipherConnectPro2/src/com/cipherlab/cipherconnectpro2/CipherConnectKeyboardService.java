@@ -22,17 +22,55 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     private static final String TAG = "CipherConnectKeyboardService()";
 	private ICipherConnectManagerService mCipherConnectManagerService;
 	private Handler mMainThrdHandler = new Handler();
-   
+    private ICipherConnectManagerListener mCipherConnectManagerListener = new ICipherConnectManagerListener()
+    {
+        public void onDisconnected() {
+        }
+
+        public void onConnecting() {
+        }
+
+        public void onConnected() {
+        }
+
+        public void onConnectError(String message) {
+        }
+
+        public void onBarcode(String barcode) {
+            sendBarcode(barcode);
+        }
+        
+        public void onMinimizeCmd()
+        {
+        	//Handle Minimize Command
+        	mMainThrdHandler.post(new Runnable(){
+            	public void run()
+            	{
+            		boolean bSetMin = !CipherConnectSettingInfo.isMinimum(CipherConnectKeyboardService.this);	
+                    setKeyboardMinimize(bSetMin);
+                    CipherConnectSettingInfo.setMinimum(CipherConnectKeyboardService.this, bSetMin);
+            	}
+        	});
+        }
+        
+        public void onGetLEDevice(final ICipherConnBTDevice device) {
+        	
+        }
+    };
+    
     private ServiceConnection mSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mCipherConnectManagerService = ((CipherConnectManagerService.LocalBinder) service)
                                            .getService();
             
-            init_ScannerService();
+            mCipherConnectManagerService.AddListener(mCipherConnectManagerListener);
         }
 
         public void onServiceDisconnected(ComponentName className) {
-            mCipherConnectManagerService = null;
+        	if(mCipherConnectManagerListener != null)
+        	{
+        		mCipherConnectManagerService.RemoveListener(mCipherConnectManagerListener);
+        	}
         }
     };
 
@@ -59,44 +97,6 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         Log.d(TAG, "onCreate(): end");
     }
 
-    private void init_ScannerService() {
-        this.mCipherConnectManagerService.AddListener(new ICipherConnectManagerListener() {
-
-            public void onDisconnected() {
-            }
-
-            public void onConnecting() {
-            }
-
-            public void onConnected() {
-            }
-
-            public void onConnectError(String message) {
-            }
-
-            public void onBarcode(String barcode) {
-                sendBarcode(barcode);
-            }
-            
-            public void onMinimizeCmd()
-            {
-            	//Handle Minimize Command
-            	mMainThrdHandler.post(new Runnable(){
-	            	public void run()
-	            	{
-	            		boolean bSetMin = !CipherConnectSettingInfo.isMinimum(CipherConnectKeyboardService.this);	
-	                    setKeyboardMinimize(bSetMin);
-	                    CipherConnectSettingInfo.setMinimum(CipherConnectKeyboardService.this, bSetMin);
-	            	}
-            	});
-            }
-            
-            public void onGetLEDevice(final ICipherConnBTDevice device) {
-            	
-            }
-        });
-    }
-
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
     	Log.d(TAG, "onStartInputView(): restarting= "+restarting);
@@ -116,6 +116,11 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     public void onDestroy() {
     	Log.d(TAG, "onDestroy(): begin");
         this.unbindService(this.mSConnection);
+        
+        if(mCipherConnectManagerListener != null)
+    	{
+    		mCipherConnectManagerService.RemoveListener(mCipherConnectManagerListener);
+    	}
 
         if (!KeyboardUtil
                 .isEnableingKeyboard(this, R.string.ime_service_name)) {
@@ -123,6 +128,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
                 mCipherConnectManagerService.stopSelf();
             }
         }
+        
         this.mCipherConnectManagerService = null;
 
         super.onDestroy();
