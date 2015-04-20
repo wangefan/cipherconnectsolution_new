@@ -38,9 +38,9 @@
 	<string name="about_url">Website</string>
 	<string name="about_url_value">http://www.cipherlab.com</string>
 	<string name="about_version">Version</string>
-	<string name="about_version_value">2.4.5</string>
+	<string name="about_version_value">1.0.1</string>
 	<string name="about_sdk">Android SDK</string>
-	<string name="about_sdk_value">4.4.2</string>
+	<string name="about_sdk_value">5.0.1</string>
 	<string name="Initialize_starts">Initialize CipherConnect</string>
 	<string name="can_not_find_any_bluetooth_device">Cannot find Bluetooth device!</string>
 	<string name="can_not_find_device_by_name">No device selected</string>
