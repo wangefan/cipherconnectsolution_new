@@ -51,7 +51,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	
 	//controls
 	private BuildConnMethodPreference mBuildConn = null;
-	 
+	private ListPreference   mBtnBTMode = null; 
 	private CheckBoxPreference ckbScreenBacklight = null;
 	private CheckBoxPreference mCKEnableMinimum = null;	
 	private ListPreference lstSendBarcodeInterval = null;  
@@ -179,10 +179,10 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 		}
                 		else //Master connection
                 		{
-                			//String strCurMode = (String)mBtnBTMode.getEntry();
+                			String strCurMode = (String)mBtnBTMode.getEntry();
                 			
                 			//Classic
-                			//if(strCurMode.equals(getResources().getString(R.string.Str_BT_Classic)))
+                			if(strCurMode.equals(getResources().getString(R.string.Str_BT_Classic)))
                 			{
                 				if(mCipherConnectService.isConnected())
                 				{
@@ -203,7 +203,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 				}
                 			}
                 			//Low Energy
-                			/*else if(strCurMode.equals(getResources().getString(R.string.Str_BT_LE)))
+                			else if(strCurMode.equals(getResources().getString(R.string.Str_BT_LE)))
                 			{
                 				if(mCipherConnectService.isConnected())
                 				{
@@ -222,7 +222,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
  									}
                  					Log.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
                 				}
-                			}*/
+                			}
                 		}
                 	}
                 	return true;
@@ -260,7 +260,38 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         	mBuildConn.setService(mCipherConnectService);
         }
         
-        
+        /* BT mode select */
+    	mBtnBTMode = (ListPreference)findPreference("btnBT_Mode");
+    	if(mBtnBTMode != null)
+    	{
+    		// not support LE mode
+    		if(false == mCipherConnectService.IsBLEModeSupported())
+    		{
+    			mBtnBTMode.setSummary(R.string.Bluetooth_Mode_Summary);
+        		mBtnBTMode.setTitle(R.string.Bluetooth_Mode_Title);
+        		mBtnBTMode.setEnabled(false);
+    		}
+    		else
+    		{
+    			//Get from persist setting
+    			String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
+            	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
+            	{
+            		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_Summary);
+            	}
+            	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
+            		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_BLE_Summary);
+            	}
+            	mBtnBTMode.setEnabled(true);
+            	mBtnBTMode.setOnPreferenceChangeListener(new OnPreferenceChangeListener() 
+                {
+        			@Override
+        			public boolean onPreferenceChange(Preference preference, Object newValue) {
+        				return BTMode_onPreferenceClick(preference, newValue);
+        			}
+                });
+    		}
+    	}   	
      
         /* DisplaySetting */
 		ckbScreenBacklight = (CheckBoxPreference) findPreference("ckbSuspend_Enable");
@@ -363,7 +394,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     		break;
     		case  CONN_STATE_CONNECTED:
     		{
-    			
+    			mBtnBTMode.setEnabled(false);
     			ICipherConnBTDevice device = mCipherConnectService.GetConnDevice();
     			if(mBuildConn != null && device != null)
     				mBuildConn.setLastDev(device.getDeviceName(), device.getAddress());

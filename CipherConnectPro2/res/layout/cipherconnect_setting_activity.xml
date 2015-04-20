@@ -5,7 +5,13 @@
 	        android:key="btnBT_buildConn"
 	        android:defaultValue="@string/Str_BMPrefFormat"/>
 	   	
-	   
+	    <ListPreference
+	    	android:key="btnBT_Mode"
+	        android:summary="@string/Bluetooth_Mode_Summary"
+	        android:title="@string/Bluetooth_Mode_Title"
+			android:entries="@array/ScanMode_entries"
+			android:entryValues="@array/ScanMode_entries_value"
+			android:defaultValue="@string/Str_BT_Classic"/>
 	</PreferenceCategory>
 	
     <PreferenceCategory android:title="@string/ime_setting_name" >
