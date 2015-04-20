@@ -39,18 +39,6 @@ public class CipherConnectNotification {
         NotificationUtil.cancel(context);
         isResume = true;
     }
-    
-    public static void online_notify(Context context, Intent intent, String title, String message) {
-        mIcon = R.drawable.online;
-        mMessage = message;
-        NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage);
-    }
-    
-    public static void offline_notify(Context context, Intent intent, String title, String message) {
-        mIcon = R.drawable.idle;
-        mMessage = message;
-        NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage);
-    }
 
     public static Intent intent_BluetoothSettings() {
         Intent intent = new Intent(Intent.ACTION_MAIN);

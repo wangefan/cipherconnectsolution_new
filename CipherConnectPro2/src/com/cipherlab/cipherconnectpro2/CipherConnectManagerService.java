@@ -43,11 +43,12 @@ public class CipherConnectManagerService extends Service
     public void onCreate() {
     	Log.d(TAG, "onCreate(): begin");
     	mBinder = new LocalBinder();
-
+    	CipherConnectSettingInfo.initSharedPreferences(this);
+    	CipherConnectWakeLock.initial(this);
         CipherConnectControl_init();
-        startForeground(NotificationUtil.NOTIFY_ID, NotificationUtil.GetNotificaion(R.drawable.idle, this, 
+        startForeground(NotificationUtil.NOTIFY_ID, NotificationUtil.GetNotificaion(R.drawable.noconnect, this, 
         										getResources().getString(R.string.ime_name), 
-        										getResources().getString(R.string.ime_name),
+        										getResources().getString(R.string.setting_bluetooth_device_disconnected),
         		                                      CipherConnectNotification.intent_cipherconnectproSettings()));
         super.onCreate();
         Log.d(TAG, "onCreate(): end");
@@ -85,6 +86,10 @@ public class CipherConnectManagerService extends Service
     {
 		public ICipherConnectManagerService getService() {
 			return (ICipherConnectManagerService) LocalBinder.this;
+		}
+		
+		public void setUpForBluetooth() {
+			btSetUpForBluetooth();
 		}
 		
 		//Server service begin
@@ -226,6 +231,32 @@ public class CipherConnectManagerService extends Service
     
     /*
      * <!----------------------------------------------------------------->
+     * @Name: btSetUpForBluetooth()
+     * @Description: set up for bluetooth relative functions.
+     *  
+     * @param: N/A
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    public void btSetUpForBluetooth()
+    {
+    	String strCurBTMode = CipherConnectSettingInfo.getBTMode();
+    	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
+    	{
+    		mCipherConnectControl.SetBLEMode(false);
+    	}
+    	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
+    		mCipherConnectControl.SetBLEMode(true);
+    	}
+    	if(false == CipherConnectSettingInfo.getBCMode().equals(CipherConnectSettingInfo.MASTER))
+    	{
+    		bt_StartListenConn();
+    	}
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
      * @Name: CipherConnectControl_init()
      * @Description: Initial CipherConnectControl callback SDK.
      *  
@@ -236,7 +267,6 @@ public class CipherConnectManagerService extends Service
      * */
     private void CipherConnectControl_init()
     {
-    	CipherConnectWakeLock.initial(this);
     	mCipherConnectControl = CipherConnCtrl2EZMet.getInstance(this);
 		mCipherConnectControl.addCipherConnect2Listener(new ICipherConnCtrl2EZMetListener() 
     	{
@@ -274,14 +304,7 @@ public class CipherConnectManagerService extends Service
 					listener.onGetLEDevice(device);
 			}
     	});
-		String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
-    	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
-    	{
-    		mCipherConnectControl.SetBLEMode(false);
-    	}
-    	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
-    		mCipherConnectControl.SetBLEMode(true);
-    	}
+		btSetUpForBluetooth();
     }
     
     public void CipherConnectControl_onDisconnected(ICipherConnBTDevice device) 
@@ -331,7 +354,7 @@ public class CipherConnectManagerService extends Service
 			            + this.getResources().getString(
 			                R.string.the_bluetooth_device_connected);
 		
-        if(CipherConnectSettingInfo.isSuspendBacklight(this) == true)
+        if(true == CipherConnectSettingInfo.isSuspendBacklight())
         {
         	CipherConnectWakeLock.enable();
         }
@@ -359,18 +382,10 @@ public class CipherConnectManagerService extends Service
 	
 	public void CipherConnectControl_onListenServerOnline() 
 	{
-		CipherConnectNotification.online_notify(CipherConnectManagerService.this,
-				CipherConnectNotification.intent_cipherconnectproServerOnlive(),
-                getResources().getString(R.string.ime_name), 
-                getResources().getString(R.string.strWaitConnOn));
 		mBroadcastServerChange(SERVER_STATE.SERVER_STATE_ONLINE);
 	}
 	
 	public void CipherConnectControl_onListenServerOffline() {
-		CipherConnectNotification.offline_notify(CipherConnectManagerService.this,
-				CipherConnectNotification.intent_cipherconnectproServerOfflive(),
-                getResources().getString(R.string.ime_name),
-                getResources().getString(R.string.strWaitConnOff));
 		mBroadcastServerChange(SERVER_STATE.SERVER_STATE_OFFLINE);
 	}
 	

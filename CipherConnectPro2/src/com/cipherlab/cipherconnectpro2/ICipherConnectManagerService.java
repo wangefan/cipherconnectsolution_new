@@ -18,6 +18,7 @@ public interface ICipherConnectManagerService {
 		CONN_STATE_CONNECTERR,
 		CONN_STATE_DISCONNECT
 	}
+	public void setUpForBluetooth();
 	/*Server service begin*/
 	public boolean StartListenConn();
 	public void StopListenConn();

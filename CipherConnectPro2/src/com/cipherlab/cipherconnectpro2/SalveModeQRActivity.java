@@ -32,7 +32,6 @@ public class SalveModeQRActivity extends BTSettingActivity
 	
 	protected void mDoThingsOnServiceConnected()
 	{
-		mStartListenService();
 		mUpdateUI();
 	}
 
@@ -236,12 +235,6 @@ public class SalveModeQRActivity extends BTSettingActivity
     	}  	
     }
     
-    private void mStartListenService()
-    {
-        if(mCipherConnectService != null)
-        	mCipherConnectService.StartListenConn();	
-    }
-    
     private static IntentFilter makeActionsIntentFilter() {
     	final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED);
@@ -279,7 +272,6 @@ public class SalveModeQRActivity extends BTSettingActivity
 		super.onResume();
 		
 		if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
-	        mStartListenService();
 	        mUpdateUI();
 		}
 	}
@@ -288,7 +280,6 @@ public class SalveModeQRActivity extends BTSettingActivity
 	protected void mDoThingsAtrEnableBTActy()
 	{
 		if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
-			mStartListenService();
 			mUpdateUI();
 		}
 	}
@@ -308,11 +299,7 @@ public class SalveModeQRActivity extends BTSettingActivity
 	@Override
 	protected void onDestroy() 
 	{	
-        if(mCipherConnectService != null)
-        {
-        	mCipherConnectService.StopListenConn();	
-        	mCipherConnectService = null;
-        }
+        mCipherConnectService = null;
 		super.onDestroy();
 	}
 

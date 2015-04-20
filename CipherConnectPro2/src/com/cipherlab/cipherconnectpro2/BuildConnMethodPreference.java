@@ -17,14 +17,22 @@ import android.widget.ToggleButton;
 public class BuildConnMethodPreference extends Preference 
 {
 	public enum BCEnum {
-        SLAVE, SLAVE_QR, MASTER
+        SLAVE, SLAVE_QR, MASTER;
+        @Override
+        public String toString() 
+        {
+          switch(this) {
+            case SLAVE: return CipherConnectSettingInfo.SLAVE;
+            case SLAVE_QR: return CipherConnectSettingInfo.SLAVEQR;
+            case MASTER: return CipherConnectSettingInfo.MASTER;
+            default: throw new IllegalArgumentException();
+          }
+        }
     }
 	//data members
-	final private String SLAVE = "slave";
-	final private String SLAVEQR = "slave_QR";
-	final private String MASTER = "master";
 	private ICipherConnectManagerService mCipherConnectService = null;
 	private String mStrDefaultValues = "";
+	private String mStrDefaultMode = "";
 	private String mStrDefaultDevName = "";
 	private String mStrDefaultDevAddr = "";
 	private LinearLayout mLinearView = null;
@@ -60,7 +68,13 @@ public class BuildConnMethodPreference extends Preference
 		{
 			int next = ((mBConnState.ordinal() + 1) % BCEnum.values().length);
 			mSetState(BCEnum.values()[next]);
-		  	
+			if(mCipherConnectService != null)
+		  	{
+		  		if(mBConnState != BCEnum.MASTER)
+		  			mCipherConnectService.StartListenConn();
+		  		else
+		  			mCipherConnectService.StopListenConn();
+		  	}
 		  	mPersistValuses();  //Save to preference setting.
 		  	updateButtons();
 		}
@@ -137,12 +151,12 @@ public class BuildConnMethodPreference extends Preference
 			mckAutoReConn.setOnCheckedChangeListener(mOnCheckedChangeListener);
 		}
 		
-		String strDefaultMode = getContext().getResources().getString(R.string.Str_defaultMode);
+		mStrDefaultMode = getContext().getResources().getString(R.string.Str_defaultMode);
 		mStrDefaultDevName = getContext().getResources().getString(R.string.Str_defaultDevName);
 		mStrDefaultDevAddr = getContext().getResources().getString(R.string.Str_defaultDevAddr);
 		boolean bDefaultAutoReConn = Boolean.parseBoolean(getContext().getResources().getString(R.string.Str_defaultAutoReConn));
 		String strFormat = getContext().getResources().getString(R.string.Str_BMPrefFormat);
-		mStrDefaultValues = String.format(strFormat, strDefaultMode, mStrDefaultDevName, mStrDefaultDevAddr, bDefaultAutoReConn);
+		mStrDefaultValues = String.format(strFormat, mStrDefaultMode, mStrDefaultDevName, mStrDefaultDevAddr, bDefaultAutoReConn);
 		
 		mDeviceName = mStrDefaultDevName;
 		mDeviceAddr = mStrDefaultDevAddr;
@@ -152,13 +166,14 @@ public class BuildConnMethodPreference extends Preference
 	//combine values to single string to save.
 	private String mGeneratePersisString(BCEnum bcMode, String devName, String devAddr, boolean bAutoReConn)
 	{
-		String strValuse = (bcMode.equals(BCEnum.SLAVE)  ? SLAVE : (bcMode.equals(BCEnum.SLAVE_QR) ? SLAVEQR : MASTER)) + ";" + devName + "|" + devAddr + "@" + ((Boolean)mIsAutoReConn).toString();
+		String strValuse = (bcMode.equals(BCEnum.SLAVE)  ? CipherConnectSettingInfo.SLAVE : (bcMode.equals(BCEnum.SLAVE_QR) ? CipherConnectSettingInfo.SLAVEQR : CipherConnectSettingInfo.MASTER)) + ";" + devName + "|" + devAddr + "@" + ((Boolean)mIsAutoReConn).toString();
 		return strValuse;
 	}
 	
 	private void mPersistValuses()
 	{
 		persistString(mGeneratePersisString(mBConnState, mDeviceName, mDeviceAddr, mIsAutoReConn));
+		CipherConnectSettingInfo.setBCMode(mBConnState.toString());
 	}
 	
 	public void updateButtons()
@@ -323,11 +338,11 @@ public class BuildConnMethodPreference extends Preference
     		String strAddr = strVals.substring(nPosBreak + 1, strVals.indexOf("@", 0));
     		nPosBreak = strVals.indexOf("@", 0);
     		String strAutoReConn = strVals.substring(nPosBreak + 1);
-    		if(strMode.equals(SLAVE))
+    		if(strMode.equals(CipherConnectSettingInfo.SLAVE))
     			mBConnState = BCEnum.SLAVE;
-    		else if(strMode.equals(SLAVEQR))
+    		else if(strMode.equals(CipherConnectSettingInfo.SLAVEQR))
     			mBConnState = BCEnum.SLAVE_QR;
-    		else if(strMode.equals(MASTER))
+    		else if(strMode.equals(CipherConnectSettingInfo.MASTER))
     			mBConnState = BCEnum.MASTER;
     		mDeviceName = strDevName;
     		mDeviceAddr = strAddr;
@@ -336,7 +351,7 @@ public class BuildConnMethodPreference extends Preference
     			mckAutoReConn.setChecked(mIsAutoReConn);
         } else {
             // Set default state from the XML attribute
-        	persistString(mStrDefaultValues);
+        	mPersistValuses();
         }
     }
 

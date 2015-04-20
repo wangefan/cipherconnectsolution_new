@@ -95,7 +95,7 @@ public class SoftKeyboard extends InputMethodService implements
     		mMode = TURN_OFF;
     		mCurKeyboard = mQwertyKeyboard;
     	}
-    	CipherConnectSettingInfo.setMinimum(this, bSetMin);
+    	CipherConnectSettingInfo.setMinimum(bSetMin);
     	if(mInputView != null)
     		mInputView.setKeyboard(mCurKeyboard);
     }
@@ -131,7 +131,7 @@ public class SoftKeyboard extends InputMethodService implements
             mLastDisplayWidth = displayWidth;
         }
         
-        String Language = CipherConnectSettingInfo.getLanguage(this);
+        String Language = CipherConnectSettingInfo.getLanguage();
         if (Language.equals("No select"))
         {
         	mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty_none);
@@ -191,7 +191,7 @@ public class SoftKeyboard extends InputMethodService implements
         mComposing.setLength(0);
         updateCandidates();
         
-        String Language = CipherConnectSettingInfo.getLanguage(this);
+        String Language = CipherConnectSettingInfo.getLanguage();
         
         //Log.d(TAG, "mLangKeyboard_1= " + mLangKeyboard);
         
@@ -283,7 +283,7 @@ public class SoftKeyboard extends InputMethodService implements
             // normal alphabetic keyboard, and assume that we should
             // be doing predictive text (showing candidates as the
             // user types).
-            setKeyboardMinimize(CipherConnectSettingInfo.isMinimum(this));
+            setKeyboardMinimize(CipherConnectSettingInfo.isMinimum());
 
             mPredictionOn = true;
 
@@ -670,7 +670,7 @@ public class SoftKeyboard extends InputMethodService implements
                     current = mSymbolsKeyboard;
                 }
                 mMode = TURN_OFF;
-                CipherConnectSettingInfo.setMinimum(this, false);
+                CipherConnectSettingInfo.setMinimum(false);
                 mCurKeyboard = mQwertyKeyboard;
             } else {
                 if (current == mSymbolsKeyboard
