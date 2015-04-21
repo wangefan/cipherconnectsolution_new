@@ -69,7 +69,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	{
 		if(BluetoothAdapter.getDefaultAdapter().isEnabled() == false)
 		{
-			StopListenAndConn();
+			mStopListenAndConn();
 			fireCipherListenServerOffline();
 			return false;
 		}
@@ -107,7 +107,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		return mFireListenAndConnThread();
 	}
 	
-	private void StopListenAndConn()
+	private void mStopListenAndConn()
 	{
 		mServrState = STATE_OFFLINE;
 		mResetListenThread();
@@ -127,32 +127,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		}
 	}
 	//================ Server functions end=============
-	
-	/*
-	public void setAutoReconnect(boolean enable, ICipherConnBTDevice device)throws NullPointerException{
-		if(enable){
-			if(device == null)
-				throw new NullPointerException();
-			
-			if(this.mAutoConnectThread==null){
-				//if(_DEBUG)
-				//	Log.d("CipherConnectControl","The AutoConnectThread is opening.");
-
-				this.mAutoConnectThread = new AutoConnectThread(device);
-				this.mAutoConnectThread.start();
-			}
-		}
-		else{
-			//if(_DEBUG)
-			//	Log.d("CipherConnectControl","The AutoConnectThread is closeing.");
-			
-			if(this.mAutoConnectThread!=null)
-				this.mAutoConnectThread.cancel();
-			
-			this.mAutoConnectThread = null;
-		}
-	}
-	*/
 	
 	public void connect(ICipherConnBTDevice device) throws NullPointerException
 	{
