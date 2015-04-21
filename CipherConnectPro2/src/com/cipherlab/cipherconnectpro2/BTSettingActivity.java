@@ -2,15 +2,18 @@ package com.cipherlab.cipherconnectpro2;
 
 import com.cipherlab.cipherconnectpro2.R;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,6 +21,8 @@ import android.widget.Toast;
 
 public abstract class BTSettingActivity extends ListActivity 
 {
+	final static String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
+	
 	abstract protected String getTag();
 	
 	//This method be called after service connected and ensure that BT is turn on, connect service is bound.
@@ -40,10 +45,13 @@ public abstract class BTSettingActivity extends ListActivity
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
     
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	private static IntentFilter makeBTActionsIntentFilter() 
 	{
 		final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+		intentFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);  
+		intentFilter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
 		return intentFilter;
 	}
 	 
@@ -111,6 +119,43 @@ public abstract class BTSettingActivity extends ListActivity
                     }
                 }
             }
+            else if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED))
+            {
+            	BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE); 
+                
+                switch (device.getBondState())
+                { 
+                case BluetoothDevice.BOND_BONDING: 
+                	try {
+	                    Log.d("BlueToothTestActivity", "Pairing......"); 
+                	} catch (Exception e) {
+    					// TODO Auto-generated catch block
+    					Toast.makeText(context, "auto-pair Exception...", Toast.LENGTH_SHORT).show();
+    				}
+                    break; 
+                case BluetoothDevice.BOND_BONDED: 
+                    Log.d("BlueToothTestActivity", "Pair done"); 
+                    break; 
+                case BluetoothDevice.BOND_NONE: 
+                    Log.d("BlueToothTestActivity", "Cancel pairing"); 
+                default: 
+                    break; 
+                } 
+            }else if (intent.getAction().equals(ACTION_PAIRING_REQUEST)) 
+            {
+            	try {
+	    			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+	    			final String strAutoTryPin = "0000";
+	    			if (device.getBondState() != BluetoothDevice.BOND_BONDED) 
+	    			{
+	    				device.getClass().getMethod("setPairingConfirmation", boolean.class).invoke(device, true);
+	    				ClsUtils.setPin(device.getClass(), device, strAutoTryPin); 
+	    			}
+            	} catch (Exception e) {
+					// TODO Auto-generated catch block
+					Toast.makeText(context, "auto-pair error Exception", Toast.LENGTH_SHORT).show();
+				}
+    		}
 		}
     };
     
