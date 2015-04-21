@@ -508,10 +508,10 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             //exception handle
             catch (IOException e) {
                 Log.d(mTAG, "Socket Type: " + mSocketType + " IOException", e);
+                if(mIsConnected == true) 
+                	fireDisconnected(device);
                 if(mServrState == STATE_OFFLINE)
                 {
-                	if(mIsConnected == true) 
-	                	fireDisconnected(device);
                 	mMainThrdHandler.post(
                 			new Runnable()
                 			{
@@ -521,14 +521,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 				}
                 			}
                 	);
-                }
-                else
-                {
-                	String strMsg = "IOException, unknown message";
-                	if(e != null) 
-                		strMsg = e.getMessage();
-                	
-                	fireCipherConnectControlError(device, 0, strMsg);
                 }
             } 
             catch (CipherConnectErrException e) {
