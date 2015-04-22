@@ -1,8 +1,10 @@
 package com.cipherlab.cipherconnectpro2;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import com.cipherlab.help.CipherLog;
 import android.bluetooth.BluetoothDevice;
-import android.util.Log;
+
 public class ClsUtils 
 {
 	public static BluetoothDevice remoteDevice=null;
@@ -40,7 +42,7 @@ public class ClsUtils
             Boolean returnValue = (Boolean) removeBondMethod.invoke(btDevice, 
                     new Object[] 
                     {str.getBytes()}); 
-            Log.d("returnValue", "setPin is success " +btDevice.getAddress()+ returnValue.booleanValue());
+            CipherLog.d("returnValue", "setPin is success " +btDevice.getAddress()+ returnValue.booleanValue());
         } 
         catch (SecurityException e) 
         { 
@@ -67,7 +69,7 @@ public class ClsUtils
         Method createBondMethod = btClass.getMethod("cancelPairingUserInput"); 
         // cancelBondProcess() 
         Boolean returnValue = (Boolean) createBondMethod.invoke(device); 
-        Log.d("returnValue", "cancelPairingUserInput is success " + returnValue.booleanValue());
+        CipherLog.d("returnValue", "cancelPairingUserInput is success " + returnValue.booleanValue());
         return returnValue.booleanValue(); 
     } 
   
@@ -91,14 +93,14 @@ public class ClsUtils
             int i = 0; 
             for (; i < hideMethod.length; i++) 
             { 
-                //Log.e("method name", hideMethod.getName() + ";and the i is:"
+                //CipherLog.e("method name", hideMethod.getName() + ";and the i is:"
                   //      + i); 
             } 
            
             Field[] allFields = clsShow.getFields(); 
             for (i = 0; i < allFields.length; i++) 
             { 
-                //Log.e("Field name", allFields.getName()); 
+                //CipherLog.e("Field name", allFields.getName()); 
             } 
         } 
         catch (SecurityException e) 

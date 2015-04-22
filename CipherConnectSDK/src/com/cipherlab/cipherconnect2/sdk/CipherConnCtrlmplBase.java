@@ -2,6 +2,7 @@ package com.cipherlab.cipherconnect2.sdk;
 
 import java.util.ArrayList;
 
+import com.cipherlab.help.CipherLog;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -12,7 +13,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 import android.os.Handler;
 
 abstract public class CipherConnCtrlmplBase {
@@ -97,7 +97,7 @@ abstract public class CipherConnCtrlmplBase {
 		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				//Log.e("CipherConnectControl","fireReceivingBarcode(deviceName="+deviceName+", barcode="+barcode+")");
+				//CipherLog.e("CipherConnectControl","fireReceivingBarcode(deviceName="+deviceName+", barcode="+barcode+")");
 				l.onReceivingBarcode(device, barcode);
 			}
 		}
@@ -121,7 +121,7 @@ abstract public class CipherConnCtrlmplBase {
 		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireConnecting(deviceName="+device.getDeviceName()+")");
+				CipherLog.e("CipherConnectControl","fireConnecting(deviceName="+device.getDeviceName()+")");
 				l.onConnecting(device);
 			}
 		}
@@ -133,7 +133,7 @@ abstract public class CipherConnCtrlmplBase {
 		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireConnected(deviceName="+device.getDeviceName()+")");
+				CipherLog.e("CipherConnectControl","fireConnected(deviceName="+device.getDeviceName()+")");
 				l.onConnected(device);
 			}
 		}
@@ -145,7 +145,7 @@ abstract public class CipherConnCtrlmplBase {
 		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireCipherConnectControlError(deviceName="+device.getDeviceName()+", id="+id+", message="+message+")");
+				CipherLog.e("CipherConnectControl","fireCipherConnectControlError(deviceName="+device.getDeviceName()+", id="+id+", message="+message+")");
 				l.onCipherConnectControlError(device, id, message);
 			}
 		}
@@ -157,7 +157,7 @@ abstract public class CipherConnCtrlmplBase {
 		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				Log.e("CipherConnectControl","fireDisconnected(deviceName="+device.getDeviceName()+")");
+				CipherLog.e("CipherConnectControl","fireDisconnected(deviceName="+device.getDeviceName()+")");
 				l.onDisconnected(device);
 			}
 		}

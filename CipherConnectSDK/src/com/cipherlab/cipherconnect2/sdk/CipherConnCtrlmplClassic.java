@@ -15,9 +15,8 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
-
 import com.cipherlab.help.ArrayHelper;
+import com.cipherlab.help.CipherLog;
 
 public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	//public static final boolean _DEBUG = false;
@@ -260,7 +259,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             	{
             		c='\n';
             		sb.append(c);
-            		//Log.e("CipherConnectControl", "Add a Enter("+sb.toString()+").");
+            		//CipherLog.e("CipherConnectControl", "Add a Enter("+sb.toString()+").");
             		
             		break;
             	}
@@ -398,13 +397,13 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         }
         
         private void mCloseServerSocket() {
-            Log.d(mTAG, "Socket Type" + mSocketType + "cancel " + this);
+            CipherLog.d(mTAG, "Socket Type" + mSocketType + "cancel " + this);
             if(mServerSocket != null)
             {
 	            try {
 	            	mServerSocket.close();
 	            } catch (IOException e) {
-	                Log.e(mTAG, "Socket Type" + mSocketType + "close() of server failed", e);
+	                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of server failed", e);
 	            }
 	            finally {
 	            	mServerSocket = null;
@@ -419,7 +418,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	            try {
 	            	mSocket.close();
 	            } catch (IOException e) {
-	                Log.e(mTAG, "Socket Type" + mSocketType + "close() of socket failed", e);
+	                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of socket failed", e);
 	            }
 	            finally {
 	            	mSocket = null;
@@ -434,7 +433,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	            try {
 	            	mInStream.close();
 	            } catch (IOException e) {
-	                Log.e(mTAG, "Socket Type" + mSocketType + "close() of InputStream failed", e);
+	                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of InputStream failed", e);
 	            }
 	            finally {
 	            	mInStream = null;
@@ -460,7 +459,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         	
         	SetConnected(false);
         	
-            Log.d(mTAG, "Socket Type: " + mSocketType + "BEGIN ListenAndConnThread" + this);
+            CipherLog.d(mTAG, "Socket Type: " + mSocketType + "BEGIN ListenAndConnThread" + this);
             setName("ListenAndConnThread" + mSocketType);
             mCloseInStream();
         	mCloseSocket();
@@ -507,7 +506,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             } 
             //exception handle
             catch (IOException e) {
-                Log.d(mTAG, "Socket Type: " + mSocketType + " IOException", e);
+                CipherLog.d(mTAG, "Socket Type: " + mSocketType + " IOException", e);
                 if(mIsConnected == true) 
                 	fireDisconnected(device);
                 if(mServrState == STATE_OFFLINE)
@@ -524,15 +523,15 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 }
             } 
             catch (CipherConnectErrException e) {
-                Log.d(mTAG, "Socket Type: " + mSocketType + " CipherConnectErrException", e);
+                CipherLog.d(mTAG, "Socket Type: " + mSocketType + " CipherConnectErrException", e);
                 fireCipherConnectControlError(device, e);
             } 
             catch (Exception e) {
-                Log.d(mTAG, "Socket Type: " + mSocketType + " Exception occurs");
+                CipherLog.d(mTAG, "Socket Type: " + mSocketType + " Exception occurs");
                 fireCipherConnectControlError(device, e);
             } 
             finally {
-            	Log.d(mTAG, "Close Listen thread");
+            	CipherLog.d(mTAG, "Close Listen thread");
             	mCloseInStream();
             	mCloseSocket();
             	if(mServrState == STATE_ONLINE)
@@ -551,7 +550,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             	SetConnected(false);
             }       
          
-            Log.d(mTAG, "END ListenAndConnThread, socket Type: " + mSocketType);
+            CipherLog.d(mTAG, "END ListenAndConnThread, socket Type: " + mSocketType);
         }
     }
 	
@@ -573,7 +572,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				try {
 					stream = this.mBluetoothSocket.getOutputStream();
 				} catch (IOException e) {
-					Log.e("CipherConnect", "sendDisconnectCmd get the outputStream of BluetoothSocket", e);
+					CipherLog.e("CipherConnect", "sendDisconnectCmd get the outputStream of BluetoothSocket", e);
 					return ;
 				}
 				if(stream==null)
@@ -586,7 +585,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 					stream.write(strCmd.getBytes());
 					
 				} catch (IOException e) {
-					Log.e("CipherConnect","sendDisconnectCmd:Can't write to the Device",e);
+					CipherLog.e("CipherConnect","sendDisconnectCmd:Can't write to the Device",e);
 				}	
 	    	}
 	    }
@@ -634,7 +633,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				this.mBluetoothSocket = btDevice.createRfcommSocketToServiceRecord(mUuid);
 			} 
 			catch (Exception e) {
-				Log.e("CipherConnectControl", "CipherConnectService.bt_connected:Can't connect to the SocketToServiceRecord",e);
+				CipherLog.e("CipherConnectControl", "CipherConnectService.bt_connected:Can't connect to the SocketToServiceRecord",e);
 	        	fireCipherConnectControlError(mDevice,0,e.getMessage());
 	        	mResetConnThrd();
 	        	mDevice = null;
@@ -649,10 +648,10 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    	try {
 	    		this.mBluetoothSocket.connect();
 	    		 //if(_DEBUG)
-	    		//	 Log.d("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket connected.");
+	    		//	 CipherLog.d("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket connected.");
 	        } 
 	    	catch (Exception e) {
-	        	Log.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't connect.",e);
+	        	CipherLog.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't connect.",e);
 	        	fireCipherConnectControlError(mDevice,0,e.getMessage());
 	        	mResetConnThrd();
 	        	mDevice = null;
@@ -667,14 +666,14 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				this.mInputStream = this.mBluetoothSocket.getInputStream();
 			} 
 	    	catch (Exception e) {
-	        	Log.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't get the InputStream.",e);
+	        	CipherLog.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't get the InputStream.",e);
 	        	this.mInputStream = null;
 	        	fireCipherConnectControlError(mDevice,0,e.getMessage());
 	        	mResetConnThrd();
 	        	try {
 					this.mBluetoothSocket.close();
 				} catch (Exception e1) {
-		        	Log.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't close.",e);
+		        	CipherLog.e("CipherConnectControl", "CipherConnectService.bt_connected:The BluetoothSocket can't close.",e);
 				}
 	        	mDevice = null;
 	        	if(mBAuoReconnect)
@@ -705,7 +704,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				    return;
 				}
 			} catch (Exception e) {
-				Log.d("CipherConnectControl", e.getMessage());
+				CipherLog.d("CipherConnectControl", e.getMessage());
 			}
 
         	fireConnected(mDevice);
@@ -718,7 +717,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         		try {
     				this.processionBarcode(buffer);
     			} catch (UnsupportedEncodingException e1) {
-    				Log.d("CipherConnectControl", e1.getMessage());
+    				CipherLog.d("CipherConnectControl", e1.getMessage());
     			}
         	}
         	buffer=null;
@@ -732,16 +731,16 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 					this.mInputStream.read(buffer);
 					
 					//if(_DEBUG)
-	            	//	Log.d("CipherConnectControl", "CipherConnectService.ConnectedThread.run:Wait to read data from the InputStream of BluetoothSocket");
+	            	//	CipherLog.d("CipherConnectControl", "CipherConnectService.ConnectedThread.run:Wait to read data from the InputStream of BluetoothSocket");
 				} catch (Exception e) {
 					SetConnected(false);
 	            	if(this.mInputStream!=null){
 	            		try {
 	            			this.mInputStream.close();
 	            			//if(_DEBUG)
-	            			//	Log.d("CipherConnectControl", "CipherConnectService.ConnectedThread.run:The InputStream of BluetoothSocket is close");
+	            			//	CipherLog.d("CipherConnectControl", "CipherConnectService.ConnectedThread.run:The InputStream of BluetoothSocket is close");
 						} catch (Exception e2) {
-							Log.e("CipherConnectControl", "CipherConnectService.ConnectedThread.run:Can't close the InputStream of BluetoothSocket",e);
+							CipherLog.e("CipherConnectControl", "CipherConnectService.ConnectedThread.run:Can't close the InputStream of BluetoothSocket",e);
 						}
             			this.mInputStream = null;
 	            	}
@@ -787,7 +786,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 					this.mBluetoothSocket.close();
 				} 
         		catch (Exception e) {
-					Log.e("CipherConnectControl", "CipherConnectService.ConnectedThread.cancel:Can't close the BluetoothSocket",e);
+					CipherLog.e("CipherConnectControl", "CipherConnectService.ConnectedThread.cancel:Can't close the BluetoothSocket",e);
 				}
         	}
         	this.mBluetoothSocket = null;

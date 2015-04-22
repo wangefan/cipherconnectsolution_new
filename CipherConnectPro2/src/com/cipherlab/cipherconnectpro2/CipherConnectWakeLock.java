@@ -1,8 +1,9 @@
 package com.cipherlab.cipherconnectpro2;
 
+import com.cipherlab.help.CipherLog;
+
 import android.content.Context;
 import android.os.PowerManager;
-import android.util.Log;
 
 public class CipherConnectWakeLock {
 
@@ -18,7 +19,7 @@ public class CipherConnectWakeLock {
 
 	public static void enable() {
 		if (mWakeLock == null) {
-			Log.d("Miller", "Suspend Backlight");
+			CipherLog.d("Miller", "Suspend Backlight");
 			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
 			mWakeLock.acquire();
 		}
@@ -26,7 +27,7 @@ public class CipherConnectWakeLock {
 
 	public static void disable() {
 		if (mWakeLock != null && mWakeLock.isHeld()) {
-			Log.d("Miller", "Resume Backlight");
+			CipherLog.d("Miller", "Resume Backlight");
 			mWakeLock.release();
 			mWakeLock = null;
 		}

@@ -23,7 +23,6 @@ import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.text.method.MetaKeyKeyListener;
-import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
@@ -35,6 +34,7 @@ import android.view.inputmethod.InputConnection;
 
 import com.cipherlab.cipherconnectpro2.R;
 import com.cipherlab.cipherconnectpro2.CipherConnectSettingInfo;
+import com.cipherlab.help.CipherLog;
 
 /**
  * Example of writing an input method for a soft keyboard. This code is focused
@@ -111,7 +111,7 @@ public class SoftKeyboard extends InputMethodService implements
     }
 
     public void onPause() {
-    	Log.d("SoftKeyboard", "William Lu");
+    	CipherLog.d("SoftKeyboard", "William Lu");
     }
     
     /**
@@ -193,7 +193,7 @@ public class SoftKeyboard extends InputMethodService implements
         
         String Language = CipherConnectSettingInfo.getLanguage();
         
-        //Log.d(TAG, "mLangKeyboard_1= " + mLangKeyboard);
+        //CipherLog.d(TAG, "mLangKeyboard_1= " + mLangKeyboard);
         
         if (Language.equals("Cz"))  // Czech
         {
@@ -250,8 +250,8 @@ public class SoftKeyboard extends InputMethodService implements
         }
         
         System.gc();
-        Log.d(TAG, "onStartInput(): Language = " + Language); // WilliamLu       
-        //Log.d(TAG, "mLangKeyboard_2= " + mLangKeyboard.toString());
+        CipherLog.d(TAG, "onStartInput(): Language = " + Language); // WilliamLu       
+        //CipherLog.d(TAG, "mLangKeyboard_2= " + mLangKeyboard.toString());
         
         if (!restarting) {
             // Clear shift states.
@@ -359,7 +359,7 @@ public class SoftKeyboard extends InputMethodService implements
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         super.onStartInputView(attribute, restarting);
-        Log.d(TAG, "onStartInputView()"); // WilliamLu
+        CipherLog.d(TAG, "onStartInputView()"); // WilliamLu
         // Apply the selected keyboard to the input view.
         mInputView.setKeyboard(mCurKeyboard);
         mInputView.closing();
@@ -610,7 +610,7 @@ public class SoftKeyboard extends InputMethodService implements
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes) {
-    	Log.d(TAG, "onKey(): primaryCode = " + primaryCode); // WilliamLu
+    	CipherLog.d(TAG, "onKey(): primaryCode = " + primaryCode); // WilliamLu
     	if (isWordSeparator(primaryCode)) {
             // Handle separator
             if (mComposing.length() > 0) {
@@ -630,7 +630,7 @@ public class SoftKeyboard extends InputMethodService implements
         } else if (primaryCode == Keyboard.KEYCODE_ALT && mInputView != null) { 
         	// [BEGIN] Change Multi-Language
         	Keyboard currentLang = mInputView.getKeyboard();
-        	Log.d(TAG, "onKey(): Keyboard.KEYCODE_ALT "); // WilliamLu
+        	CipherLog.d(TAG, "onKey(): Keyboard.KEYCODE_ALT "); // WilliamLu
         	
         	if (mSecondlanguage)
         	{
@@ -655,7 +655,7 @@ public class SoftKeyboard extends InputMethodService implements
             // [END] Change Multi-Language
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE
                    && mInputView != null) {
-        	Log.d(TAG, "onKey(): Keyboard.KEYCODE_MODE_CHANGE"); // WilliamLu
+        	CipherLog.d(TAG, "onKey(): Keyboard.KEYCODE_MODE_CHANGE"); // WilliamLu
         	
             Keyboard current = mInputView.getKeyboard();
             if (mMode == TURN_ON) {

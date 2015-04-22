@@ -1,6 +1,7 @@
 package com.cipherlab.cipherconnectpro2;
 
 import com.cipherlab.cipherconnectpro2.R;
+import com.cipherlab.help.CipherLog;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -16,7 +17,6 @@ import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 public abstract class BTSettingActivity extends ListActivity 
@@ -59,7 +59,7 @@ public abstract class BTSettingActivity extends ListActivity
 	{
 		public void onServiceConnected(ComponentName className, IBinder service) 
 		{
-			Log.d(getTag(), "onServiceConnected, get mListenConnService and set SetKeepService true");
+			CipherLog.d(getTag(), "onServiceConnected, get mListenConnService and set SetKeepService true");
 			
 	      	// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference t
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -85,7 +85,7 @@ public abstract class BTSettingActivity extends ListActivity
 
         public void onServiceDisconnected(ComponentName className) 
         {
-        	Log.d(getTag(), "onServiceDisconnected, set SetKeepService false");
+        	CipherLog.d(getTag(), "onServiceDisconnected, set SetKeepService false");
         	mCipherConnectService = null;
         }
 	};
@@ -127,17 +127,17 @@ public abstract class BTSettingActivity extends ListActivity
                 { 
                 case BluetoothDevice.BOND_BONDING: 
                 	try {
-	                    Log.d("BlueToothTestActivity", "Pairing......"); 
+	                    CipherLog.d("BlueToothTestActivity", "Pairing......"); 
                 	} catch (Exception e) {
     					// TODO Auto-generated catch block
     					Toast.makeText(context, "auto-pair Exception...", Toast.LENGTH_SHORT).show();
     				}
                     break; 
                 case BluetoothDevice.BOND_BONDED: 
-                    Log.d("BlueToothTestActivity", "Pair done"); 
+                    CipherLog.d("BlueToothTestActivity", "Pair done"); 
                     break; 
                 case BluetoothDevice.BOND_NONE: 
-                    Log.d("BlueToothTestActivity", "Cancel pairing"); 
+                    CipherLog.d("BlueToothTestActivity", "Cancel pairing"); 
                 default: 
                     break; 
                 } 

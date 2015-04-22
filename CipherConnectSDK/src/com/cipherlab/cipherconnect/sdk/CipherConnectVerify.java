@@ -8,9 +8,9 @@ import java.util.Random;
 import org.apache.http.util.EncodingUtils;
 
 import android.bluetooth.BluetoothSocket;
-import android.util.Log;
 
 import com.cipherlab.help.ArrayHelper;
+import com.cipherlab.help.CipherLog;
 
 public class CipherConnectVerify {
 	
@@ -71,7 +71,7 @@ public class CipherConnectVerify {
 		try {
 			stream = this.mBluetoothSocket.getOutputStream();
 		} catch (IOException e) {
-			Log.e("CipherConnect", "CipherConnectVerify.sendRequestCommand:Can't get the outputStream of BluetoothSocket", e);
+			CipherLog.e("CipherConnect", "CipherConnectVerify.sendRequestCommand:Can't get the outputStream of BluetoothSocket", e);
 			return false;
 		}
 		if(stream==null)
@@ -82,7 +82,7 @@ public class CipherConnectVerify {
 			stream.write(buffer);
 			return true;
 		} catch (IOException e) {
-			Log.e("CipherConnect","CipherConnectVerify.sendRequestCommand:Can't write to the Device",e);
+			CipherLog.e("CipherConnect","CipherConnectVerify.sendRequestCommand:Can't write to the Device",e);
 			return false;
 		}
 	}
@@ -92,7 +92,7 @@ public class CipherConnectVerify {
 		try {
 			stream = this.mBluetoothSocket.getInputStream();
 		} catch (IOException e) {
-			Log.e("CipherConnect", "CipherConnectVerify.recvRequestCommand:Can't get the inputStream of BluetoothSocket", e);
+			CipherLog.e("CipherConnect", "CipherConnectVerify.recvRequestCommand:Can't get the inputStream of BluetoothSocket", e);
 			return false;
 		}
 		if(stream==null)
@@ -104,18 +104,18 @@ public class CipherConnectVerify {
 			stream.read(data);
 			//Thread.sleep(2000);
 		} catch (Exception e) {
-			Log.e("CipherConnect","CipherConnectVerify_recvRequestCommand:Can't recv from the Device",e);
+			CipherLog.e("CipherConnect","CipherConnectVerify_recvRequestCommand:Can't recv from the Device",e);
 			return false;
 		}
 		
 		data = ArrayHelper.clear(data);
 		int index = ArrayHelper.IndexOf(data, ArrayHelper.sum(_Header,_RecvHead));
-		Log.d("CipherConnect","CipherConnectVerify_recvRequestCommand.index="+index);
-		Log.d("CipherConnect","CipherConnectVerify_recvRequestCommand.data="+EncodingUtils.getAsciiString(data));
+		CipherLog.d("CipherConnect","CipherConnectVerify_recvRequestCommand.index="+index);
+		CipherLog.d("CipherConnect","CipherConnectVerify_recvRequestCommand.data="+EncodingUtils.getAsciiString(data));
 		if(index>-1){
 			this.mTransmitBuffer = ArrayHelper.removeAll(data,ArrayHelper.sum(_Header,_RecvHead));
 			if(mTransmitBuffer!=null)
-				Log.d("CipherConnect","CipherConnectVerify_recvRequestCommand.mTransmitBuffer="+EncodingUtils.getAsciiString(mTransmitBuffer));
+				CipherLog.d("CipherConnect","CipherConnectVerify_recvRequestCommand.mTransmitBuffer="+EncodingUtils.getAsciiString(mTransmitBuffer));
 			return true;
 		}
 		
@@ -127,7 +127,7 @@ public class CipherConnectVerify {
 		try {
 			stream = this.mBluetoothSocket.getOutputStream();
 		} catch (IOException e) {
-			Log.e("CipherConnect", "CipherConnectVerify.sendVerifyCommand:Can't get the outputStream of BluetoothSocket", e);
+			CipherLog.e("CipherConnect", "CipherConnectVerify.sendVerifyCommand:Can't get the outputStream of BluetoothSocket", e);
 			return false;
 		}
 		if(stream==null)
@@ -136,7 +136,7 @@ public class CipherConnectVerify {
 		try {
 			stream.write(sendData);
 		} catch (IOException e) {
-			Log.e("CipherConnect","CipherConnectVerify.sendVerifyCommand:Can't write to the Device",e);
+			CipherLog.e("CipherConnect","CipherConnectVerify.sendVerifyCommand:Can't write to the Device",e);
 			return false;
 		}
 		return true;
@@ -147,7 +147,7 @@ public class CipherConnectVerify {
 		try {
 			stream = this.mBluetoothSocket.getInputStream();
 		} catch (IOException e) {
-			Log.e("CipherConnect", "CipherConnectVerify.recvVerifyCommand:Can't get the outputStream of BluetoothSocket", e);
+			CipherLog.e("CipherConnect", "CipherConnectVerify.recvVerifyCommand:Can't get the outputStream of BluetoothSocket", e);
 			return false;
 		}
 		if(stream==null)
@@ -157,7 +157,7 @@ public class CipherConnectVerify {
 			Thread.sleep(1000);
 			stream.read(recvData);
 		} catch (Exception e) {
-			Log.e("CipherConnect","CipherConnectVerify.recvVerifyCommand:Can't write to the Device",e);
+			CipherLog.e("CipherConnect","CipherConnectVerify.recvVerifyCommand:Can't write to the Device",e);
 			return false;
 		}
 

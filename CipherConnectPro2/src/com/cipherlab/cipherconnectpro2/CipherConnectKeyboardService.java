@@ -7,12 +7,11 @@ import android.content.ServiceConnection;
 import android.inputmethodservice.Keyboard;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-
 import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
 import com.cipherlab.cipherconnectpro2.R;
+import com.cipherlab.help.CipherLog;
 import com.cipherlab.util.KeyboardUtil;
 import com.example.android.softkeyboard.SoftKeyboard;
 
@@ -76,29 +75,27 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
 
     @Override
     public void onCreate() {
-    	Log.d(TAG, "onCreate(): begin");
+    	CipherLog.d(TAG, "onCreate(): begin");
         super.onCreate();
 
-        if (CipherConnectSettingInfo._DEBUG)
+        if (BuildConfig.DEBUG)
             android.os.Debug.waitForDebugger();
 
         try {
             Intent intent = new Intent(this, CipherConnectManagerService.class);
             bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);
-            
-            if (CipherConnectSettingInfo._DEBUG)
-            	Log.d(TAG, "onCreate(): start CipherConnectManagerService");
+            CipherLog.d(TAG, "onCreate(): start CipherConnectManagerService");
         } catch (Exception e) {
-            Log.e(this.getResources().getString(R.string.ime_name),
+            CipherLog.e(this.getResources().getString(R.string.ime_name),
                   "CipherConnectSettingActivity.ConnectStatus_bt_startService:",
                   e);
         }
-        Log.d(TAG, "onCreate(): end");
+        CipherLog.d(TAG, "onCreate(): end");
     }
 
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
-    	Log.d(TAG, "onStartInputView(): restarting= "+restarting);
+    	CipherLog.d(TAG, "onStartInputView(): restarting= "+restarting);
     	
         super.onStartInputView(info, restarting);
         this.isOnStartInputView = true;
@@ -106,14 +103,14 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
 
     @Override
     public void onFinishInputView(boolean finishingInput) {
-    	Log.d(TAG, "onFinishInputView(): begin");
+    	CipherLog.d(TAG, "onFinishInputView(): begin");
         super.onFinishInputView(finishingInput);
         this.isOnStartInputView = false;
     }
 
     @Override
     public void onDestroy() {
-    	Log.d(TAG, "onDestroy(): begin");
+    	CipherLog.d(TAG, "onDestroy(): begin");
         this.unbindService(this.mSConnection);
         
         if(mCipherConnectManagerListener != null)
@@ -131,7 +128,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         this.mCipherConnectManagerService = null;
 
         super.onDestroy();
-        Log.d(TAG, "onDestroy(): end");
+        CipherLog.d(TAG, "onDestroy(): end");
     }
 
     @Override
@@ -173,7 +170,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     }
 
     public synchronized void sendBarcode(String barcode) {
-    	//Log.d(TAG, "sendBarcode(): barcode= "+barcode);
+    	//CipherLog.d(TAG, "sendBarcode(): barcode= "+barcode);
     	if (this.isOnStartInputView) {
             if (barcode == null)
                 return;
@@ -181,7 +178,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
                 return;
 
             char[] data = barcode.toCharArray();
-            Log.e("sendBarcode", "sendBarcode("+barcode+")");
+            CipherLog.e("sendBarcode", "sendBarcode("+barcode+")");
             
             this.waitEx(5);
 
@@ -191,7 +188,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
             for (char c : data) {
                 /*
             	if (c == '\n') {
-        	    	Log.e("sendBarcode", "Enter");
+        	    	CipherLog.e("sendBarcode", "Enter");
 
 					this.waitEx(10);
                     ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_ENTER));
@@ -211,7 +208,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
                 */
                 this.waitEx(3);
                 String s = String.valueOf(c);
-    	    	Log.e("sendBarcode", "commitText("+s+")");
+    	    	CipherLog.e("sendBarcode", "commitText("+s+")");
                 ic.commitText(s, 1);
                 
                 String BarcodeInterval = CipherConnectSettingInfo.getBarcodeInterval();
@@ -236,14 +233,14 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
 
     @Override
     public void onUnbindInput() {
-        Log.d("xxxx", "onUnbindInput");
+        CipherLog.d("xxxx", "onUnbindInput");
         if (KeyboardUtil.isEnableingKeyboard(this, R.string.ime_service_name) == true) {
             if (KeyboardUtil.checkKeyboard(this) == false) {
                 CipherConnectNotification.pause_notify(this);
             }
         }
         super.onUnbindInput();
-        Log.d("xxxx", "onUnbindInput end");
+        CipherLog.d("xxxx", "onUnbindInput end");
     }
 
     /*
@@ -253,17 +250,17 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
      * if(list==null || list.size()==0) return false;
      *
      * for (InputMethodInfo imo : list) { String name = imo.getServiceName();
-     * Log.d(this.getResources().getString(R.string.ime_name),
+     * CipherLog.d(this.getResources().getString(R.string.ime_name),
      * "InputMethodInfo.name="+name); if(name==null || name.length()==0)
      * continue;
      *
      * if(name.equals(CipherConnectKeyboardService.class.getName())){
-     * Log.d(this.getResources().getString(R.string.ime_name),
+     * CipherLog.d(this.getResources().getString(R.string.ime_name),
      * "The CipherConnectKeyboard was enable."); return true; }
      *
      * }
      *
-     * Log.d(this.getResources().getString(R.string.ime_name),
+     * CipherLog.d(this.getResources().getString(R.string.ime_name),
      * "The CipherConnectKeyboard was not enable."); return false; }
      */
 }

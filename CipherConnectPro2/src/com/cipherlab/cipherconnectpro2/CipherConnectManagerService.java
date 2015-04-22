@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.cipherlab.cipherconnect2.sdk.CipherConnCtrl2EZMet;
@@ -17,6 +16,7 @@ import com.cipherlab.cipherconnect2.sdk.ICipherConnCtrl2EZMetListener;
 import com.cipherlab.cipherconnectpro2.ICipherConnectManagerService.CONN_STATE;
 import com.cipherlab.cipherconnectpro2.ICipherConnectManagerService.SERVER_STATE;
 import com.cipherlab.cipherconnectpro2.R;
+import com.cipherlab.help.CipherLog;
 import com.cipherlab.util.NotificationUtil;
 
 public class CipherConnectManagerService extends Service 
@@ -41,7 +41,7 @@ public class CipherConnectManagerService extends Service
     
     @Override
     public void onCreate() {
-    	Log.d(TAG, "onCreate(): begin");
+    	CipherLog.d(TAG, "onCreate(): begin");
     	mBinder = new LocalBinder();
     	CipherConnectSettingInfo.initSharedPreferences(this);
     	CipherConnectWakeLock.initial(this);
@@ -51,19 +51,19 @@ public class CipherConnectManagerService extends Service
         										getResources().getString(R.string.setting_bluetooth_device_disconnected),
         		                                      CipherConnectNotification.intent_cipherconnectproSettings()));
         super.onCreate();
-        Log.d(TAG, "onCreate(): end");
+        CipherLog.d(TAG, "onCreate(): end");
     }
     
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
-		Log.d(TAG, "onStartCommand called");
+		CipherLog.d(TAG, "onStartCommand called");
 		return START_NOT_STICKY;	//means not re-create service if no call startService explicitly
 	}
 
     @Override
     public void onDestroy() {
-    	Log.d(TAG, "onDestroy(): begin");
+    	CipherLog.d(TAG, "onDestroy(): begin");
         super.onDestroy();
         
         if (mCipherConnectControl.isConnected())
@@ -74,7 +74,7 @@ public class CipherConnectManagerService extends Service
 
         CipherConnectSettingInfo.destroy();
         stopForeground(true);
-        Log.d(TAG, "onDestroy(): end");
+        CipherLog.d(TAG, "onDestroy(): end");
     }
     
     @Override
@@ -336,7 +336,7 @@ public class CipherConnectManagerService extends Service
 	
     public void CipherConnectControl_onConnecting(ICipherConnBTDevice device) 
     {
-		//Log.d(TAG, "CipherConnectControl_onConnecting("+deviceName);
+		//CipherLog.d(TAG, "CipherConnectControl_onConnecting("+deviceName);
     	mDevice = device;
 		String message = this.getResources().getString(R.string.the_bluetooth_device_connecting);
 		CipherConnectNotification.connecting_notify(CipherConnectManagerService.this, 
@@ -347,7 +347,7 @@ public class CipherConnectManagerService extends Service
 
     public void CipherConnectControl_onConnected(ICipherConnBTDevice device) 
     {
-    	//Log.d(TAG, "CipherConnectControl_onConnected("+deviceName);
+    	//CipherLog.d(TAG, "CipherConnectControl_onConnected("+deviceName);
     	mDevice = device;
         String message = device.getDeviceName()
 			            + " "
@@ -465,7 +465,7 @@ public class CipherConnectManagerService extends Service
     public boolean bt_connect(ICipherConnBTDevice device) {
     	try {
     		//Toast.makeText(getApplicationContext(), "bt_connect(deviceName="+deviceName+")", Toast.LENGTH_SHORT).show();
-    		Log.d(TAG, "bt_connect(): deviceName= "+ device.getDeviceName());
+    		CipherLog.d(TAG, "bt_connect(): deviceName= "+ device.getDeviceName());
     		mCipherConnectControl.connect(device);
     		
     		return true;
@@ -490,7 +490,7 @@ public class CipherConnectManagerService extends Service
     public boolean bt_connect(String deviceName, String deviceAddr) {
     	try {
     		
-    		Log.d(TAG, "bt_connect(): deviceName= " + deviceName);
+    		CipherLog.d(TAG, "bt_connect(): deviceName= " + deviceName);
     		mCipherConnectControl.connect(deviceName, deviceAddr);
     		
     		return true;
@@ -512,7 +512,7 @@ public class CipherConnectManagerService extends Service
      * <!----------------------------------------------------------------->
      * */
     public synchronized void bt_setAutoConnect(boolean enable) {
-    	Log.d(this.getResources().getString(R.string.ime_name), "The AutoConnectis: "+ enable);
+    	CipherLog.d(this.getResources().getString(R.string.ime_name), "The AutoConnectis: "+ enable);
     	
     	mCipherConnectControl.setAutoReconnect(enable);
     }

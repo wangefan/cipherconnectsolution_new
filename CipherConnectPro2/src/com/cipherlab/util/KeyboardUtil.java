@@ -4,11 +4,11 @@ import java.util.List;
 
 import android.content.Context;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import com.cipherlab.cipherconnectpro2.R;
+import com.cipherlab.help.CipherLog;
 
 
 public class KeyboardUtil {
@@ -24,17 +24,17 @@ public class KeyboardUtil {
         for (InputMethodInfo imo : list) {
             String name = imo.getServiceName();
 
-            Log.d(ime_name+".KeyboardUtil", "InputMethodInfo.name="+name);
+            CipherLog.d(ime_name+".KeyboardUtil", "InputMethodInfo.name="+name);
             if (name==null || name.length()==0)
                 continue;
 
             if (name.equals(ime_service_name)) {
-                Log.d(ime_name+".KeyboardUtil", "The "+ime_service_name+" was enable.");
+                CipherLog.d(ime_name+".KeyboardUtil", "The "+ime_service_name+" was enable.");
                 return true;
             }
         }
 
-        Log.d(ime_name, "The CipherConnectKeyboard was not enable.");
+        CipherLog.d(ime_name, "The CipherConnectKeyboard was not enable.");
         return false;
     }
 

@@ -20,7 +20,6 @@ import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -34,6 +33,7 @@ import com.cipherlab.util.DialogUtil;
 import com.cipherlab.util.KeyboardUtil;
 import com.cipherlab.cipherconnectpro2.CipherConnectSettingInfo;
 import com.cipherlab.cipherconnectpro2.SalveModeActivity;
+import com.cipherlab.help.CipherLog;
 
 
 public class CipherConnectSettingActivity extends PreferenceActivity 
@@ -132,7 +132,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	Log.d(TAG, "onCreate begin");
+    	CipherLog.d(TAG, "onCreate begin");
         super.onCreate(savedInstanceState);
         
         addPreferencesFromResource(R.layout.cipherconnect_setting_activity);     
@@ -144,7 +144,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             Intent intent = new Intent(this, CipherConnectManagerService.class);
             bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);
         } catch (Exception e) {
-            Log.e(this.getResources().getString(R.string.ime_name),
+            CipherLog.e(this.getResources().getString(R.string.ime_name),
                   "CipherConnectSettingActivity.ConnectStatus_bt_startService:",
                   e);
         }
@@ -164,7 +164,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     @SuppressWarnings("deprecation")
 	private void init_UI()
 	{
-    	Log.d(TAG, "init_UI begin");
+    	CipherLog.d(TAG, "init_UI begin");
     	Boolean btStatus = false;
     	Boolean checkStatus = KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name);
 
@@ -173,7 +173,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     	
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
-            Log.d("xxxx", "mBluetoothAdapter=null");
+            CipherLog.d("xxxx", "mBluetoothAdapter=null");
         } else {
             btStatus = mBluetoothAdapter.isEnabled();
             if (btStatus == false) {
@@ -226,7 +226,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 									} catch (Exception e) {										
 										e.printStackTrace();
 									}
-                					Log.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);
+                					CipherLog.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);
                 				}
                 			}
                 			//Low Energy
@@ -247,7 +247,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
  									} catch (Exception e) {										
  										e.printStackTrace();
  									}
-                 					Log.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
+                 					CipherLog.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
                 				}
                 			}
                 		}
@@ -363,7 +363,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         if (lstLanguage == null)
         	CipherConnectSettingInfo.setLanguage(lstLanguage.getValue());
 
-        Log.d(TAG, "Language : " +lstLanguage.getValue());
+        CipherLog.d(TAG, "Language : " +lstLanguage.getValue());
         
         lstLanguage.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -472,7 +472,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     public boolean SendBarcodeInterval_onPreferenceChange(Preference preference, Object newValue) {
         CipherConnectSettingInfo.setBarcodeInterval((String) newValue);
         //BarcodeInterval.setSummary((String) newValue);
-        Log.d(TAG, "SendBarcodeInterval_onPreferenceChange(): newValue= " + newValue); 
+        CipherLog.d(TAG, "SendBarcodeInterval_onPreferenceChange(): newValue= " + newValue); 
 
         return true;
     }
@@ -491,8 +491,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         CipherConnectSettingInfo.setLanguage((String) newValue);
         //BarcodeInterval.setSummary((String) newValue);
         //String list = (String) lstLanguage.getEntry();
-        Log.d(TAG, "Language_onPreferenceChange(): newValue= " + newValue);
-        //Log.d(TAG, "Language_onPreferenceChange(): Entry= " + lst);
+        CipherLog.d(TAG, "Language_onPreferenceChange(): newValue= " + newValue);
+        //CipherLog.d(TAG, "Language_onPreferenceChange(): Entry= " + lst);
 
         return true;
     }
@@ -508,13 +508,13 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * <!----------------------------------------------------------------->
      * */
     public boolean exit_onPreferenceChange(Preference preference) {
-    	Log.d(TAG, "exit_onPreferenceChange begin");
+    	CipherLog.d(TAG, "exit_onPreferenceChange begin");
         if (!KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name)) {
             mCipherConnectService.stopSelf();
         }
 
         this.finish();
-        Log.d(TAG, "exit_onPreferenceChange end");
+        CipherLog.d(TAG, "exit_onPreferenceChange end");
         return true;
     }
     
@@ -538,7 +538,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     }
 
     private void remove_ime_conflic() {
-    	Log.d(TAG, "remove_ime_conflic begin");
+    	CipherLog.d(TAG, "remove_ime_conflic begin");
         if (KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name_conflict)) {
             
         	Builder builder = DialogUtil.newAlertDialog(this,
@@ -572,7 +572,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     @Override
     protected void onResume() {
-    	Log.d(TAG, "onResume()");
+    	CipherLog.d(TAG, "onResume()");
         super.onResume();
         registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter());
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -594,14 +594,14 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     @Override
     protected void onPause() {
-    	Log.d(TAG, "onPause()");
+    	CipherLog.d(TAG, "onPause()");
         super.onPause();
         unregisterReceiver(mServiceActionReceiver);
     }
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult()"); 
+        CipherLog.d(TAG, "onActivityResult()"); 
         switch (requestCode) {
         case REQUEST_GET_CLASSIC_BT :
         {
@@ -650,7 +650,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     @Override
 	protected void onDestroy() 
     {
-    	Log.d(TAG, "onDestroy()");    	
+    	CipherLog.d(TAG, "onDestroy()");    	
     	this.unbindService(this.mSConnection);
         this.mSConnection = null;
         this.mCipherConnectService = null;

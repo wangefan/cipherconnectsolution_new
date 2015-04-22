@@ -6,8 +6,6 @@ import android.content.SharedPreferences.Editor;
 
 public class CipherConnectSettingInfo {
 	public static final String TAG = "CipherConnectSettingInfo";
-	public static final boolean _DEBUG = false;
-    
 
     public static final String _NAME = "CipherConnect";
     private static SharedPreferences _sp = null;

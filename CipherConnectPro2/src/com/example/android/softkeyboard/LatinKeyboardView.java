@@ -16,12 +16,13 @@
 
 package com.example.android.softkeyboard;
 
+import com.cipherlab.help.CipherLog;
+
 import android.content.Context;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.Keyboard.Key;
 import android.util.AttributeSet;
-import android.util.Log;
 
 public class LatinKeyboardView extends KeyboardView {
 
@@ -37,7 +38,7 @@ public class LatinKeyboardView extends KeyboardView {
 
     @Override
     protected boolean onLongPress(Key key) {
-    	Log.d("LatinKeyboardView", "onLongPress()");
+    	CipherLog.d("LatinKeyboardView", "onLongPress()");
     	if (key.codes[0] == Keyboard.KEYCODE_CANCEL) {
             getOnKeyboardActionListener().onKey(KEYCODE_OPTIONS, null);
             return true;
