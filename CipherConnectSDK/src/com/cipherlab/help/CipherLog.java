@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class CipherLog 
 {
-	private static boolean _DEBUG = false; 
+	public static boolean _DEBUG = false; 
 	public static void d(String tag, String msg) {
 		if(_DEBUG)
 			Log.d(tag, msg);

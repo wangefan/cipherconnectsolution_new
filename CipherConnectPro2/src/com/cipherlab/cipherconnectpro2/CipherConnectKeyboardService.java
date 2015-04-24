@@ -78,7 +78,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     	CipherLog.d(TAG, "onCreate(): begin");
         super.onCreate();
 
-        if (BuildConfig.DEBUG)
+        if (CipherLog._DEBUG)
             android.os.Debug.waitForDebugger();
 
         try {
