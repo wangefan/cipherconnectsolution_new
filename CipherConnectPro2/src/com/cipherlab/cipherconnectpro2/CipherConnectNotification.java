@@ -2,7 +2,6 @@ package com.cipherlab.cipherconnectpro2;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.cipherlab.cipherconnectpro2.R;
 import com.cipherlab.util.NotificationUtil;
@@ -11,7 +10,6 @@ public class CipherConnectNotification {
 	public static final String TAG = "CipherConnectNotification";
     private static int mIcon = 0;
     private static String mMessage;
-    private static boolean isResume = false;
 
     public static void notify(Context context, Intent intent, String title, String message) {
         mIcon = R.drawable.icon;
@@ -37,7 +35,6 @@ public class CipherConnectNotification {
 
     public static void pause_notify(Context context) {
         NotificationUtil.cancel(context);
-        isResume = true;
     }
 
     public static Intent intent_BluetoothSettings() {
