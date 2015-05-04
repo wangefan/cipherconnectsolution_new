@@ -20,7 +20,7 @@ import com.cipherlab.help.CipherLog;
 
 public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	//public static final boolean _DEBUG = false;
-	
+	private String mTAG = "CipherConnCtrlmplClassic";
 	private UUID mUuid;
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
@@ -67,8 +67,10 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	
 	private boolean mFireListenAndConnThread()
 	{
+		CipherLog.d(mTAG, "mFireListenAndConnThread begin");
 		if(BluetoothAdapter.getDefaultAdapter().isEnabled() == false)
 		{
+			CipherLog.d(mTAG, "BluetoothAdapter.getDefaultAdapter().isEnabled() == false");
 			StopListening();
 			fireCipherListenServerOffline();
 			return false;

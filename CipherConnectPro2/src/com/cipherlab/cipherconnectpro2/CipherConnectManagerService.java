@@ -241,6 +241,7 @@ public class CipherConnectManagerService extends Service
      * */
     public void btSetUpForBluetooth()
     {
+    	CipherLog.d(TAG, "btSetUpForBluetooth begin");
     	String strCurBTMode = CipherConnectSettingInfo.getBTMode();
     	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
     	{
@@ -253,6 +254,7 @@ public class CipherConnectManagerService extends Service
     	{
     		bt_StartListenConn();
     	}
+    	CipherLog.d(TAG, "btSetUpForBluetooth end");
     }
     
     /*

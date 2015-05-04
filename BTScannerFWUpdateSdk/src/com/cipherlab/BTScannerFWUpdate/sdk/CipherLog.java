@@ -1,10 +1,10 @@
-package com.cipherlab.help;
+package com.cipherlab.BTScannerFWUpdate.sdk;
 
 import android.util.Log;
 
 public class CipherLog 
 {
-	public static boolean _DEBUG = true; 
+	public static boolean _DEBUG = false; 
 	public static void d(String tag, String msg) {
 		if(_DEBUG)
 			Log.d(tag, msg);
@@ -25,3 +25,4 @@ public class CipherLog
 			Log.e(tag, msg, tr);
     }
 }
+
