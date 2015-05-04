@@ -3,6 +3,7 @@
 	<name>CipherConnectSDK</name>
 	<comment></comment>
 	<projects>
+		<project>CipherConnectPro2</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
