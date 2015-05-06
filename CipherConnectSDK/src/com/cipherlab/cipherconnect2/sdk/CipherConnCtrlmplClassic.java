@@ -19,7 +19,7 @@ import com.cipherlab.help.ArrayHelper;
 import com.cipherlab.help.CipherLog;
 
 public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
-	//public static final boolean _DEBUG = false;
+	final String mTAG = "CipherConnCtrlmplClassic";
 	
 	private UUID mUuid;
     // Name for the SDP record when creating server socket
@@ -66,10 +66,12 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	
 	private boolean mFireListenAndConnThread()
 	{
+		CipherLog.d(mTAG, "mFireListenAndConnThread begin");
 		if(BluetoothAdapter.getDefaultAdapter().isEnabled() == false)
 		{
 			mStopListenAndConn();
 			fireCipherListenServerOffline();
+			CipherLog.d(mTAG, "mFireListenAndConnThread, BluetoothAdapter.getDefaultAdapter().isEnabled() == false, return false");
 			return false;
 		}
 		
@@ -90,6 +92,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		mListenAndConnThread.start();
 		mServrState = STATE_ONLINE;
 		fireCipherListenServerOnline();
+		CipherLog.d(mTAG, "mFireListenAndConnThread end, return true");
 		return true;
 	}
 	

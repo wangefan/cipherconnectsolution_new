@@ -3,7 +3,11 @@ package com.cipherlab.cipherconnectpro2;
 import java.util.ArrayList;
 
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
@@ -21,6 +25,8 @@ import com.cipherlab.util.NotificationUtil;
 
 public class CipherConnectManagerService extends Service 
 {
+	final String mTAG = "CipherConnectManagerService";
+
     private SERVER_STATE mServerState = SERVER_STATE.SERVER_STATE_OFFLINE;
     private CONN_STATE mConnState = CONN_STATE.CONN_STATE_DISCONNECT;
     private ICipherConnBTDevice mDevice = null;
@@ -39,6 +45,29 @@ public class CipherConnectManagerService extends Service
             new ArrayList<ICipherConnectManagerListener>();
     private LocalBinder mBinder;
     
+    private BroadcastReceiver mBTActReceiver = new BroadcastReceiver()
+	{
+		@Override
+        public void onReceive(Context context, Intent intent) 
+		{
+        	final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                                               BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_ON) 
+                {
+                	CipherLog.d(mTAG, "BroadcastReceiver, receive bluetooth on");
+                	btSetUpForBluetooth();
+                } 
+                else if (state == BluetoothAdapter.STATE_OFF) 
+                {
+                	CipherLog.d(mTAG, "BroadcastReceiver, receive bluetooth off");
+                }
+            }
+		}
+	};
+    
     @Override
     public void onCreate() {
     	CipherLog.d(TAG, "onCreate(): begin");
@@ -50,6 +79,10 @@ public class CipherConnectManagerService extends Service
         										getResources().getString(R.string.ime_name), 
         										getResources().getString(R.string.setting_bluetooth_device_disconnected),
         		                                      CipherConnectNotification.intent_cipherconnectproSettings()));
+        
+        final IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+		registerReceiver(mBTActReceiver, intentFilter);
         super.onCreate();
         CipherLog.d(TAG, "onCreate(): end");
     }
@@ -74,6 +107,7 @@ public class CipherConnectManagerService extends Service
 
         CipherConnectSettingInfo.destroy();
         stopForeground(true);
+        unregisterReceiver(mBTActReceiver);
         CipherLog.d(TAG, "onDestroy(): end");
     }
     
