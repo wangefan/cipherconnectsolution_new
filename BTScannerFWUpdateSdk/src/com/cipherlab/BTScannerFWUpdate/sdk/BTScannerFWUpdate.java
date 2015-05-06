@@ -22,7 +22,7 @@ public class BTScannerFWUpdate implements IBTScannerFWUpdate
     private OutputStream mOutStream = null;
     private IBTScannerFWUpdateListener mListener = null;
 	
-	static IBTScannerFWUpdate getInst(BluetoothSocket btSocket) throws BTScannerFWUpdateException
+	static public IBTScannerFWUpdate getInstance(BluetoothSocket btSocket) throws BTScannerFWUpdateException
 	{
 		if(mMe == null)
 			mMe = new BTScannerFWUpdate(btSocket);
@@ -31,7 +31,7 @@ public class BTScannerFWUpdate implements IBTScannerFWUpdate
 	
 	private BTScannerFWUpdate(BluetoothSocket btSocket) throws BTScannerFWUpdateException, NullPointerException
 	{
-		if(mbtSocket == null)
+		if(btSocket == null)
 			throw new NullPointerException();
 		
 		mbtSocket = btSocket;
@@ -48,6 +48,18 @@ public class BTScannerFWUpdate implements IBTScannerFWUpdate
 	{
 		if(mListener != null)
 			mListener.onProgress(strMsg, nProgress);
+	}
+	
+	private void mFireUpdateFWErr(BTScannerFWUpdateException e)
+	{
+		if(mListener != null)
+			mListener.onUpdateFWErr(e);
+	}
+	
+	private void mFireComplete()
+	{
+		if(mListener != null)
+			mListener.onUpdateFWComplete();
 	}
 	
 	//-------------------------------------------------------------------------//
@@ -279,6 +291,7 @@ public class BTScannerFWUpdate implements IBTScannerFWUpdate
 							break;
 						
 						mFireProgress("write flash progress", 100);
+						mFireComplete();
 						return true;
 					}
 
@@ -400,8 +413,8 @@ public class BTScannerFWUpdate implements IBTScannerFWUpdate
 	boolean mRead (long nTimeoutSec, StringBuilder strRead)
     {
     	byte byteRet = '\r';
-     	long nTimeOut = System.currentTimeMillis() + nTimeoutSec * 1000; 
-
+     	long nTimeOut = System.currentTimeMillis() + nTimeoutSec * 1000;
+     	strRead.setLength(0);
      	do            // keep on reading while not receive CR.
     	{
     		try {
@@ -467,15 +480,12 @@ public class BTScannerFWUpdate implements IBTScannerFWUpdate
     	return mRead (8, strRead);
     }
 
-		
-	@Override
-	public boolean updateFW(String filePath) throws BTScannerFWUpdateException 
+	private void mUpdateFWInWorkerThrd(String filePath)
 	{
-		boolean bRet = false;
 		BufferedInputStream bufInStream = null;
 		try {
 			if(mOutStream == null || mInStream == null || filePath.length() <= 0)
-				return false;
+				throw new BTScannerFWUpdateException(BTScannerFWUpdateException.INFO_DOWNLOADMODE_FAIL);
 			
 			mFireProgress("Set scanner to download mode", 0);
 			if(false == mSetDownLoadMode())
@@ -527,7 +537,7 @@ public class BTScannerFWUpdate implements IBTScannerFWUpdate
 			}
 		}
 		catch (BTScannerFWUpdateException e) {
-			throw e;
+			mFireUpdateFWErr(e);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
@@ -542,8 +552,18 @@ public class BTScannerFWUpdate implements IBTScannerFWUpdate
 				bufInStream = null;
 			}
 		}
+	}
 		
-		return bRet;
+	@Override
+	public void updateFW(String filePath) 
+	{		
+		final String tempFileName = filePath;
+		Thread t = new Thread() {
+		    public void run() {
+		    	mUpdateFWInWorkerThrd(tempFileName);
+		    }
+		};
+		t.start();
 	}
 
 	@Override

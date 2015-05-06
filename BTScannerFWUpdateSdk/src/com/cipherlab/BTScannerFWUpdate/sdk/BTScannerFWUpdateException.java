@@ -11,6 +11,8 @@ public class BTScannerFWUpdateException extends Exception
 	public static final int INFO_DOWNLOADMODE_FAIL = 2;
 	public static final int INFO_ERASEFLASH_FAIL = 3;
 	public static final int INFO_FOUNDNOT_FILE = 4;
+	public static final int INFO_BAD_SOCKET = 5;
+	public static final int INFO_DOWNLOAD_FAIL = 6;
 	private int mInfoID;
 	
 	public BTScannerFWUpdateException(int nInfoID)
@@ -37,6 +39,12 @@ public class BTScannerFWUpdateException extends Exception
 			break;
 		case INFO_FOUNDNOT_FILE:
 			strResult = "found not firmware file path";
+			break;
+		case INFO_BAD_SOCKET:
+			strResult = "bad bluetooth socket";
+			break;
+		case INFO_DOWNLOAD_FAIL:
+			strResult = "download firmwaire fail";
 			break;
 		default:
 			break;

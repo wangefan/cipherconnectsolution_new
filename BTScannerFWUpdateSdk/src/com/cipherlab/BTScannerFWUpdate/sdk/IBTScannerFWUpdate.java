@@ -7,13 +7,12 @@ package com.cipherlab.BTScannerFWUpdate.sdk;
 public interface IBTScannerFWUpdate 
 {
 	/**
-	 * The function to update firmware.
-	 * 
+	 * The function to update firmware, it`s update firmware from worker thread and
+	 * callback by IBTScannerFWUpdateListener to report status.
 	 * @param String: firmware full file path.
-	 * @return boolean: true or false .
 	 * @Throw BTScannerFWUpdateException: Exception contains message to notify client.
 	 */
-	public boolean updateFW(String filePath) throws BTScannerFWUpdateException;
+	public void updateFW(String filePath) throws BTScannerFWUpdateException;
 	
 	/**
 	 * The function to get firmware version.
