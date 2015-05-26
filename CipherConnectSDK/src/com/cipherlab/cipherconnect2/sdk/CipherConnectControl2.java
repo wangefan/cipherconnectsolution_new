@@ -8,16 +8,6 @@ import android.os.Build;
 
 
 public class CipherConnectControl2 implements ICipherConnectControl2 {
-
-private static CipherConnectControl2 mMe = null;
-	
-	public static CipherConnectControl2 getInstance(Context context)
-	{
-		if (mMe == null)
-			mMe = new CipherConnectControl2(context);
-
-		return mMe;
-	}
 	
 	static public final int NClassicBTMode = 0;
 	static public final int NBLEBTMode = 1;
@@ -128,5 +118,16 @@ private static CipherConnectControl2 mMe = null;
 	
 	public boolean StopScanLEDevices() throws UnsupportedOperationException {
 		return mCipherConnCtrlImpl.StopScanLEDevices();
+	}
+
+	@Override
+	public void close() {
+		mNBTMode = NClassicBTMode;
+		mContext = null;
+		mCtrlListenerList = null;
+		mCipherConnCtrlImplClassic.Reset();
+		mCipherConnCtrlImplBle.Reset();
+		mCipherConnCtrlImplClassic = null;
+		mCipherConnCtrlImplBle = null;
 	}
 }

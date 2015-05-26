@@ -103,7 +103,11 @@ public class CipherConnectManagerService extends Service
         	mCipherConnectControl.disconnect();
         
         this.mBinder = null;
-        mCipherConnectControl = null;
+        if(mCipherConnectControl != null)
+        {
+        	mCipherConnectControl.close();
+            mCipherConnectControl = null;	
+        }
 
         CipherConnectSettingInfo.destroy();
         stopForeground(true);
@@ -303,7 +307,7 @@ public class CipherConnectManagerService extends Service
      * */
     private void CipherConnectControl_init()
     {
-    	mCipherConnectControl = CipherConnCtrl2EZMet.getInstance(this);
+    	mCipherConnectControl = new CipherConnCtrl2EZMet(this);
 		mCipherConnectControl.addCipherConnect2Listener(new ICipherConnCtrl2EZMetListener() 
     	{
     		public void onListenServerOnline() {

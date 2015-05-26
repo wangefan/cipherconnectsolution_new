@@ -637,8 +637,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 return;
             }
             else {//allow
-            	if(mCipherConnectService != null)
-            		mCipherConnectService.setUpForBluetooth();
+            	
             }
         }
         break;

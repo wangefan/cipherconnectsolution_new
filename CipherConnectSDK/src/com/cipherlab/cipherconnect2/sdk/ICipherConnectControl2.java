@@ -215,4 +215,9 @@ public interface ICipherConnectControl2 {
 	 * @throws UnsupportedOperationException If not support low energy mode. 
 	 */
     public boolean StopScanLEDevices() throws UnsupportedOperationException;
+    
+    /**
+	 * Close the instance.
+	 */
+	public void close();
 }

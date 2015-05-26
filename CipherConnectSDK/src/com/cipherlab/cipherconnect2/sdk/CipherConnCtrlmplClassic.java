@@ -92,6 +92,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		mListenAndConnThread.start();
 		mServrState = STATE_ONLINE;
 		fireCipherListenServerOnline();
+		CipherLog.d(mTAG, "mListenAndConnThread.start();");
+		CipherLog.d(mTAG, "mServrState = STATE_ONLINE;");
 		CipherLog.d(mTAG, "mFireListenAndConnThread end, return true");
 		return true;
 	}
@@ -113,6 +115,11 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	{
 		mServrState = STATE_OFFLINE;
 		mResetListenThread();
+	}
+	
+	public void Reset() {
+		super.Reset();
+		mStopListenAndConn();
 	}
 	
 	public void StopListening()

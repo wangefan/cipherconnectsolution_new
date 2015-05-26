@@ -8,17 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 
 public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
-{
-	private static CipherConnCtrl2EZMet mMe = null;
-	
-	public static CipherConnCtrl2EZMet getInstance(Context context)
-	{
-		if (mMe == null)
-			mMe = new CipherConnCtrl2EZMet(context);
-
-		return mMe;
-	}
-	
+{	
 	static public final int NClassicBTMode = 0;
 	static public final int NBLEBTMode = 1;
 	private int mNBTMode = NClassicBTMode;
@@ -31,8 +21,7 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 	private CipherConnCtrlmplBLE     mCipherConnCtrlImplBle = null;
 	
 	//Default Ctr
-	
-	private CipherConnCtrl2EZMet(Context context) {
+	public CipherConnCtrl2EZMet(Context context) {
 		mContext = context;
 		mCtrlListenerList = new ArrayList<ICipherConnectControl2Listener>();
 		mCipherConnCtrlImplClassic = new CipherConnCtrlmplClassic(mContext);
@@ -55,6 +44,16 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 			throw new RuntimeException();
 		}
 		mCipherConnCtrlImpl.SetCipherConnectControlListener(mCtrlListenerList);
+	}
+	
+	public void close() {
+		mNBTMode = NClassicBTMode;
+		mContext = null;
+		mCtrlListenerList = null;
+		mCipherConnCtrlImplClassic.Reset();
+		mCipherConnCtrlImplBle.Reset();
+		mCipherConnCtrlImplClassic = null;
+		mCipherConnCtrlImplBle = null;
 	}
 	
 	@Override
