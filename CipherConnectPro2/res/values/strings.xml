@@ -122,6 +122,7 @@
 	<string name="str_chooseScanner">Scanner</string>
 	<string name="menu_scan">Search</string>
 	<string name="menu_stop">Stop</string>
+	<string name="menu_exit">Exit</string>
 	<string name="unknown_device">unknown device</string>
 	<string name="none_device">none</string>
 	<string-array name="ScanMode_entries">

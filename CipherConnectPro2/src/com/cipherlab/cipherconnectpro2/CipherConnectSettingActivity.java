@@ -20,6 +20,8 @@ import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -45,7 +47,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	
 	public static final String KEY_GET_CLSC_BT_DEVICE = "KEY_GET_CLSC_BT_DEVICE";
 	public static final String KEY_GET_LE_BT_DEVICE = "KEY_GET_LE_BT_DEVICE";
-	private static final String TAG = "CipherConnectSettingActivity()";
+	private static final String mTAG = "CipherConnectSettingActivity()";
 		
 	private BluetoothAdapter mBluetoothAdapter;
 	private ICipherConnectManagerService mCipherConnectService;
@@ -63,6 +65,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     private ServiceConnection mSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) 
         {
+        	CipherLog.d(mTAG, "ServiceConnection::onServiceConnected begin");
         	// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference t
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             
@@ -132,7 +135,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	CipherLog.d(TAG, "onCreate begin");
+    	CipherLog.d(mTAG, "onCreate begin");
         super.onCreate(savedInstanceState);
         
         addPreferencesFromResource(R.layout.cipherconnect_setting_activity);     
@@ -148,7 +151,24 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                   "CipherConnectSettingActivity.ConnectStatus_bt_startService:",
                   e);
         }
-        /* [End] Enable CipherConnectManagerService */               
+        /* [End] Enable CipherConnectManagerService */         
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.cipherconnectsettingactivity_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_exit:
+                finish();
+                break;
+        }
+        
+        return true;
     }
   
     /*
@@ -164,7 +184,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     @SuppressWarnings("deprecation")
 	private void init_UI()
 	{
-    	CipherLog.d(TAG, "init_UI begin");
+    	CipherLog.d(mTAG, "init_UI begin");
     	Boolean btStatus = false;
     	Boolean checkStatus = KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name);
 
@@ -226,7 +246,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 									} catch (Exception e) {										
 										e.printStackTrace();
 									}
-                					CipherLog.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);
+                					CipherLog.d(mTAG, "connect to : " + devName + ", MAC addr = " + devAddr);
                 				}
                 			}
                 			//Low Energy
@@ -247,7 +267,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
  									} catch (Exception e) {										
  										e.printStackTrace();
  									}
-                 					CipherLog.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
+                 					CipherLog.d(mTAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
                 				}
                 			}
                 		}
@@ -363,7 +383,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         if (lstLanguage == null)
         	CipherConnectSettingInfo.setLanguage(lstLanguage.getValue());
 
-        CipherLog.d(TAG, "Language : " +lstLanguage.getValue());
+        CipherLog.d(mTAG, "Language : " +lstLanguage.getValue());
         
         lstLanguage.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -472,7 +492,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     public boolean SendBarcodeInterval_onPreferenceChange(Preference preference, Object newValue) {
         CipherConnectSettingInfo.setBarcodeInterval((String) newValue);
         //BarcodeInterval.setSummary((String) newValue);
-        CipherLog.d(TAG, "SendBarcodeInterval_onPreferenceChange(): newValue= " + newValue); 
+        CipherLog.d(mTAG, "SendBarcodeInterval_onPreferenceChange(): newValue= " + newValue); 
 
         return true;
     }
@@ -491,8 +511,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         CipherConnectSettingInfo.setLanguage((String) newValue);
         //BarcodeInterval.setSummary((String) newValue);
         //String list = (String) lstLanguage.getEntry();
-        CipherLog.d(TAG, "Language_onPreferenceChange(): newValue= " + newValue);
-        //CipherLog.d(TAG, "Language_onPreferenceChange(): Entry= " + lst);
+        CipherLog.d(mTAG, "Language_onPreferenceChange(): newValue= " + newValue);
+        //CipherLog.d(mTAG, "Language_onPreferenceChange(): Entry= " + lst);
 
         return true;
     }
@@ -508,13 +528,13 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * <!----------------------------------------------------------------->
      * */
     public boolean exit_onPreferenceChange(Preference preference) {
-    	CipherLog.d(TAG, "exit_onPreferenceChange begin");
+    	CipherLog.d(mTAG, "exit_onPreferenceChange begin");
         if (!KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name)) {
             mCipherConnectService.stopSelf();
         }
 
         this.finish();
-        CipherLog.d(TAG, "exit_onPreferenceChange end");
+        CipherLog.d(mTAG, "exit_onPreferenceChange end");
         return true;
     }
     
@@ -538,7 +558,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     }
 
     private void remove_ime_conflic() {
-    	CipherLog.d(TAG, "remove_ime_conflic begin");
+    	CipherLog.d(mTAG, "remove_ime_conflic begin");
         if (KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name_conflict)) {
             
         	Builder builder = DialogUtil.newAlertDialog(this,
@@ -572,7 +592,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     @Override
     protected void onResume() {
-    	CipherLog.d(TAG, "onResume()");
+    	CipherLog.d(mTAG, "onResume()");
         super.onResume();
         registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter());
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -594,14 +614,14 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     @Override
     protected void onPause() {
-    	CipherLog.d(TAG, "onPause()");
+    	CipherLog.d(mTAG, "onPause()");
         super.onPause();
         unregisterReceiver(mServiceActionReceiver);
     }
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        CipherLog.d(TAG, "onActivityResult()"); 
+        CipherLog.d(mTAG, "onActivityResult()"); 
         switch (requestCode) {
         case REQUEST_GET_CLASSIC_BT :
         {
@@ -649,11 +669,20 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     @Override
 	protected void onDestroy() 
     {
-    	CipherLog.d(TAG, "onDestroy()");    	
-    	this.unbindService(this.mSConnection);
-        this.mSConnection = null;
-        this.mCipherConnectService = null;
-        
+    	CipherLog.d(mTAG, "onDestroy()"); 
+    	if(mCipherConnectService != null)
+    	{
+    		mCipherConnectService.NotifyToUnBind();
+    	}
+    	
+    	if(mSConnection != null)
+    	{
+        	unbindService(mSConnection);
+            mSConnection = null;
+    	}
+
+        mCipherConnectService = null;
+    	
         super.onDestroy();
     }    
     

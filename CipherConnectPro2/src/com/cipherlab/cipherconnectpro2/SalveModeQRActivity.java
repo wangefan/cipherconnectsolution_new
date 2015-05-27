@@ -254,7 +254,6 @@ public class SalveModeQRActivity extends BTSettingActivity
 	@Override
 	protected void onDestroy() 
 	{	
-        mCipherConnectService = null;
 		super.onDestroy();
 	}
 

@@ -54,41 +54,73 @@ public abstract class BTSettingActivity extends ListActivity
 		intentFilter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
 		return intentFilter;
 	}
+	
+	/*
+     * <!----------------------------------------------------------------->
+     * @Name: mBindConnManagerService()
+     * @Description: bind CipherConnectManagerService if ServiceConnection is null. 
+     *  
+     * */
+    private void mBindConnManagerService()
+    {
+    	if(mSConnection == null)
+    	{
+    		mSConnection = new ServiceConnection() {
+    			public void onServiceConnected(ComponentName className, IBinder service) 
+				{
+					CipherLog.d(getTag(), "onServiceConnected, get mListenConnService and set SetKeepService true");
+					
+			      	// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference t
+		            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		            mCipherConnectService = ((CipherConnectManagerService.LocalBinder) service).getService();
+		            // Checks if Bluetooth is supported on the device.
+		            if (mBluetoothAdapter == null) {
+		                Toast.makeText(BTSettingActivity.this, "onServiceConnected, mBluetoothAdapter == null", Toast.LENGTH_SHORT).show();
+		                finish();
+		                return;
+		            }      
+		            
+		            if (mCipherConnectService == null) {
+		            	Toast.makeText(BTSettingActivity.this, "onServiceConnected, mCipherConnectService == null", Toast.LENGTH_SHORT).show();
+		                finish();
+		                return;
+		            }    
+		
+					if(mBluetoothAdapter.isEnabled())
+					{
+						mDoThingsOnServiceConnected();
+					}
+		        }
+		
+		        public void onServiceDisconnected(ComponentName className) 
+		        {
+		        	CipherLog.d(getTag(), "onServiceDisconnected, set SetKeepService false");
+		        	mCipherConnectService = null;
+		        }
+			};
+			Intent intent = new Intent(this, CipherConnectManagerService.class);
+        	bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);	
+    	}
+    }
+	
+	/*
+     * <!----------------------------------------------------------------->
+     * @Name: mUnBindConnManagerService()
+     * @Description: un-bind CipherConnectManagerService if ServiceConnection is not null. 
+     *  
+     * */
+    private void mUnBindConnManagerService()
+    {
+    	if(mSConnection != null)
+    	{
+        	unbindService(mSConnection);
+            mSConnection = null;
+    	}
+
+        mCipherConnectService = null;
+    }
 	 
-	private ServiceConnection mSConnection = new ServiceConnection() 
-	{
-		public void onServiceConnected(ComponentName className, IBinder service) 
-		{
-			CipherLog.d(getTag(), "onServiceConnected, get mListenConnService and set SetKeepService true");
-			
-	      	// Initializes a Bluetooth adapter.  For API level 18 and above, get a reference t
-            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            mCipherConnectService = ((CipherConnectManagerService.LocalBinder) service).getService();
-            // Checks if Bluetooth is supported on the device.
-            if (mBluetoothAdapter == null) {
-                Toast.makeText(BTSettingActivity.this, "onServiceConnected, mBluetoothAdapter == null", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }      
-            
-            if (mCipherConnectService == null) {
-            	Toast.makeText(BTSettingActivity.this, "onServiceConnected, mCipherConnectService == null", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }    
-
-			if(mBluetoothAdapter.isEnabled())
-			{
-				mDoThingsOnServiceConnected();
-			}
-        }
-
-        public void onServiceDisconnected(ComponentName className) 
-        {
-        	CipherLog.d(getTag(), "onServiceDisconnected, set SetKeepService false");
-        	mCipherConnectService = null;
-        }
-	};
+	private ServiceConnection mSConnection = null;
 	
 	/*
      * <!----------------------------------------------------------------->
@@ -159,6 +191,32 @@ public abstract class BTSettingActivity extends ListActivity
 		}
     };
     
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: UnbindConnMangService()
+     * @Description: Handles events fired by the CipherConnectManagerService.
+     *   ACTION_COMMAND_CLIENTS_UNBIND.
+     * @param: N/A
+     * @param: N/A
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    private BroadcastReceiver mUnbindConnMangService  = new BroadcastReceiver() 
+    {
+		@Override
+        public void onReceive(Context context, Intent intent) 
+		{
+			final String action = intent.getAction();
+
+            //CipherConnectManagerService want client to unbind service
+            if (CipherConnectManagerService.ACTION_COMMAND_CLIENTS_UNBIND.equals(action)) 
+            {	
+            	CipherLog.d(getTag(), "onReceive ACTION_COMMAND_CLIENTS_UNBIND, will call mUnBindConnManagerService()");
+            	mUnBindConnManagerService();
+            }
+		}
+    };
+   
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// User chose not to enable Bluetooth.
@@ -183,12 +241,12 @@ public abstract class BTSettingActivity extends ListActivity
         
         /* [Begin] bind CipherConnectManagerService, will trigger onServiceConnected if bound successful*/
         try {
-            Intent intent = new Intent(this, CipherConnectManagerService.class);
-            bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);
+        	mBindConnManagerService();
         } catch (Exception e) {
         	e.printStackTrace();
             finish();
         }
+        registerReceiver(mUnbindConnMangService, new IntentFilter(CipherConnectManagerService.ACTION_COMMAND_CLIENTS_UNBIND));
     }
 	
 	@Override
@@ -221,13 +279,8 @@ public abstract class BTSettingActivity extends ListActivity
 	@Override
 	protected void onDestroy() 
 	{	
-		if(mSConnection != null)
-		{
-			unbindService(mSConnection);
-			mSConnection = null;
-		}
-		
-		mCipherConnectService = null;
+		unregisterReceiver(mUnbindConnMangService);
+		mUnBindConnManagerService();
 		super.onDestroy();
 	}
 }
