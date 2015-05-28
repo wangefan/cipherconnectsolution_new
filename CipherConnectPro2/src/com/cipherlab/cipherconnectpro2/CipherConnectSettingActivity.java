@@ -43,8 +43,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	//constant 
 	private static final int REQUEST_GET_CLASSIC_BT = 1;
 	private static final int REQUEST_GET_CLE_BT = 2;
-	private static final int REQUEST_ENABLE_BT = 3;
-	
+		
 	public static final String KEY_GET_CLSC_BT_DEVICE = "KEY_GET_CLSC_BT_DEVICE";
 	public static final String KEY_GET_LE_BT_DEVICE = "KEY_GET_LE_BT_DEVICE";
 	private static final String mTAG = "CipherConnectSettingActivity()";
@@ -123,13 +122,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     		if(mPDialog != null)
     			mPDialog.dismiss();
     	}
-    }
-    
-  //member funcitons
-    private void mDoBTIntentForResult()
-    {
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
     
     /** Called when the activity is first created. */
@@ -603,12 +595,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             return;
 		}
 		
-		// Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-        // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBluetoothAdapter.isEnabled()) {
-        	mDoBTIntentForResult();
-            return;
-        }
+		
         mUpdateUI(false);
     }
     
@@ -647,18 +634,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         		mConnectBT(device);
         		super.onActivityResult(requestCode, resultCode, data);        		
         	}
-        }
-        break;
-        case REQUEST_ENABLE_BT :
-        {
-            if(resultCode == Activity.RESULT_CANCELED)
-            {
-            	finish();
-                return;
-            }
-            else {//allow
-            	
-            }
         }
         break;
         default:
@@ -741,10 +716,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 				} 
 				else if (state == BluetoothAdapter.STATE_OFF) 
 				{
-					if (!mBluetoothAdapter.isEnabled()) {
-						mDoBTIntentForResult();
-						return;
-					}
+					
 				}
             }
         }
