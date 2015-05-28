@@ -24,7 +24,7 @@ public class KeyboardUtil {
         for (InputMethodInfo imo : list) {
             String name = imo.getServiceName();
 
-            CipherLog.d(ime_name+".KeyboardUtil", "InputMethodInfo.name="+name);
+            CipherLog.d("KeyboardUtil", "InputMethodInfo.name="+name);
             if (name==null || name.length()==0)
                 continue;
 
@@ -34,7 +34,7 @@ public class KeyboardUtil {
             }
         }
 
-        CipherLog.d(ime_name, "The CipherConnectKeyboard was not enable.");
+        CipherLog.d("KeyboardUtil", "The CipherConnectKeyboard was not enable.");
         return false;
     }
 
