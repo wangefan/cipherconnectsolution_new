@@ -40,8 +40,12 @@ public class CipherConnBTDevice implements ICipherConnBTDevice {
 	
 	public void getParamFromBTDevice(BluetoothDevice src)
 	{
-		mStrDeviceName = src.getName();
-		mStrDeviceAddress = src.getAddress();
+		mStrDeviceName = "";
+		if(src.getName() != null)
+			mStrDeviceName = src.getName();
+		mStrDeviceAddress = "";
+		if(src.getAddress() != null)
+			mStrDeviceAddress = src.getAddress();
 	}
 	
 	@Override

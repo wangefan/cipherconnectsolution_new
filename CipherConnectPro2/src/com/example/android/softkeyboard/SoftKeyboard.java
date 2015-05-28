@@ -45,7 +45,6 @@ import com.cipherlab.help.CipherLog;
  */
 public class SoftKeyboard extends InputMethodService implements
             KeyboardView.OnKeyboardActionListener {
-    static final boolean DEBUG = false;
     static final int TURN_OFF = 0;
     static final int TURN_ON = 1;
 
