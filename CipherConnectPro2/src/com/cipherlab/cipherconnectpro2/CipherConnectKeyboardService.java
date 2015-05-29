@@ -1,10 +1,8 @@
 package com.cipherlab.cipherconnectpro2;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.inputmethodservice.Keyboard;
 import android.os.Handler;
@@ -59,75 +57,20 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         }
     };
     
-    private ServiceConnection mSConnection = null;
-    
-    /*
-     * <!----------------------------------------------------------------->
-     * @Name: mBindConnManagerService()
-     * @Description: bind CipherConnectManagerService if ServiceConnection is null. 
-     *  
-     * */
-    private void mBindConnManagerService()
-    {
-    	if(mSConnection == null)
-    	{
-    		mSConnection = new ServiceConnection() {
-    	        public void onServiceConnected(ComponentName className, IBinder service) {
-    	            mCipherConnectManagerService = ((CipherConnectManagerService.LocalBinder) service)
-    	                                           .getService();
-    	            
-    	            mCipherConnectManagerService.AddListener(mCipherConnectManagerListener);
-    	        }
+    private ServiceConnection mSConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mCipherConnectManagerService = ((CipherConnectManagerService.LocalBinder) service)
+                                           .getService();
+            
+            mCipherConnectManagerService.AddListener(mCipherConnectManagerListener);
+        }
 
-    	        public void onServiceDisconnected(ComponentName className) {
-    	        	if(mCipherConnectManagerListener != null)
-    	        	{
-    	        		mCipherConnectManagerService.RemoveListener(mCipherConnectManagerListener);
-    	        	}
-    	        }
-    	    };
-    	    
-    		Intent intent = new Intent(this, CipherConnectManagerService.class);
-        	bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);		
-    	}
-    }
-    
-    /*
-     * <!----------------------------------------------------------------->
-     * @Name: mUnBindConnManagerService()
-     * @Description: un-bind CipherConnectManagerService if ServiceConnection is not null. 
-     *  
-     * */
-    private void mUnBindConnManagerService()
-    {
-    	if(mSConnection != null)
-    	{
-        	unbindService(mSConnection);
-            mSConnection = null;
-    	}
-
-    	//workaround, force to remove listener after unbind service.
-    	if(mCipherConnectManagerService != null)
-    	{
-    		mCipherConnectManagerService.RemoveListener(mCipherConnectManagerListener);
-    		mCipherConnectManagerService = null;
-    	}
-    }
-    
-    private BroadcastReceiver mUnbindConnMangService  = new BroadcastReceiver() 
-    {
-		@Override
-        public void onReceive(Context context, Intent intent) 
-		{
-			final String action = intent.getAction();
-
-            //CipherConnectManagerService want client to unbind service
-            if (CipherConnectManagerService.ACTION_COMMAND_CLIENTS_UNBIND.equals(action)) 
-            {	
-            	CipherLog.d(TAG, "onReceive ACTION_COMMAND_CLIENTS_UNBIND, will call mUnBindConnManagerService()");
-            	mUnBindConnManagerService();
-            }
-		}
+        public void onServiceDisconnected(ComponentName className) {
+        	if(mCipherConnectManagerListener != null)
+        	{
+        		mCipherConnectManagerService.RemoveListener(mCipherConnectManagerListener);
+        	}
+        }
     };
 
     @Override
@@ -139,21 +82,21 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
             android.os.Debug.waitForDebugger();
 
         try {
-        	mBindConnManagerService();
+            Intent intent = new Intent(this, CipherConnectManagerService.class);
+            bindService(intent, mSConnection, Context.BIND_AUTO_CREATE);
             CipherLog.d(TAG, "onCreate(): start CipherConnectManagerService");
         } catch (Exception e) {
             CipherLog.e(this.getResources().getString(R.string.ime_name),
                   "CipherConnectSettingActivity.ConnectStatus_bt_startService:",
                   e);
         }
-        registerReceiver(mUnbindConnMangService, new IntentFilter(CipherConnectManagerService.ACTION_COMMAND_CLIENTS_UNBIND));
         CipherLog.d(TAG, "onCreate(): end");
     }
 
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
     	CipherLog.d(TAG, "onStartInputView(): restarting= "+restarting);
-    	mBindConnManagerService();
+    	
         super.onStartInputView(info, restarting);
         this.isOnStartInputView = true;
     }
@@ -168,10 +111,22 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     @Override
     public void onDestroy() {
     	CipherLog.d(TAG, "onDestroy(): begin");
-    	
-    	unregisterReceiver(mUnbindConnMangService);
-		mUnBindConnManagerService();
-       
+        this.unbindService(this.mSConnection);
+        
+        if(mCipherConnectManagerListener != null)
+    	{
+    		mCipherConnectManagerService.RemoveListener(mCipherConnectManagerListener);
+    	}
+
+        if (!KeyboardUtil
+                .isEnableingKeyboard(this, R.string.ime_service_name)) {
+            if (this.mCipherConnectManagerService != null) {
+                mCipherConnectManagerService.stopSelf();
+            }
+        }
+        
+        this.mCipherConnectManagerService = null;
+
         super.onDestroy();
         CipherLog.d(TAG, "onDestroy(): end");
     }

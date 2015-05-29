@@ -38,9 +38,7 @@ public class CipherConnectManagerService extends Service
             "com.cipherEZMet.cipherconnectpro2.CipherConnectManagerService.ConnectionState_CHANGED";
     public static final String ACTION_COMMAND =
             "com.cipherEZMet.cipherconnectpro2.CipherConnectManagerService.Connection_Command";
-    public static final String ACTION_COMMAND_CLIENTS_UNBIND =
-            "com.cipherEZMet.cipherconnectpro2.CipherConnectManagerService.Clients_Unbind";
-        
+    
 	private static final String TAG = "CipherConnectManagerService()";
 	public static ICipherConnCtrl2EZMet mCipherConnectControl;
 	private ArrayList<ICipherConnectManagerListener> mListenerList = 
@@ -111,7 +109,7 @@ public class CipherConnectManagerService extends Service
             mCipherConnectControl = null;	
         }
 
-        //CipherConnectSettingInfo.destroy();
+        CipherConnectSettingInfo.destroy();
         stopForeground(true);
         unregisterReceiver(mBTActReceiver);
         CipherLog.d(TAG, "onDestroy(): end");
@@ -119,7 +117,6 @@ public class CipherConnectManagerService extends Service
     
     @Override
 	public IBinder onBind(Intent intent) {
-    	CipherLog.d(TAG, "onBind begin");
 		return mBinder;
 	}
     
@@ -228,11 +225,6 @@ public class CipherConnectManagerService extends Service
 	    public boolean StopScanLEDevices() throws UnsupportedOperationException {
 	    	return mCipherConnectControl.StopScanLEDevices();
 	    }
-
-		@Override
-		public void NotifyToUnBind() {
-			mNotifyToUnBind();
-		}
     }
     
     private void mBroadcastServerChange(SERVER_STATE serverState)
@@ -241,7 +233,6 @@ public class CipherConnectManagerService extends Service
 		mServerState = serverState;
 		final Intent brdConnState = new Intent(ACTION_SERVER_STATE_CHANGED);
         sendBroadcast(brdConnState);
-        CipherLog.d(mTAG, "mBroadcastServerChange, mServerState = " + mServerState);
 	}
     
     /*
@@ -629,10 +620,5 @@ public class CipherConnectManagerService extends Service
 		if(mCipherConnectControl != null)
 			return mCipherConnectControl.GetSettingConnQRCodeImage(nWidth, nHeight);
 		return null;
-	}
-    
-    private void mNotifyToUnBind() {
-		final Intent intnUnbind = new Intent(ACTION_COMMAND_CLIENTS_UNBIND);
-		sendBroadcast(intnUnbind);
 	}
 }
