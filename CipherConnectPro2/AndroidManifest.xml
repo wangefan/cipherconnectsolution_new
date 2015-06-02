@@ -53,6 +53,8 @@
 		<activity android:name="com.cipherlab.cipherconnectpro2.CipherConnectAboutActivity" android:label="@string/setting_about" 
 		          android:screenOrientation="portrait"
 		          android:parentActivityName="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"/>
+		<activity android:name="com.cipherlab.cipherconnectpro2.SetInputMethod" android:label="@string/setting_setinput" 
+		          android:screenOrientation="portrait"/>
 	</application>
 
 </manifest> 

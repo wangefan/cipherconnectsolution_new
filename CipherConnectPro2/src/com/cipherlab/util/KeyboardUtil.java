@@ -2,11 +2,13 @@ package com.cipherlab.util;
 
 import java.util.List;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.provider.Settings;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import com.cipherlab.cipherconnectpro2.CipherConnectKeyboardService;
 import com.cipherlab.cipherconnectpro2.R;
 import com.cipherlab.help.CipherLog;
 
@@ -36,6 +38,18 @@ public class KeyboardUtil {
 
         CipherLog.d("KeyboardUtil", "The CipherConnectKeyboard was not enable.");
         return false;
+    }
+	
+	public static boolean isIMDefault(Context c) 
+    {
+    	String id = Settings.Secure.getString(
+    			   c.getContentResolver(), 
+    			   Settings.Secure.DEFAULT_INPUT_METHOD
+    			);
+    	ComponentName defaultInputMethod = ComponentName.unflattenFromString(id);
+    	ComponentName myInputMethod = new ComponentName(c, CipherConnectKeyboardService.class);
+
+    	return myInputMethod.equals(defaultInputMethod);
     }
 
     public static boolean checkKeyboard(Context c) {

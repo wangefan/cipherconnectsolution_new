@@ -33,6 +33,7 @@
 	<string name="setting_mode">Scan mode</string>
 	<string name="setting_autoconnect">Auto Reconnect</string>
 	<string name="setting_about">About</string>
+	<string name="setting_setinput">Set input method</string>
 	<string name="about_company">Company</string>
 	<string name="about_company_value">CipherLab Co., Ltd.</string>
 	<string name="about_url">Website</string>
@@ -124,6 +125,8 @@
 	<string name="menu_stop">Stop</string>
 	<string name="unknown_device">unknown device</string>
 	<string name="none_device">none</string>
+	<string name="strenableIM">1.Enable CipherConnectPro2 input method</string>
+	<string name="strChooseIM">2.Choose CipherConnectPro2 input method</string>
 	<string-array name="ScanMode_entries">
 		<item>@string/Str_BT_Classic</item>
 	    <item>@string/Str_BT_LE</item>

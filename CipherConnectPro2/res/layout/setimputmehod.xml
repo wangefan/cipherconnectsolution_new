@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+	<LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="1"
+	        android:gravity="center_vertical"
+	        android:orientation="vertical" >
+	
+		    <ImageButton
+		        android:id="@+id/cipherSetting"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:layout_gravity="center_horizontal"
+		        android:adjustViewBounds="true"
+		        android:background="@null"
+		        android:paddingBottom="1dp"
+		        android:paddingLeft="1dp"
+		        android:paddingRight="1dp"
+		        android:paddingTop="1dp"
+		        android:scaleType="fitCenter"
+		        android:src="@drawable/ciphersetting" />
+
+	</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+	    <ImageButton
+	        android:id="@+id/btnEnableIM"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:adjustViewBounds="true"
+	        android:paddingBottom="1dp"
+	        android:paddingLeft="1dp"
+	        android:paddingRight="1dp"
+	        android:paddingTop="1dp"
+	        android:scaleType="fitCenter"
+	        android:background="@null"
+	        android:src="@drawable/enableim" />
+
+	</LinearLayout>
+	<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+	    
+	    <ImageButton
+	        android:id="@+id/btnChooseIM"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:adjustViewBounds="true"
+	        android:paddingBottom="1dp"
+	        android:paddingLeft="1dp"
+	        android:paddingRight="1dp"
+	        android:paddingTop="1dp"
+	        android:scaleType="fitCenter"
+	        android:background="@null"
+	        android:src="@drawable/chooseim" />
+	</LinearLayout>
+</LinearLayout>

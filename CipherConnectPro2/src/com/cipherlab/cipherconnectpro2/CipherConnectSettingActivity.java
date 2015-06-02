@@ -20,6 +20,7 @@ import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -119,6 +120,20 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     		if(mPDialog != null)
     			mPDialog.dismiss();
     	}
+    }
+    
+    private boolean mBIMNotReady() 
+    {
+    	boolean bEnabled = KeyboardUtil.isEnableingKeyboard(this, R.string.ime_service_name);
+    	String id = Settings.Secure.getString(
+    			   getContentResolver(), 
+    			   Settings.Secure.DEFAULT_INPUT_METHOD
+    			);
+    	ComponentName defaultInputMethod = ComponentName.unflattenFromString(id);
+    	ComponentName myInputMethod = new ComponentName(this, CipherConnectKeyboardService.class);
+
+    	boolean bIsCurrent = myInputMethod.equals(defaultInputMethod);
+    	return bEnabled && bIsCurrent;
     }
     
     /** Called when the activity is first created. */
@@ -488,27 +503,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 
         return true;
     }
-        
-    /*
-     * <!----------------------------------------------------------------->
-     * @Name: exit_onPreferenceChange()
-     * @Description: Exit CipherConnect and stop service 
-     *  
-     * @param: Preference preference
-     * @param: Object newValue
-     * return: boolean 
-     * <!----------------------------------------------------------------->
-     * */
-    public boolean exit_onPreferenceChange(Preference preference) {
-    	CipherLog.d(TAG, "exit_onPreferenceChange begin");
-        if (!KeyboardUtil.isEnableingKeyboard(CipherConnectSettingActivity.this, R.string.ime_service_name)) {
-            mCipherConnectService.stopSelf();
-        }
-
-        this.finish();
-        CipherLog.d(TAG, "exit_onPreferenceChange end");
-        return true;
-    }
     
     /*
      * <!----------------------------------------------------------------->
@@ -566,6 +560,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     protected void onResume() {
     	CipherLog.d(TAG, "onResume()");
         super.onResume();
+        
         registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter());
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(mBluetoothAdapter == null)
@@ -575,7 +570,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             return;
 		}
 		
-		
+		if(mBIMNotReady() == false)
+        {
+        	Intent setInputMethod = new Intent(this, SetInputMethod.class);
+        	startActivity(setInputMethod);
+        	return;
+        }
         mUpdateUI(false);
     }
     
