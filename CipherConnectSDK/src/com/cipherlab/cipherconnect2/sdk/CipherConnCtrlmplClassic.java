@@ -269,9 +269,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             	{
             		c='\n';
             		sb.append(c);
-            		//CipherLog.e("CipherConnectControl", "Add a Enter("+sb.toString()+").");
-            		
-            		break;
             	}
             	sb.append(c);
 			}
