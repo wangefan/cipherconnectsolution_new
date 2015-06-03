@@ -268,7 +268,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             	if(c==13)
             	{
             		c='\n';
-            		sb.append(c);
             	}
             	sb.append(c);
 			}
