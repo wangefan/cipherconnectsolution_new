@@ -1,6 +1,8 @@
 package com.cipherlab.cipherconnectpro2;
 
 import com.cipherlab.cipherconnectpro2.R;
+import com.cipherlab.help.CipherLog;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 public class SalveModeActivity extends BTSettingActivity 
 {	
+	private final String mTAG = "SlaveModeActivity";
 	private TextView mTvwDeviceName;
 	private ImageView mBCodeResetImage;
 	private TextView mTvwResetBCode;
@@ -227,12 +230,14 @@ public class SalveModeActivity extends BTSettingActivity
 
 	@Override
 	protected void onStart() {
+		CipherLog.d(mTAG, "onStart()");
 		super.onStart();
 		registerReceiver(mServerActReceiver, makeActionsIntentFilter());
 	}
 
 	@Override
 	protected void onResume() {
+		CipherLog.d(mTAG, "onResume()");
 		super.onResume();
 		
 		if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
@@ -251,6 +256,7 @@ public class SalveModeActivity extends BTSettingActivity
 	@Override
 	protected void onPause() 
 	{
+		CipherLog.d(mTAG, "onPause()");
 		super.onPause();
 	}
 
@@ -258,6 +264,7 @@ public class SalveModeActivity extends BTSettingActivity
 	protected void onStop() {
 		unregisterReceiver(mServerActReceiver);
 		super.onStop();
+		CipherLog.d(mTAG, "onStop()");
 	}
 
 	@Override
@@ -265,6 +272,7 @@ public class SalveModeActivity extends BTSettingActivity
 	{	
        	mCipherConnectService = null;
 		super.onDestroy();
+		CipherLog.d(mTAG, "onDestroy()");
 	}
 
 	@Override
