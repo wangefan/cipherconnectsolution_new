@@ -2,29 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
     android:orientation="vertical" >
+
 	<LinearLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="0dp"
-	        android:layout_weight="1"
-	        android:gravity="center_vertical"
-	        android:orientation="vertical" >
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+	    android:layout_gravity="center"
+	    android:layout_weight="1"
+	    android:gravity="center_vertical"
+	    android:orientation="vertical" >
 	
 		    <ImageButton
 		        android:id="@+id/cipherSetting"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"
-		        android:layout_gravity="center_horizontal"
+		        android:layout_gravity="fill"
 		        android:adjustViewBounds="true"
 		        android:background="@null"
-		        android:paddingBottom="1dp"
-		        android:paddingLeft="1dp"
-		        android:paddingRight="1dp"
-		        android:paddingTop="1dp"
+		        android:paddingBottom="10dp"
+		        android:paddingLeft="10dp"
+		        android:paddingRight="10dp"
+		        android:paddingTop="10dp"
 		        android:scaleType="fitCenter"
 		        android:src="@drawable/ciphersetting" />
 
 	</LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -37,12 +41,12 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:adjustViewBounds="true"
-	        android:paddingBottom="1dp"
-	        android:paddingLeft="1dp"
-	        android:paddingRight="1dp"
-	        android:paddingTop="1dp"
-	        android:scaleType="fitCenter"
 	        android:background="@null"
+	        android:paddingBottom="20dp"
+	        android:paddingLeft="20dp"
+	        android:paddingRight="20dp"
+	        android:paddingTop="20dp"
+	        android:scaleType="fitCenter"
 	        android:src="@drawable/enableim" />
 
 	</LinearLayout>
@@ -57,12 +61,20 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:adjustViewBounds="true"
-	        android:paddingBottom="1dp"
-	        android:paddingLeft="1dp"
-	        android:paddingRight="1dp"
-	        android:paddingTop="1dp"
+	        android:paddingBottom="20dp"
+	        android:paddingLeft="20dp"
+	        android:paddingRight="20dp"
+	        android:paddingTop="20dp"
 	        android:scaleType="fitCenter"
 	        android:background="@null"
 	        android:src="@drawable/chooseim" />
+	</LinearLayout>
+	<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+	    
+	    
 	</LinearLayout>
 </LinearLayout>

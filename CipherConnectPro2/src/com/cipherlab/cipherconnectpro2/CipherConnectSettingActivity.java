@@ -267,7 +267,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         	{
         		public  void onClick(View v)
         		{
-        			String strCurBTMode = CipherConnectSettingInfo.getBTMode();
+        			String strCurBTMode = CipherConnectSettingInfo.getBTMode(CipherConnectSettingActivity.this);
         			if(0 == strCurBTMode.compareTo(getResources().getString(R.string.Str_BT_Classic)))
         			{
         				Intent getBtDeviceIntent = new Intent(CipherConnectSettingActivity.this, ClassicBTDeviceScanActivity.class);
@@ -308,7 +308,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     		else
     		{
     			//Get from persist setting
-    			String strCurBTMode = CipherConnectSettingInfo.getBTMode();
+    			String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
             	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
             	{
             		mBtnBTMode.setSummary(R.string.Bluetooth_Mode_Summary);
@@ -330,7 +330,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         /* DisplaySetting */
 		ckbScreenBacklight = (CheckBoxPreference) findPreference("ckbSuspend_Enable");
 		ckbScreenBacklight.setChecked(CipherConnectSettingInfo
-				.isSuspendBacklight());
+				.isSuspendBacklight(this));
 		ckbScreenBacklight
 				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 					public boolean onPreferenceChange(Preference preference,
@@ -342,7 +342,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         
         /* Minimum keyboard */
 		mCKEnableMinimum = (CheckBoxPreference) findPreference("ckbMinimum");
-		mCKEnableMinimum.setChecked(CipherConnectSettingInfo.isMinimum());
+		mCKEnableMinimum.setChecked(CipherConnectSettingInfo.isMinimum(this));
 		mCKEnableMinimum.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
@@ -355,7 +355,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         lstSendBarcodeInterval.setEntries(R.array.SendBarcodeInterval_entries);	
         
         if (lstSendBarcodeInterval == null)
-        	CipherConnectSettingInfo.setBarcodeInterval(lstSendBarcodeInterval.getValue());
+        	CipherConnectSettingInfo.setBarcodeInterval(lstSendBarcodeInterval.getValue(), this);
         
         lstSendBarcodeInterval.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -368,7 +368,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         lstLanguage.setEntries(R.array.Language_entries);
         
         if (lstLanguage == null)
-        	CipherConnectSettingInfo.setLanguage(lstLanguage.getValue());
+        	CipherConnectSettingInfo.setLanguage(lstLanguage.getValue(), this);
 
         CipherLog.d(TAG, "Language : " +lstLanguage.getValue());
         
@@ -393,7 +393,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     {	
     	mCKEnableMinimum = (CheckBoxPreference) findPreference("ckbMinimum");
     	if(mCKEnableMinimum != null)
-			mCKEnableMinimum.setChecked(CipherConnectSettingInfo.isMinimum());
+			mCKEnableMinimum.setChecked(CipherConnectSettingInfo.isMinimum(this));
 		
         if(mBuildConn != null)
         	mBuildConn.updateButtons();
@@ -419,9 +419,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     		}
     		case  CONN_STATE_CONNECTERR:
     		{
-    			if(mBuildConn != null)
-    				mBuildConn.setNoneDev();
-    			mShowProgressDlg(false);
+       			mShowProgressDlg(false);
     			if(bShowToast)
     				Toast.makeText(getApplicationContext(), "Connect error", Toast.LENGTH_SHORT).show();
     		}
@@ -445,12 +443,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	    if(0 == strMode.compareTo(getResources().getString(R.string.Str_BT_Classic))) {
 	    	mCipherConnectService.SetBLEMode(false);
 	    	preference.setSummary(R.string.Bluetooth_Mode_Summary);
-	    	CipherConnectSettingInfo.setBTMode(strMode);
+	    	CipherConnectSettingInfo.setBTMode(strMode, this);
 	    }
 	    else if (0 == strMode.compareTo(getResources().getString(R.string.Str_BT_LE))) {
 	    	mCipherConnectService.SetBLEMode(true);
 	    	preference.setSummary(R.string.Bluetooth_Mode_BLE_Summary);
-	    	CipherConnectSettingInfo.setBTMode(strMode);   	
+	    	CipherConnectSettingInfo.setBTMode(strMode, this);   	
 	    }
 	    else {
 	    	return false;
@@ -477,7 +475,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * <!----------------------------------------------------------------->
      * */
     public boolean SendBarcodeInterval_onPreferenceChange(Preference preference, Object newValue) {
-        CipherConnectSettingInfo.setBarcodeInterval((String) newValue);
+        CipherConnectSettingInfo.setBarcodeInterval((String) newValue, CipherConnectSettingActivity.this);
         //BarcodeInterval.setSummary((String) newValue);
         CipherLog.d(TAG, "SendBarcodeInterval_onPreferenceChange(): newValue= " + newValue); 
 
@@ -495,7 +493,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      * <!----------------------------------------------------------------->
      * */
 	public boolean Language_onPreferenceChange(Preference preference, Object newValue) {
-        CipherConnectSettingInfo.setLanguage((String) newValue);
+        CipherConnectSettingInfo.setLanguage((String) newValue, this);
         //BarcodeInterval.setSummary((String) newValue);
         //String list = (String) lstLanguage.getEntry();
         CipherLog.d(TAG, "Language_onPreferenceChange(): newValue= " + newValue);
@@ -517,8 +515,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     public boolean EnableMinimum_onPreferenceChange(Preference preference, Object newValue) {
         Boolean b = (Boolean) newValue;
         
-        if (CipherConnectSettingInfo.isMinimum() != b)
-            CipherConnectSettingInfo.setMinimum(b);
+        if (CipherConnectSettingInfo.isMinimum(this) != b)
+            CipherConnectSettingInfo.setMinimum(b, this);
         
         return true;
     }
@@ -711,13 +709,13 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 			Boolean boolVal = (Boolean) newValue;
 
 			if (boolVal == true) {
-				CipherConnectSettingInfo.setSuspendBacklight(true);
+				CipherConnectSettingInfo.setSuspendBacklight(true, this);
 
 				if (mCipherConnectService.isConnected() == true) {
 					CipherConnectWakeLock.enable();
 				}
 			} else {
-				CipherConnectSettingInfo.setSuspendBacklight(false);
+				CipherConnectSettingInfo.setSuspendBacklight(false, this);
 
 				if (mCipherConnectService.isConnected() == true) {
 					CipherConnectWakeLock.disable();

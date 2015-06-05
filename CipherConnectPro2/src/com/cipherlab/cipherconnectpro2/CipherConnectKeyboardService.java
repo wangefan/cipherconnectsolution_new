@@ -45,9 +45,9 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         	mMainThrdHandler.post(new Runnable(){
             	public void run()
             	{
-            		boolean bSetMin = !CipherConnectSettingInfo.isMinimum();	
+            		boolean bSetMin = !CipherConnectSettingInfo.isMinimum(CipherConnectKeyboardService.this);	
                     setKeyboardMinimize(bSetMin);
-                    CipherConnectSettingInfo.setMinimum(bSetMin);
+                    CipherConnectSettingInfo.setMinimum(bSetMin, CipherConnectKeyboardService.this);
             	}
         	});
         }
@@ -211,7 +211,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     	    	CipherLog.e("sendBarcode", "commitText("+s+")");
                 ic.commitText(s, 1);
                 
-                String BarcodeInterval = CipherConnectSettingInfo.getBarcodeInterval();
+                String BarcodeInterval = CipherConnectSettingInfo.getBarcodeInterval(this);
             	if (BarcodeInterval.equals("No select"))
             		BarcodeInterval = "7";
             	

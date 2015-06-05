@@ -173,7 +173,7 @@ public class BuildConnMethodPreference extends Preference
 	private void mPersistValuses()
 	{
 		persistString(mGeneratePersisString(mBConnState, mDeviceName, mDeviceAddr, mIsAutoReConn));
-		CipherConnectSettingInfo.setBCMode(mBConnState.toString());
+		CipherConnectSettingInfo.setBCMode(mBConnState.toString(), getContext());
 	}
 	
 	public void updateButtons()

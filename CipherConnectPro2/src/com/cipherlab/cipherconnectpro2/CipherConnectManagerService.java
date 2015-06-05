@@ -72,7 +72,6 @@ public class CipherConnectManagerService extends Service
     public void onCreate() {
     	CipherLog.d(TAG, "onCreate(): begin");
     	mBinder = new LocalBinder();
-    	CipherConnectSettingInfo.initSharedPreferences(this);
     	CipherConnectWakeLock.initial(this);
         CipherConnectControl_init();
         startForeground(NotificationUtil.NOTIFY_ID, NotificationUtil.GetNotificaion(R.drawable.noconnect, this, 
@@ -280,7 +279,7 @@ public class CipherConnectManagerService extends Service
     public void btSetUpForBluetooth()
     {
     	CipherLog.d(TAG, "btSetUpForBluetooth begin");
-    	String strCurBTMode = CipherConnectSettingInfo.getBTMode();
+    	String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
     	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
     	{
     		mCipherConnectControl.SetBLEMode(false);
@@ -288,7 +287,7 @@ public class CipherConnectManagerService extends Service
     	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
     		mCipherConnectControl.SetBLEMode(true);
     	}
-    	if(false == CipherConnectSettingInfo.getBCMode().equals(CipherConnectSettingInfo.MASTER))
+    	if(false == CipherConnectSettingInfo.getBCMode(this).equals(CipherConnectSettingInfo.MASTER))
     	{
     		bt_StartListenConn();
     	}
@@ -394,7 +393,7 @@ public class CipherConnectManagerService extends Service
 			            + this.getResources().getString(
 			                R.string.the_bluetooth_device_connected);
 		
-        if(true == CipherConnectSettingInfo.isSuspendBacklight())
+        if(true == CipherConnectSettingInfo.isSuspendBacklight(this))
         {
         	CipherConnectWakeLock.enable();
         }
