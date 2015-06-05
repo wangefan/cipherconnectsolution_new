@@ -118,7 +118,10 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	}
 	
 	public void Reset() {
-		super.Reset();
+		SetCipherConnectControlListener(null);
+		mAutoConnDevice = null;
+		mSetCheckConnTimer(false);
+		mResetConnThrd();	//trigger exception in thread.  
 		mStopListenAndConn();
 	}
 	

@@ -261,6 +261,12 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	}
 	
 	@Override
+	public void Reset() {
+		SetCipherConnectControlListener(null);
+		mDisconnect();
+	}
+	
+	@Override
 	public void connect(String deviceName, String deviceAddr) throws NullPointerException {
 		ICipherConnBTDevice device = new CipherConnBTDevice(deviceName, deviceAddr);
 		connect(device);

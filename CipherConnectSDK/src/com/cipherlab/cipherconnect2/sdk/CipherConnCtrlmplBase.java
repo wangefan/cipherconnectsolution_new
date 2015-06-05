@@ -37,12 +37,6 @@ abstract public class CipherConnCtrlmplBase {
 		mBAuoReconnect = false;
 	}
 	
-	public void Reset() {
-		SetCipherConnectControlListener(null);
-		disconnect();
-		mBHasConnection = false;
-	}
-	
 	public void SetCipherConnectControlListener(ArrayList<ICipherConnectControl2Listener> listenerList) throws NullPointerException {
 		mListenerList = listenerList;
 	}
@@ -227,6 +221,8 @@ abstract public class CipherConnCtrlmplBase {
 	}
 	
 	//abstract methods
+	abstract public void Reset();
+	
 	public abstract boolean isConnected();
 	
 	public abstract ICipherConnBTDevice[] getBtDevices();
