@@ -30,8 +30,7 @@
              android:keyIcon="@drawable/sym_keyboard_setting"
              android:keyWidth="20%p" 
              android:keyEdgeFlags="left"/>
-        <Key android:codes="236" android:keyLabel="ì"  android:horizontalGap="5%p" 
-            android:keyEdgeFlags="left"/>
+        <Key android:codes="236" android:keyLabel="ì"  android:horizontalGap="5%p"/>
         <Key android:codes="249" android:keyLabel="ù"/>
         <Key android:codes="232" android:keyLabel="è"/>
         <Key android:codes="242" android:keyLabel="ò"/>
