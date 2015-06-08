@@ -4,13 +4,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.apache.http.util.EncodingUtils;
 import android.bluetooth.BluetoothSocket;
 import com.cipherlab.help.ArrayHelper;
 import com.cipherlab.help.CipherLog;
 
 public class CipherConnectVerify {
-	
+	private final String mTAG = "CipherConnectVerify";
 	private BluetoothSocket mBluetoothSocket = null;
 	private byte[] mTransmitBuffer = null;
 	
@@ -22,12 +30,20 @@ public class CipherConnectVerify {
 		return mTransmitBuffer;
 	}
 	
-	public boolean verify()throws IOException{
-
+	public boolean verify()throws IOException, TimeoutException{
+		CipherLog.e(mTAG,"verify() begin");
 		if(this.sendRequestCommand(this.mBluetoothSocket)==false)
+		{
+			CipherLog.e(mTAG,"sendRequestCommand fail, return false");
 			return false;
-		if(this.recvRequestCommand(this.mBluetoothSocket)==false)
+		}
+		CipherLog.e(mTAG,"sendRequestCommand ok");
+		if(this.recvRequestCommandTimeout(this.mBluetoothSocket, 5)==false)
+		{
+			CipherLog.e(mTAG,"recvRequestCommand fail, return false");
 			return false;
+		}
+		CipherLog.e(mTAG,"recvRequestCommand ok");
 		
 		byte[] sendData = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		byte[] recvData = new byte[1024];
@@ -41,11 +57,23 @@ public class CipherConnectVerify {
 		//rnd.nextBytes(sendData);
 		//sendData = new byte[]{49,55,40,83,85,53,6,69,19,24,63,18,71,90,83,45};
 		if(this.getCheckCode(sendData,checkCode)==false)
+		{
+			CipherLog.e(mTAG,"getCheckCode fail, return false");
 			return false;
+		}
+		CipherLog.e(mTAG,"getCheckCode ok");
 		if(this.sendVerifyCommand(this.mBluetoothSocket, sendData)==false)
+		{
+			CipherLog.e(mTAG,"sendVerifyCommand fail, return false");
 			return false;
+		}
+		CipherLog.e(mTAG,"sendVerifyCommand ok");
 		if(this.recvVerifyCommand(this.mBluetoothSocket, recvData)==false)
+		{
+			CipherLog.e(mTAG,"recvVerifyCommand fail, return false");
 			return false;
+		}
+		CipherLog.e(mTAG,"recvVerifyCommand ok");
 		
 		if(recvData==null || recvData.length<checkCode.length+_Header.length)
 			return false;
@@ -82,6 +110,81 @@ public class CipherConnectVerify {
 			CipherLog.e("CipherConnect","CipherConnectVerify.sendRequestCommand:Can't write to the Device",e);
 			return false;
 		}
+	}
+	
+	private ExecutorService mExecutor = Executors.newSingleThreadExecutor();  
+	private class ReadWrapperPar implements Callable<Integer>
+	{
+		private InputStream mInStream = null;
+        private byte[] mBa;
+        
+        public void setPar(InputStream in, byte[] ba) {
+        	mInStream = in;
+        	mBa = ba;
+        }
+
+        public Integer call() throws Exception {
+        	return mInStream.read(mBa);
+        }
+    }
+	
+	private ReadWrapperPar mReadArrayWrapper = new ReadWrapperPar();
+    
+	//timeout: sec
+	public boolean recvRequestCommandTimeout(BluetoothSocket socket, int nTimeoutSec) throws TimeoutException
+	{
+		InputStream stream = null;
+		try {
+			stream = this.mBluetoothSocket.getInputStream();
+		} catch (IOException e) {
+			CipherLog.e("CipherConnect", "CipherConnectVerify.recvRequestCommand:Can't get the inputStream of BluetoothSocket", e);
+			return false;
+		}
+		if(stream==null)
+			return false;
+		
+		byte[] data = new byte[10240];
+		try {
+			Thread.sleep(7000);
+			if(mReadArrayWrapper != null)
+			{
+				mReadArrayWrapper.setPar(stream, data);
+				Future<Integer> future = mExecutor.submit(mReadArrayWrapper);
+    			future.get(nTimeoutSec*1000, TimeUnit.MILLISECONDS);
+			}
+			else {
+				stream.read(data);
+			}
+		}
+		catch (InterruptedException e) 
+		{
+			CipherLog.e(mTAG, "recvRequestCommandTimeout fail, Can't recv from the Device",e);
+			e.printStackTrace();
+			return false;
+		}
+		catch (ExecutionException e) {
+			CipherLog.e(mTAG, "recvRequestCommandTimeout fail, Can't recv from the Device",e);
+			e.printStackTrace();
+			return false;
+		}
+		catch (IOException e) {
+			CipherLog.e(mTAG, "recvRequestCommandTimeout fail, Can't recv from the Device",e);
+			e.printStackTrace();
+			return false;
+		}
+		
+		data = ArrayHelper.clear(data);
+		int index = ArrayHelper.IndexOf(data, ArrayHelper.sum(_Header,_RecvHead));
+		CipherLog.d("CipherConnect","CipherConnectVerify_recvRequestCommand.index="+index);
+		CipherLog.d("CipherConnect","CipherConnectVerify_recvRequestCommand.data="+EncodingUtils.getAsciiString(data));
+		if(index>-1){
+			this.mTransmitBuffer = ArrayHelper.removeAll(data,ArrayHelper.sum(_Header,_RecvHead));
+			if(mTransmitBuffer!=null)
+				CipherLog.d("CipherConnect","CipherConnectVerify_recvRequestCommand.mTransmitBuffer="+EncodingUtils.getAsciiString(mTransmitBuffer));
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean recvRequestCommand(BluetoothSocket socket){

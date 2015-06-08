@@ -253,6 +253,25 @@ public class CipherConnectManagerService extends Service
     
     /*
      * <!----------------------------------------------------------------->
+     * @Name: mBroadcastConnChangeWithInfo()
+     * @Description: Broadcast the changing action to client with info.
+     * Client should use getExtra to get info.
+     * @param: nConnState, defined as connection staus.
+     * return: N/A 
+     * <!----------------------------------------------------------------->
+     * */
+    public final static String ACTION_CONN_STATE_CHANGED_KEY = "ACTION_CONN_STATE_CHANGED_KEY";
+    private void mBroadcastConnChangeWithInfo(CONN_STATE connState, String message)
+	{
+		// Client should use Servic.GetConnState() to get status
+		mConnState = connState;
+		final Intent brdConnState = new Intent(ACTION_CONN_STATE_CHANGED);
+		brdConnState.putExtra(ACTION_CONN_STATE_CHANGED_KEY, message);
+        sendBroadcast(brdConnState);
+	}
+    
+    /*
+     * <!----------------------------------------------------------------->
      * @Name: mBroadcastCommand()
      * @Description: Broadcast the special command to client.
      * Client should use Servic.GetConnState() to get status
@@ -410,7 +429,7 @@ public class CipherConnectManagerService extends Service
 		CipherConnectNotification.error_notify(CipherConnectManagerService.this,
 												CipherConnectNotification.intent_cipherconnectproSettings(),
 												this.getResources().getString(R.string.ime_name), error_message);
-		mBroadcastConnChange(CONN_STATE.CONN_STATE_CONNECTERR);
+		mBroadcastConnChangeWithInfo(CONN_STATE.CONN_STATE_CONNECTERR, message);
 	}
 	
 	public void CipherConnectControl_onReceivingBarcode(ICipherConnBTDevice device, String barcode) 

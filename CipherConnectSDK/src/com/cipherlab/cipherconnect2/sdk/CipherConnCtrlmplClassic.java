@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -331,6 +332,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		public static final int INFO_SERVER_SKT_ERROR = 1;
 		public static final int INFO_SKT_ERROR = 2;
 		public static final int INFO_BTDEVICE_NONE = 3;
+		public static final int INFO_BTDEVICE_VERIFY_NORESP = 4;
 		
 		private int mInfoID;
 		
@@ -355,6 +357,9 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
    				break;
    			case INFO_BTDEVICE_NONE:
    				strResult = "Get bluetooth device error";
+   				break;
+   			case INFO_BTDEVICE_VERIFY_NORESP:
+   				strResult = "Bluetooth device has no response";
    				break;
    			default:
    				break;
@@ -493,7 +498,14 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 
                 fireConnecting(device);
                 CipherConnectVerify cverify = new CipherConnectVerify(mSocket);
-                if(cverify.verify() == false)
+                boolean bVer = false;
+                try {
+					bVer = cverify.verify();
+				} catch (TimeoutException e) {
+					e.printStackTrace();
+					throw new CipherConnectErrException(CipherConnectErrException.INFO_BTDEVICE_VERIFY_NORESP);
+				}
+                if(bVer == false)
                 	throw new CipherConnectErrException(CipherConnectErrException.INFO_NOT_CIPHER_DEVICE);
                 
                 byte[] buffer = cverify.getTransmitBuffer();

@@ -644,11 +644,14 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         @Override
         public void onReceive(Context context, Intent intent) {
         	final String action = intent.getAction();
-
+        	
             //Connection state change
             if (CipherConnectManagerService.ACTION_CONN_STATE_CHANGED.equals(action)) 
-            {	
+            {
+            	final String info = intent.getStringExtra(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED_KEY);
             	mUpdateUI(true);
+            	if(info != null && info.length() > 0)
+            		Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
             }
             // server status change
             else if(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED.equals(action))

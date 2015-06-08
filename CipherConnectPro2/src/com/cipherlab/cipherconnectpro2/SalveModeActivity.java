@@ -78,7 +78,12 @@ public class SalveModeActivity extends BTSettingActivity
             	}
             	break;
             	case CONN_STATE_CONNECTERR:
+            	{
             		Toast.makeText(SalveModeActivity.this, R.string.setting_bluetooth_device_disconnected, Toast.LENGTH_LONG).show();
+            		final String info = intent.getStringExtra(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED_KEY);
+            		if(info != null && info.length() > 0)
+                		Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
+            	}
             	default:
             	break;
             	}
@@ -164,6 +169,7 @@ public class SalveModeActivity extends BTSettingActivity
     	switch (connState) 
     	{
     		case  CONN_STATE_BEGINCONNECTING:
+    		case  CONN_STATE_CONNECTING:
     		{
     			mTvwDeviceName.setText(R.string.strConnecting);
     			ShowProgressDlg(true);
