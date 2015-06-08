@@ -27,5 +27,6 @@
     <dimen name="QRcodeWidth">120dp</dimen>
     <dimen name="QRcodeHeight">120dp</dimen>
     <dimen name="BTICWidth">20dp</dimen>
-    <dimen name="BTICHeight">32dp</dimen> 
+    <dimen name="BTICHeight">32dp</dimen>
+    <integer name="keycodeSetting">-313</integer> 
 </resources>

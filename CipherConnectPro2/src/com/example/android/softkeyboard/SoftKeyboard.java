@@ -848,9 +848,17 @@ public class SoftKeyboard extends InputMethodService implements
     public void swipeUp() {    	
     }
 
-    public void onPress(int primaryCode) {    	
+    public void onPress(int primaryCode) {  
+    	final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
+    	if (primaryCode==nSettingCode){
+            mInputView.setPreviewEnabled(false);
+        }
     }
 
     public void onRelease(int primaryCode) {
+    	final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
+    	if (primaryCode==nSettingCode){
+    		mInputView.setPreviewEnabled(true);
+    	}
     }
 }

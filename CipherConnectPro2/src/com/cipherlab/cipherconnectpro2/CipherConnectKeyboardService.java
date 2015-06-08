@@ -134,7 +134,15 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
         // super.onKey(primaryCode, keyCodes);
-
+    	final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
+    	if( primaryCode == nSettingCode)
+    	{
+    		Intent intentSett = new Intent(this, CipherConnectSettingActivity.class);
+    		intentSett.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    		startActivity(intentSett);
+    		return;
+    	}
+    	
         InputConnection ic = getCurrentInputConnection();
         switch (primaryCode) {
         case Keyboard.KEYCODE_CANCEL:

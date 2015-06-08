@@ -24,7 +24,12 @@
     android:verticalGap="0px"
     android:keyHeight="@dimen/key_height"
     >
-    
+    <Row>
+        <Key android:codes="@integer/keycodeSetting" 
+             android:keyIcon="@drawable/sym_keyboard_setting"
+             android:keyWidth="20%p" 
+             android:keyEdgeFlags="left"/>
+    </Row>
     <Row>
         <Key android:codes="113" android:keyLabel="q" android:keyEdgeFlags="left"/>
         <Key android:codes="119" android:keyLabel="w"/>
