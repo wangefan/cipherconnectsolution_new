@@ -1,7 +1,6 @@
 package com.cipherlab.util;
 
 import android.R;
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,17 +25,27 @@ public class NotificationUtil {
         mNotificationManager = null;
     }
     
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public static Notification GetNotificaion(int icon, Context context, String title, String message, Intent intent) 
+    @SuppressWarnings("deprecation")
+	public static Notification GetNotificaion(int icon, Context context, String title, String message, Intent intent) 
     {
-    	Notification.Builder notiBuilder= new Notification.Builder(context);
-		notiBuilder.setSmallIcon(icon);
-		notiBuilder.setContentTitle(title);
-		notiBuilder.setContentText(message);
-		notiBuilder.setWhen(System.currentTimeMillis());
-		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-		notiBuilder.setContentIntent(pendingIntent);
-		return notiBuilder.build(); 
+    	if(Build.VERSION.SDK_INT <=  11)
+    	{
+    		@SuppressWarnings("deprecation")
+			Notification not = new Notification(icon, title, System.currentTimeMillis());
+    		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+    		not.setLatestEventInfo(context, title, message, pendingIntent);
+    		return not;	
+    	}
+		else {
+			Notification.Builder notiBuilder= new Notification.Builder(context);
+			notiBuilder.setSmallIcon(icon);
+			notiBuilder.setContentTitle(title);
+			notiBuilder.setContentText(message);
+			notiBuilder.setWhen(System.currentTimeMillis());
+			PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+			notiBuilder.setContentIntent(pendingIntent);
+			return notiBuilder.build(); 	
+		}
     }
 
     public static void cancel(Context context) 
