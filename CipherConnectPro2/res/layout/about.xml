@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#353535"
+        android:background="#e8e8e8"
         android:text="@string/about_company"
         android:textSize="13sp" />
 
@@ -27,7 +27,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#353535"
+        android:background="#e8e8e8"
         android:text="@string/about_url"
         android:textSize="13sp" />
 
@@ -40,7 +40,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#353535"
+        android:background="#e8e8e8"
         android:text="@string/about_help"
         android:textSize="13sp" />
 
@@ -53,7 +53,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#353535"
+        android:background="#e8e8e8"
         android:text="@string/about_version"
         android:textSize="13sp" />
     
@@ -67,7 +67,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#353535"
+        android:background="#e8e8e8"
         android:text="@string/about_sdk"
         android:textSize="13sp" />
 
