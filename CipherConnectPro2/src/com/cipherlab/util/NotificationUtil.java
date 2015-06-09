@@ -28,7 +28,7 @@ public class NotificationUtil {
     @SuppressWarnings("deprecation")
 	public static Notification GetNotificaion(int icon, Context context, String title, String message, Intent intent) 
     {
-    	if(Build.VERSION.SDK_INT <=  11)
+    	if(Build.VERSION.SDK_INT <=  16)
     	{
     		@SuppressWarnings("deprecation")
 			Notification not = new Notification(icon, title, System.currentTimeMillis());
