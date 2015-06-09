@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -219,6 +220,7 @@ public class SalveModeActivity extends BTSettingActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.salve_mode_activity);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
         
 		//Init UI
 		mBCodeResetImage = (ImageView)findViewById(R.id.imageResetConn);
@@ -280,6 +282,17 @@ public class SalveModeActivity extends BTSettingActivity
 		super.onDestroy();
 		CipherLog.d(mTAG, "onDestroy()");
 	}
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+        	onBackPressed();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
 	@Override
 	protected String getTag() {

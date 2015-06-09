@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.cipherlab.cipherconnectpro2.R;
@@ -13,7 +14,7 @@ public class CipherConnectAboutActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
-
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         this.init_ui();
     }
 
@@ -40,5 +41,16 @@ public class CipherConnectAboutActivity extends Activity {
         txtHelp.setText(
             Html.fromHtml("<a href=\"http://connect.cipherlab.com\">http://connect.cipherlab.com</a> "));
         txtHelp.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+        	onBackPressed();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
