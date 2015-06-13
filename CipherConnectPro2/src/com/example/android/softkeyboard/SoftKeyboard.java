@@ -194,7 +194,12 @@ public class SoftKeyboard extends InputMethodService implements
         
         //CipherLog.d(TAG, "mLangKeyboard_1= " + mLangKeyboard);
         
-        if (Language.equals("Cz"))  // Czech
+        if (Language.equals("Sc"))  // Simle Chinese
+        {
+        	mLangKeyboard = new LatinKeyboard(this, R.xml.qwerty_sc);
+        	mSecondlanguage = true;
+        }
+        else if (Language.equals("Cz"))  // Czech
         {
         	mLangKeyboard = new LatinKeyboard(this, R.xml.qwerty_cz);
         	mSecondlanguage = true;
