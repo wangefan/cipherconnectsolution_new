@@ -17,7 +17,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+@TargetApi(18)
 public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	final private static UUID mSUUIDString = UUID.fromString("00001801-0000-1000-8000-00805f9b34fb");
 	final private static UUID mCUUIDString = UUID.fromString("cc330a40-fb09-11e1-a84d-0002a5d5c51b");

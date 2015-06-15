@@ -25,7 +25,8 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		mContext = context;
 		mCtrlListenerList = new ArrayList<ICipherConnectControl2Listener>();
 		mCipherConnCtrlImplClassic = new CipherConnCtrlmplClassic(mContext);
-		mCipherConnCtrlImplBle = new CipherConnCtrlmplBLE(mContext);
+		if(IsBLEModeSupported())
+			mCipherConnCtrlImplBle = new CipherConnCtrlmplBLE(mContext);
 		SetBLEMode(false);
 	}
 	

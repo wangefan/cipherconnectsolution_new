@@ -26,7 +26,8 @@ public class CipherConnectControl implements ICipherConnectControl {
 		mContext = context;
 		mListenerList = new ArrayList<ICipherConnectControlListener>();
 		mCipherConnCtrlImplClassic = new CipherConnCtrlmplClassic(mContext);
-		mCipherConnCtrlImplBle = new CipherConnCtrlmplBLE(mContext);
+		if(IsBLEModeSupported())
+			mCipherConnCtrlImplBle = new CipherConnCtrlmplBLE(mContext);
 		SetBLEMode(false);
 	}
 	
