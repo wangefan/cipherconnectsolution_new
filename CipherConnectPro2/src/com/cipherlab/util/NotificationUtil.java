@@ -30,7 +30,6 @@ public class NotificationUtil {
     {
     	if(Build.VERSION.SDK_INT <=  16)
     	{
-    		@SuppressWarnings("deprecation")
 			Notification not = new Notification(icon, title, System.currentTimeMillis());
     		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
     		not.setLatestEventInfo(context, title, message, pendingIntent);
