@@ -138,7 +138,6 @@
 	<!-- Language -->
 	<string-array name="Language_entries">
 		<item>None</item>
-		<item>Simple Chinese</item>
 		<item>Czech</item>
 		<item>French</item>
 		<item>German</item>
@@ -149,7 +148,6 @@
 	</string-array>
 	<string-array name="Language_entries_value">
 		<item>No</item>
-		<item>Sc</item>
 		<item>Cz</item>
 		<item>Fr</item>
 		<item>De</item>
