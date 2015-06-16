@@ -62,6 +62,7 @@ public class CipherConnectManagerService extends Service
                 } 
                 else if (state == BluetoothAdapter.STATE_OFF) 
                 {
+                	btResetForBluetooth();
                 	CipherLog.d(mTAG, "BroadcastReceiver, receive bluetooth off");
                 }
             }
@@ -311,6 +312,24 @@ public class CipherConnectManagerService extends Service
     		bt_StartListenConn();
     	}
     	CipherLog.d(TAG, "btSetUpForBluetooth end");
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: btResetForBluetooth()
+     * @Description: reset for bluetooth relative functions.
+     *  
+     * <!----------------------------------------------------------------->
+     * */
+    public void btResetForBluetooth()
+    {
+    	CipherLog.d(TAG, "btResetForBluetooth begin");
+    	if(mCipherConnectControl != null)
+    	{
+    		mCipherConnectControl.disconnect();
+    		mCipherConnectControl.StopListening();
+    	}
+    	CipherLog.d(TAG, "btResetForBluetooth end");
     }
     
     /*

@@ -17,6 +17,7 @@ import android.os.Handler;
 
 abstract public class CipherConnCtrlmplBase {
 	//Data members
+	private final String mTAG = "CipherConnCtrlmplBase"; 
 	protected Context mContext = null;
 	protected ArrayList<ICipherConnectControl2Listener> mListenerList = null;
 	protected Bitmap mMACAddressBitmap = null;
@@ -246,9 +247,15 @@ abstract public class CipherConnCtrlmplBase {
 			Runnable checkConn = new Runnable() {
 				@Override
 				public void run(){
-					
-					connect(mAutoConnDevice);
-					
+					if(mAutoConnDevice != null)
+					{
+						CipherLog.d(mTAG, "mSetCheckConnTimer true, try to re-connect");
+						connect(mAutoConnDevice);
+					}
+					else
+					{
+						CipherLog.d(mTAG, "mSetCheckConnTimer true, but no device to re-connect");
+					}
 				}
 			};
 			

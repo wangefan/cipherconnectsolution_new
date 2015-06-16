@@ -5,7 +5,12 @@ import java.util.ArrayList;
 import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
 import com.cipherlab.cipherconnectpro2.R;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ClassicBTDeviceScanActivity extends BTSettingActivity 
 {
@@ -22,6 +28,7 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
 	public static final int CLASSIC_BLUETOOTH_SETTINGS = 2;
 	//Data members
 	private ClassicDeviceListAdapter mClassicDeviceListAdapter = null;
+	private ProgressDialog mPDialog = null;
 	
 	//Member functions
     private void mFillBTAdaperList()
@@ -38,6 +45,65 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
             }	
     	}	
     }
+    
+    private void ShowProgressDlg(boolean bShow)
+    {
+    	if(bShow)
+    	{
+    		if(mPDialog != null)
+    			mPDialog.show();
+    		else
+    		{
+    			String strTitle = getResources().getString(R.string.strConnecting), 
+    				   strMsg = getResources().getString(R.string.strConnectingMsg);
+    			mPDialog = ProgressDialog.show(this, strTitle, strMsg);
+    		}
+    	}
+    	else
+    	{
+    		if(mPDialog != null)
+    			mPDialog.dismiss();
+    	}
+    }
+    
+    private void updateUIByConnService()
+    {
+    	if(mCipherConnectService != null)
+    	{
+    		ICipherConnectManagerService.CONN_STATE conntate = mCipherConnectService.GetConnState();  	
+        	switch (conntate)
+        	{
+        	case  CONN_STATE_BEGINCONNECTING:
+    		case  CONN_STATE_CONNECTING:
+    		{
+    			ShowProgressDlg(true);
+    		}
+    		break;
+    		case CONN_STATE_CONNECTED:
+    			onBackPressed();
+    		break;
+    		case  CONN_STATE_DISCONNECT:
+    		case  CONN_STATE_CONNECTERR:
+    		default:
+    		{
+    			ShowProgressDlg(false);
+    		}
+        	}	
+    	} 	
+    }
+    
+    private BroadcastReceiver mConnServiceActReceiver = new BroadcastReceiver()
+	{
+		@Override
+        public void onReceive(Context context, Intent intent) 
+		{
+        	final String action = intent.getAction();
+        	if(action.equals(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED))
+            {
+        		updateUIByConnService();
+            }
+		}
+    };
     
     // 	Adapter for holding devices found 
     private class ClassicDeviceListAdapter extends BaseAdapter {
@@ -196,5 +262,21 @@ public class ClassicBTDeviceScanActivity extends BTSettingActivity
 	protected String getTag() 
 	{
 		return "ClassicBTDeviceScanActivity";
+	}
+
+	@Override
+	protected void onResume() {
+		updateUIByConnService();
+		
+		final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED);
+		registerReceiver(mConnServiceActReceiver, intentFilter);
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause() {
+		unregisterReceiver(mConnServiceActReceiver);
+		super.onPause();
 	}
 }

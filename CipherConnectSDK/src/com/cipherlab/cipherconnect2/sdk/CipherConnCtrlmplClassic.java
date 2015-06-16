@@ -108,6 +108,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 			mServrState = STATE_ONLINE;
 			return true;
 		}
+		mSetCheckConnTimer(false);
+		mResetConnThrd();	
 		
 		return mFireListenAndConnThread();
 	}
@@ -159,11 +161,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         		this.mConnectThread.start();
         	}
     	}
-    	
-    	if(mBAuoReconnect)
-		{
-			mAutoConnDevice = device;
-		}
 	}
 	
 	public void connect(String deviceName, String deviceAddr)throws NullPointerException
@@ -730,7 +727,10 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 
         	fireConnected(mDevice);
         	mSetCheckConnTimer(false);
-    		
+        	if(mBAuoReconnect)
+    		{
+    			mAutoConnDevice = mDevice;
+    		}
         	
         	buffer = verify.getTransmitBuffer();
         	if(buffer!=null && buffer.length>0)

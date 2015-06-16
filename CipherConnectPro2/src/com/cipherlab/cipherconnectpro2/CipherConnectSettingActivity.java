@@ -594,6 +594,10 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         	{
         		registerReceiver(mServiceActionReceiver, makeServiceActionsIntentFilter()); //ensure that can receive callback from connect
         		ICipherConnBTDevice device = (ICipherConnBTDevice) data.getSerializableExtra(KEY_GET_CLSC_BT_DEVICE);
+        		
+        		//Reset auto re-connect first.
+        		mCipherConnectService.setAutoConnect(false);
+        		
         		boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
 				mCipherConnectService.setAutoConnect(bNeedAutoReConn);
         		mConnectBT(device);
