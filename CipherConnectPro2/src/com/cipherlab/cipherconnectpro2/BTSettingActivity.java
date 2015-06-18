@@ -35,6 +35,8 @@ public abstract class BTSettingActivity extends ListActivity
 	private static final int REQUEST_ENABLE_BT = 1;
 	
 	//Members
+	private final String mAutoTryPin = "0000";
+	private boolean mBAutoPairTried = false;
 	protected BluetoothAdapter mBluetoothAdapter;
 	protected ICipherConnectManagerService mCipherConnectService = null;
 	
@@ -134,7 +136,9 @@ public abstract class BTSettingActivity extends ListActivity
     				}
                     break; 
                 case BluetoothDevice.BOND_BONDED: 
-                    CipherLog.d("BlueToothTestActivity", "Pair done"); 
+                    CipherLog.d("BlueToothTestActivity", "Pair done, reset the flag"); 
+                    //default pair code is tried and bound, reset the flag. 
+                    mBAutoPairTried = false;
                     break; 
                 case BluetoothDevice.BOND_NONE: 
                     CipherLog.d("BlueToothTestActivity", "Cancel pairing"); 
@@ -145,11 +149,11 @@ public abstract class BTSettingActivity extends ListActivity
             {
             	try {
 	    			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-	    			final String strAutoTryPin = "0000";
-	    			if (device.getBondState() != BluetoothDevice.BOND_BONDED) 
+	    			if (device.getBondState() != BluetoothDevice.BOND_BONDED && mBAutoPairTried == false) 
 	    			{
 	    				device.getClass().getMethod("setPairingConfirmation", boolean.class).invoke(device, true);
-	    				ClsUtils.setPin(device.getClass(), device, strAutoTryPin); 
+	    				ClsUtils.setPin(device.getClass(), device, mAutoTryPin); 
+	    				mBAutoPairTried = true;
 	    			}
             	} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -180,7 +184,7 @@ public abstract class BTSettingActivity extends ListActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState); 
-        
+        registerReceiver(mBTActReceiver, makeBTActionsIntentFilter());
         /* [Begin] bind CipherConnectManagerService, will trigger onServiceConnected if bound successful*/
         try {
             Intent intent = new Intent(this, CipherConnectManagerService.class);
@@ -189,12 +193,12 @@ public abstract class BTSettingActivity extends ListActivity
         	e.printStackTrace();
             finish();
         }
+        mBAutoPairTried = false;
     }
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		registerReceiver(mBTActReceiver, makeBTActionsIntentFilter());
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(mBluetoothAdapter == null)
 		{
@@ -214,13 +218,13 @@ public abstract class BTSettingActivity extends ListActivity
 	@Override
 	protected void onPause() 
 	{
-		unregisterReceiver(mBTActReceiver);
 		super.onPause();
 	}
 	
 	@Override
 	protected void onDestroy() 
-	{	
+	{
+		unregisterReceiver(mBTActReceiver);
 		if(mSConnection != null)
 		{
 			unbindService(mSConnection);
