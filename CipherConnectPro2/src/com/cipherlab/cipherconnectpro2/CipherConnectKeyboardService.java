@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
+
 import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
 import com.cipherlab.cipherconnectpro2.R;
 import com.cipherlab.help.CipherLog;
@@ -135,11 +137,19 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     public void onKey(int primaryCode, int[] keyCodes) {
         // super.onKey(primaryCode, keyCodes);
     	final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
+    	final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
     	if( primaryCode == nSettingCode)
     	{
     		Intent intentSett = new Intent(this, CipherConnectSettingActivity.class);
     		intentSett.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     		startActivity(intentSett);
+    		return;
+    	}
+    	else if( primaryCode == nPreIM)
+    	{
+    		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    	    final IBinder token = getWindow().getWindow().getAttributes().token;
+    	    imm.switchToLastInputMethod(token);
     		return;
     	}
     	

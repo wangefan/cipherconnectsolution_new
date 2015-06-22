@@ -29,4 +29,5 @@
     <dimen name="BTICWidth">20dp</dimen>
     <dimen name="BTICHeight">32dp</dimen>
     <integer name="keycodeSetting">-313</integer> 
+    <integer name="keycodePreIM">-314</integer> 
 </resources>

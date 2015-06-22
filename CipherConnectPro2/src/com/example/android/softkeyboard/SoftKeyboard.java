@@ -850,14 +850,18 @@ public class SoftKeyboard extends InputMethodService implements
 
     public void onPress(int primaryCode) {  
     	final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
-    	if (primaryCode==nSettingCode){
+    	final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
+    	if (primaryCode == nSettingCode ||
+    		primaryCode == nPreIM) {
             mInputView.setPreviewEnabled(false);
         }
     }
 
     public void onRelease(int primaryCode) {
     	final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
-    	if (primaryCode==nSettingCode){
+    	final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
+    	if (primaryCode==nSettingCode ||
+            primaryCode == nPreIM){
     		mInputView.setPreviewEnabled(true);
     	}
     }
