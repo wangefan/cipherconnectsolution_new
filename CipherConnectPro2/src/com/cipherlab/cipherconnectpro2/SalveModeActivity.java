@@ -22,8 +22,6 @@ public class SalveModeActivity extends BTSettingActivity
 {	
 	private final String mTAG = "SlaveModeActivity";
 	private TextView mTvwDeviceName;
-	private ImageView mBCodeResetImage;
-	private TextView mTvwResetBCode;
 	private ImageView mBCodeSettingConnImage;
 	private TextView mTvwSetConnBCode;
 	private ImageView mBCodeAddressImage;
@@ -51,23 +49,7 @@ public class SalveModeActivity extends BTSettingActivity
 		{
         	final String action = intent.getAction();
 
-            if(action.equals(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED))
-            {
-            	ICipherConnectManagerService.SERVER_STATE servertate = mCipherConnectService.GetServerState();  	
-            	switch (servertate)
-            	{
-            	case SERVER_STATE_ONLINE:
-            		//Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
-            		break;
-            	case SERVER_STATE_OFFLINE:
-            		Toast.makeText(SalveModeActivity.this, R.string.strWaitConnOff, Toast.LENGTH_LONG).show();
-            		break;
-				default:
-					break;
-            	}
-            	mUpdateUI(); 	
-            }
-            else if(action.equals(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED))
+            if(action.equals(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED))
             {
             	ICipherConnectManagerService.CONN_STATE conntate = mCipherConnectService.GetConnState();  	
             	switch (conntate)
@@ -118,53 +100,28 @@ public class SalveModeActivity extends BTSettingActivity
 		if(mCipherConnectService == null)
     		return;
 		
-		ICipherConnectManagerService.SERVER_STATE servertate = mCipherConnectService.GetServerState();  	
-    	switch (servertate) 
-    	{
-    		case  SERVER_STATE_ONLINE:
-    		{	   			
-    			float fWidthPxl = 300.0f;
-    			float fHeightPxl = 100.0f;
-    			
-    			Resources rsc = getResources();
-    			if(rsc != null)
-    			{
-    				fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
-    				fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
-    			}
-    					
-    			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
-    			mBCodeResetImage.setImageBitmap(bmpReset);
-    			mBCodeResetImage.setVisibility(View.VISIBLE);
-    			mTvwResetBCode.setText(R.string.strResetConn);
-    			
-    			Bitmap bmpSetConn = mCipherConnectService.GetSettingConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
-    			mBCodeSettingConnImage.setImageBitmap(bmpSetConn);
-    			mBCodeSettingConnImage.setVisibility(View.VISIBLE);
-    			mTvwSetConnBCode.setVisibility( View.VISIBLE);
-    			
-    			Bitmap bmpAddress = mCipherConnectService.GetMacAddrBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
-    			mBCodeAddressImage.setImageBitmap(bmpAddress);
-    			mBCodeAddressImage.setVisibility(View.VISIBLE);
-    			mTvwBCodeAddress.setVisibility( View.VISIBLE);
-    			
-    			mImageBTConn.setImageResource(R.drawable.btdisconnect);
-    			mTvwDeviceName.setText(R.string.strWaitConnOn);
-    		}
-    		break;
-    		case  SERVER_STATE_OFFLINE:
-    		default:
-    		{	
-    			mBCodeResetImage.setVisibility(View.INVISIBLE);
-    			mTvwResetBCode.setVisibility(View.INVISIBLE);
-    			mBCodeSettingConnImage.setVisibility( View.INVISIBLE);
-    			mTvwSetConnBCode.setVisibility( View.INVISIBLE);
-    			mBCodeAddressImage.setVisibility( View.INVISIBLE);
-    			mTvwBCodeAddress.setVisibility( View.INVISIBLE);
-    			mImageBTConn.setImageResource(R.drawable.btdisconnect);
-    		}
-    		break;
-    	}  	
+		float fWidthPxl = 300.0f;
+		float fHeightPxl = 100.0f;
+		
+		Resources rsc = getResources();
+		if(rsc != null)
+		{
+			fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
+			fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
+		}
+		
+		Bitmap bmpSetConn = mCipherConnectService.GetSettingConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
+		mBCodeSettingConnImage.setImageBitmap(bmpSetConn);
+		mBCodeSettingConnImage.setVisibility(View.VISIBLE);
+		mTvwSetConnBCode.setVisibility( View.VISIBLE);
+		
+		Bitmap bmpAddress = mCipherConnectService.GetMacAddrBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
+		mBCodeAddressImage.setImageBitmap(bmpAddress);
+		mBCodeAddressImage.setVisibility(View.VISIBLE);
+		mTvwBCodeAddress.setVisibility( View.VISIBLE);
+		
+		mImageBTConn.setImageResource(R.drawable.btdisconnect);
+		mTvwDeviceName.setText(R.string.strWaitConnOn);	
 		
     	ICipherConnectManagerService.CONN_STATE connState = mCipherConnectService.GetConnState();  	
     	switch (connState) 
@@ -184,25 +141,8 @@ public class SalveModeActivity extends BTSettingActivity
     		break;
     		case  CONN_STATE_CONNECTED:
     		{
-    			float fWidthPxl = 300.0f;
-    			float fHeightPxl = 100.0f;
-    			Resources rsc = getResources();
-    			if(rsc != null)
-    			{
-    				fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
-    				fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
-    			}
-    			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
-    			mBCodeResetImage.setImageBitmap(bmpReset);
-    			mTvwResetBCode.setText(R.string.strDisconnect);
-    			mBCodeSettingConnImage.setVisibility( View.INVISIBLE);
-    			mTvwSetConnBCode.setVisibility( View.INVISIBLE);
-    			mBCodeAddressImage.setVisibility( View.INVISIBLE);
-    			mTvwBCodeAddress.setVisibility( View.INVISIBLE);
-    			mImageBTConn.setImageResource(R.drawable.btconnected);	
-    			String strMag = mCipherConnectService.GetConnDevice().getDeviceName() + " connected";
-    			mTvwDeviceName.setText(strMag);  			
-    			ShowProgressDlg(false);			
+    			ShowProgressDlg(false);
+    			finish();
     		}
     		default:
     		break;
@@ -212,7 +152,6 @@ public class SalveModeActivity extends BTSettingActivity
     private static IntentFilter makeActionsIntentFilter() {
     	final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED);
-        intentFilter.addAction(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED);
         return intentFilter;
     }
 	
@@ -223,8 +162,6 @@ public class SalveModeActivity extends BTSettingActivity
 		getActionBar().setDisplayHomeAsUpEnabled(true);
         
 		//Init UI
-		mBCodeResetImage = (ImageView)findViewById(R.id.imageResetConn);
-		mTvwResetBCode = (TextView) findViewById(R.id.tvwReset);
 		
 		mBCodeSettingConnImage = (ImageView)findViewById(R.id.imageSetConn);
 		mTvwSetConnBCode = (TextView) findViewById(R.id.tvwSetConn);

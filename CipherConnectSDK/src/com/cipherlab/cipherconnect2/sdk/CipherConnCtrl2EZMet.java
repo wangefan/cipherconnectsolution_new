@@ -52,8 +52,9 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		mContext = null;
 		mCtrlListenerList = null;
 		mCipherConnCtrlImplClassic.Reset();
-		mCipherConnCtrlImplBle.Reset();
 		mCipherConnCtrlImplClassic = null;
+		if(IsBLEModeSupported())
+			mCipherConnCtrlImplBle.Reset();
 		mCipherConnCtrlImplBle = null;
 	}
 	

@@ -71,7 +71,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		if(BluetoothAdapter.getDefaultAdapter().isEnabled() == false)
 		{
 			mStopListenAndConn();
-			fireCipherListenServerOffline();
 			CipherLog.d(mTAG, "mFireListenAndConnThread, BluetoothAdapter.getDefaultAdapter().isEnabled() == false, return false");
 			return false;
 		}
@@ -92,7 +91,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		}
 		mListenAndConnThread.start();
 		mServrState = STATE_ONLINE;
-		fireCipherListenServerOnline();
 		CipherLog.d(mTAG, "mListenAndConnThread.start();");
 		CipherLog.d(mTAG, "mServrState = STATE_ONLINE;");
 		CipherLog.d(mTAG, "mFireListenAndConnThread end, return true");
@@ -136,10 +134,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 			//Here will fire offline in thread. 
 			mListenAndConnThread.StopServer();
 		}
-		else {
-			//fire offline ourself
-			fireCipherListenServerOffline();
-		}
 	}
 	//================ Server functions end=============
 	
@@ -174,6 +168,11 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		mAutoConnDevice = null;
 		mSetCheckConnTimer(false);
 		mResetConnThrd();	//trigger exception in thread.  
+		
+		if(mListenAndConnThread != null)
+			mListenAndConnThread.sendCmdToResetScanner();	
+		
+		mResetListenThread();
 	}
 
 	public ICipherConnBTDevice[] getBtDevices() {
@@ -247,6 +246,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	}
 	
 	private void mProcessBarcode(byte[] buffer, ICipherConnBTDevice device) throws UnsupportedEncodingException{
+		CipherLog.d(mTAG, "mProcessBarcode begin, buffer = " + buffer);
     	if(buffer==null || buffer.length==0)
     		return ;
     	
@@ -377,6 +377,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         private BluetoothServerSocket mServerSocket;
         private BluetoothSocket mSocket;
         private InputStream mInStream;
+        private OutputStream mOutStream;
         private String mSocketType;
         private String mTAG = "ListenAndConnThread";
         private boolean mBSecure;
@@ -388,6 +389,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         	mServerSocket = null;
         	mSocket = null;
         	mInStream = null;
+        	mOutStream = null;
         	mBSecure = secure;
             mSocketType = mBSecure ? "Secure" : "Insecure";
             mCloseServerSocket();
@@ -437,7 +439,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             }
         }
         
-        private void mCloseInStream() 
+        private void mCloseStream() 
         {
             if(mInStream != null)
             {
@@ -450,7 +452,57 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	            	mInStream = null;
 	            }
             }
+
+            if(mOutStream != null)
+            {
+	            try {
+	            	mOutStream.close();
+	            } catch (IOException e) {
+	                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of OutputStream failed", e);
+	            }
+	            finally {
+	            	mOutStream = null;
+	            }
+            }
         }
+		
+        public void sendCmdToResetScanner()
+	    {
+        	if(mOutStream == null && mSocket != null)
+        	{    	
+				try {
+					mOutStream = mSocket.getOutputStream();
+				} catch (IOException e) {
+					CipherLog.e("CipherConnect", "sendDisconnectCmd get the outputStream of BluetoothSocket", e);
+					return ;
+				}
+				if(mOutStream==null)
+					return;
+     		}
+        	
+        	try {
+	        	String strCmd = "#@109919\r";	//reset connection
+	        	mOutStream.write(strCmd.getBytes());
+	     		
+	     		try {
+	     			Thread.sleep(1000);
+	     		} catch (InterruptedException e) {
+	     			e.printStackTrace();
+	     		}
+	     		
+	     		strCmd = "#@109999\r";	//Re-open scanner
+	     		mOutStream.write(strCmd.getBytes());
+	     		
+	     		try {
+	     			Thread.sleep(1000);
+	     		} catch (InterruptedException e) {
+	     			e.printStackTrace();
+	     		}
+
+			} catch (IOException e) {
+				CipherLog.e("CipherConnect","sendDisconnectCmd:Can't write to the Device",e);
+			}	
+	    }
         
         public void StopServer()
         {
@@ -460,7 +512,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         public void Close()
         {
         	mCloseServerSocket();
-        	mCloseInStream();
+        	mCloseStream();
         	mCloseSocket();
         }
         public void run() 
@@ -472,7 +524,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         	
             CipherLog.d(mTAG, "Socket Type: " + mSocketType + "BEGIN ListenAndConnThread" + this);
             setName("ListenAndConnThread" + mSocketType);
-            mCloseInStream();
+            mCloseStream();
         	mCloseSocket();
         	
         	CipherConnBTDevice device = new CipherConnBTDevice();
@@ -527,18 +579,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
                 CipherLog.d(mTAG, "Socket Type: " + mSocketType + " IOException", e);
                 if(mIsConnected == true) 
                 	fireDisconnected(device);
-                if(mServrState == STATE_OFFLINE)
-                {
-                	mMainThrdHandler.post(
-                			new Runnable()
-                			{
-                				//@Override 
-                				public void run() {
-                					fireCipherListenServerOffline();
-                				}
-                			}
-                	);
-                }
             } 
             catch (CipherConnectErrException e) {
                 CipherLog.d(mTAG, "Socket Type: " + mSocketType + " CipherConnectErrException", e);
@@ -550,7 +590,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             } 
             finally {
             	CipherLog.d(mTAG, "Close Listen thread");
-            	mCloseInStream();
+            	mCloseStream();
             	mCloseSocket();
             	if(mServrState == STATE_ONLINE)
             	{
@@ -580,32 +620,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 
 	    public void terminate() { 
 	        isContinue = false; 
-	    }
-	    
-	    public void sendDisconnectCmd()
-	    {
-	    	if(mBluetoothSocket != null)
-	    	{
-	    		OutputStream stream = null;
-				try {
-					stream = this.mBluetoothSocket.getOutputStream();
-				} catch (IOException e) {
-					CipherLog.e("CipherConnect", "sendDisconnectCmd get the outputStream of BluetoothSocket", e);
-					return ;
-				}
-				if(stream==null)
-					return;
-
-				// Set scanner to slave mode
-				byte[] buffer = {'#','@','1','0','0','0','0','3','#'};
-				String strCmd = "#@109919\r";
-				try {
-					stream.write(strCmd.getBytes());
-					
-				} catch (IOException e) {
-					CipherLog.e("CipherConnect","sendDisconnectCmd:Can't write to the Device",e);
-				}	
-	    	}
 	    }
 
 	    public ConnectedThread(ICipherConnBTDevice srcDevice){

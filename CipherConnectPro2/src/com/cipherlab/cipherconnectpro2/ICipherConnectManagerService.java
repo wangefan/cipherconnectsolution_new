@@ -7,10 +7,6 @@ import android.graphics.Bitmap;
 
 
 public interface ICipherConnectManagerService {
-	public static enum SERVER_STATE {
-		SERVER_STATE_OFFLINE,
-		SERVER_STATE_ONLINE
-	}
 	public static enum CONN_STATE {
 		CONN_STATE_BEGINCONNECTING,
 		CONN_STATE_CONNECTING,
@@ -23,7 +19,6 @@ public interface ICipherConnectManagerService {
 	public boolean StartListenConn();
 	public void StopListenConn();
 	public CONN_STATE GetConnState();
-	public SERVER_STATE GetServerState(); 
 	public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight);
 	public Bitmap GetResetConnBarcodeImage(int nWidth, int nHeight);
 	public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight);

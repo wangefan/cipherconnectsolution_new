@@ -16,9 +16,8 @@ import android.widget.Toast;
 import com.cipherlab.cipherconnect2.sdk.CipherConnCtrl2EZMet;
 import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
 import com.cipherlab.cipherconnect2.sdk.ICipherConnCtrl2EZMet;
-import com.cipherlab.cipherconnect2.sdk.ICipherConnCtrl2EZMetListener;
+import com.cipherlab.cipherconnect2.sdk.ICipherConnectControl2Listener;
 import com.cipherlab.cipherconnectpro2.ICipherConnectManagerService.CONN_STATE;
-import com.cipherlab.cipherconnectpro2.ICipherConnectManagerService.SERVER_STATE;
 import com.cipherlab.cipherconnectpro2.R;
 import com.cipherlab.help.CipherLog;
 import com.cipherlab.util.NotificationUtil;
@@ -27,13 +26,10 @@ public class CipherConnectManagerService extends Service
 {
 	final String mTAG = "CipherConnectManagerService";
 
-    private SERVER_STATE mServerState = SERVER_STATE.SERVER_STATE_OFFLINE;
     private CONN_STATE mConnState = CONN_STATE.CONN_STATE_DISCONNECT;
     private ICipherConnBTDevice mDevice = null;
         
 	//broadcast actions, broadcast to ConnectStatus_onPreferenceChange now.
-    public static final String ACTION_SERVER_STATE_CHANGED =
-            "com.cipherEZMet.cipherconnectpro2.CipherConnectManagerService.ServerState_CHANGED";
     public static final String ACTION_CONN_STATE_CHANGED =
             "com.cipherEZMet.cipherconnectpro2.CipherConnectManagerService.ConnectionState_CHANGED";
     public static final String ACTION_COMMAND =
@@ -146,10 +142,6 @@ public class CipherConnectManagerService extends Service
     	public CONN_STATE GetConnState() {
     		return bt_GetConnState();
     	}
-    	
-    	public SERVER_STATE GetServerState() {
-    		return bt_GetServerState();
-    	}
 
     	public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight) {
     		return bt_GetMacAddrBarcodeImage(nWidth, nHeight);
@@ -226,14 +218,6 @@ public class CipherConnectManagerService extends Service
 	    	return mCipherConnectControl.StopScanLEDevices();
 	    }
     }
-    
-    private void mBroadcastServerChange(SERVER_STATE serverState)
-	{
-		// Client should use Servic.GetConnState() to get status
-		mServerState = serverState;
-		final Intent brdConnState = new Intent(ACTION_SERVER_STATE_CHANGED);
-        sendBroadcast(brdConnState);
-	}
     
     /*
      * <!----------------------------------------------------------------->
@@ -345,14 +329,8 @@ public class CipherConnectManagerService extends Service
     private void CipherConnectControl_init()
     {
     	mCipherConnectControl = new CipherConnCtrl2EZMet(this);
-		mCipherConnectControl.addCipherConnect2Listener(new ICipherConnCtrl2EZMetListener() 
-    	{
-    		public void onListenServerOnline() {
-    			CipherConnectControl_onListenServerOnline();
-    		}
-    		public void onListenServerOffline() {
-    			CipherConnectControl_onListenServerOffline();
-    		}
+		mCipherConnectControl.addCipherConnect2Listener(new ICipherConnectControl2Listener() 
+		{
     		public void onBeginConnecting(ICipherConnBTDevice device) {
     			CipherConnectControl_onBeginConnecting(device);
     		}
@@ -457,15 +435,7 @@ public class CipherConnectManagerService extends Service
 			listener.onBarcode(barcode);
 	}
 	
-	public void CipherConnectControl_onListenServerOnline() 
-	{
-		mBroadcastServerChange(SERVER_STATE.SERVER_STATE_ONLINE);
-	}
-	
-	public void CipherConnectControl_onListenServerOffline() {
-		mBroadcastServerChange(SERVER_STATE.SERVER_STATE_OFFLINE);
-	}
-	
+
 	/*
      * <!----------------------------------------------------------------->
      * @Name: bt_stopSelf()
@@ -624,11 +594,6 @@ public class CipherConnectManagerService extends Service
     private CONN_STATE bt_GetConnState()
   	{
   		return mConnState;
-  	}
-    
-    private SERVER_STATE bt_GetServerState()
-  	{
-  		return mServerState;
   	}
     
     private Bitmap bt_GetMacAddrBarcodeImage(int nWidth, int nHeight)

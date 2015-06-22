@@ -201,34 +201,34 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 	BuildConnMethodPreference bcPreference = (BuildConnMethodPreference)preference;
                 	if(bcPreference != null)
                 	{
-                		if(bcPreference.GetBConnState().equals(BuildConnMethodPreference.BCEnum.SLAVE))
-                		{
-                			Intent intent = new Intent(CipherConnectSettingActivity.this, SalveModeActivity.class);
-                			startActivity(intent);
-                		}
-                		else if(bcPreference.GetBConnState().equals(BuildConnMethodPreference.BCEnum.SLAVE_QR))
-                		{
-                			Intent intent = new Intent(CipherConnectSettingActivity.this, SalveModeQRActivity.class);
-                			startActivity(intent);
-                		}
-                		else //Master connection
-                		{
-                			String strCurMode = (String)mBtnBTMode.getEntry();
-                			
-                			//Classic
-                			if(strCurMode.equals(getResources().getString(R.string.Str_BT_Classic)))
-                			{
-                				if(mCipherConnectService.isConnected())
-                				{
-                					mCipherConnectService.disConnect();
-                				}
-                				else
-                				{
-                					String devName = mBuildConn.getLastDevName(), 
-                						   devAddr = mBuildConn.getLastDevAddr();	
-                					boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
-                					mCipherConnectService.setAutoConnect(bNeedAutoReConn);
-                					try {
+            			String strCurMode = (String)mBtnBTMode.getEntry();
+            			
+            			//Classic
+            			if(strCurMode.equals(getResources().getString(R.string.Str_BT_Classic)))
+            			{
+            				if(mCipherConnectService.isConnected())
+            				{
+                        		mCipherConnectService.disConnect();
+            				}
+            				else
+            				{
+            					if(bcPreference.GetBConnState().equals(BuildConnMethodPreference.BCEnum.SLAVE))
+                        		{
+                        			Intent intent = new Intent(CipherConnectSettingActivity.this, SalveModeActivity.class);
+                        			startActivity(intent);
+                        		}
+                        		else if(bcPreference.GetBConnState().equals(BuildConnMethodPreference.BCEnum.SLAVE_QR))
+                        		{
+                        			Intent intent = new Intent(CipherConnectSettingActivity.this, SalveModeQRActivity.class);
+                        			startActivity(intent);
+                        		}
+                        		else //Master connection
+                        		{
+	            					String devName = mBuildConn.getLastDevName(), 
+	            						   devAddr = mBuildConn.getLastDevAddr();	
+	            					boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
+	            					mCipherConnectService.setAutoConnect(bNeedAutoReConn);
+	            					try {
 										mCipherConnectService.connect(devName, devAddr);
 									} catch (Exception e) {										
 										e.printStackTrace();
@@ -236,28 +236,28 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 					CipherLog.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);
                 				}
                 			}
-                			//Low Energy
-                			else if(strCurMode.equals(getResources().getString(R.string.Str_BT_LE)))
-                			{
-                				if(mCipherConnectService.isConnected())
-                				{
-                					mCipherConnectService.disConnect();
-                				}
-                				else
-                				{
-                					String devName = mBuildConn.getLastDevName(), 
-                 						   devAddr = mBuildConn.getLastDevAddr();	
-                					boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
-                					mCipherConnectService.setAutoConnect(bNeedAutoReConn);
-                 					try {
- 										mCipherConnectService.connect(devName, devAddr);
- 									} catch (Exception e) {										
- 										e.printStackTrace();
- 									}
-                 					CipherLog.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
-                				}
-                			}
-                		}
+            			}
+            			//Low Energy
+            			else if(strCurMode.equals(getResources().getString(R.string.Str_BT_LE)))
+            			{
+            				if(mCipherConnectService.isConnected())
+            				{
+            					mCipherConnectService.disConnect();
+            				}
+            				else
+            				{
+            					String devName = mBuildConn.getLastDevName(), 
+             						   devAddr = mBuildConn.getLastDevAddr();	
+            					boolean bNeedAutoReConn = mBuildConn.getAutoReConn();
+            					mCipherConnectService.setAutoConnect(bNeedAutoReConn);
+             					try {
+									mCipherConnectService.connect(devName, devAddr);
+								} catch (Exception e) {										
+									e.printStackTrace();
+								}
+             					CipherLog.d(TAG, "connect to : " + devName + ", MAC addr = " + devAddr);		
+            				}
+            			}
                 	}
                 	return true;
                 }
@@ -546,7 +546,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     
     private static IntentFilter makeServiceActionsIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED);
         intentFilter.addAction(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED);
         intentFilter.addAction(CipherConnectManagerService.ACTION_COMMAND);
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -656,28 +655,6 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             	mUpdateUI(true);
             	if(info != null && info.length() > 0)
             		Toast.makeText(getApplicationContext(), info, Toast.LENGTH_SHORT).show();
-            }
-            // server status change
-            else if(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED.equals(action))
-            {
-            	if(mCipherConnectService != null)
-            	{
-            		ICipherConnectManagerService.SERVER_STATE serverstate = mCipherConnectService.GetServerState();  	
-                	switch (serverstate) 
-                	{
-    		            case  SERVER_STATE_OFFLINE:
-    		    		{
-    		    			
-    		    		}
-    		    		break;
-    		    		case  SERVER_STATE_ONLINE:
-    		    		default:
-    		    		{	
-    		    			
-    		    		}
-    		    		break;
-    		        }
-            	}
             }
             else if(CipherConnectManagerService.ACTION_COMMAND.equals(action))
             {

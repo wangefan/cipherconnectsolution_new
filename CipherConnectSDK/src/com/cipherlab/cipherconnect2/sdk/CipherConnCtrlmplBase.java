@@ -50,31 +50,6 @@ abstract public class CipherConnCtrlmplBase {
 		throw new UnsupportedOperationException();
 	}
 	
-	//call back methods
-	protected void fireCipherListenServerOnline() {
-		if(mListenerList == null)
-			return;
-		for (ICipherConnectControl2Listener l : this.mListenerList) {
-			ICipherConnCtrl2EZMetListener lEZMet = (ICipherConnCtrl2EZMetListener) l ;
-			if(lEZMet!=null)
-			{
-				lEZMet.onListenServerOnline();
-			}
-		}
-	}
-	
-	protected void fireCipherListenServerOffline() {
-		if(mListenerList == null)
-			return;
-		for (ICipherConnectControl2Listener l : this.mListenerList) {
-			ICipherConnCtrl2EZMetListener lEZMet = (ICipherConnCtrl2EZMetListener) l ;
-			if(lEZMet!=null)
-			{
-				lEZMet.onListenServerOffline();
-			}
-		}
-	}
-	
 	protected void fireCipherBeginConnectControl(ICipherConnBTDevice device) {
 		if(mListenerList == null)
 			return;

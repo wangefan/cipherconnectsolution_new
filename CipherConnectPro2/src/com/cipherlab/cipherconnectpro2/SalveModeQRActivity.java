@@ -19,7 +19,7 @@ import android.widget.Toast;
 public class SalveModeQRActivity extends BTSettingActivity 
 {	
 	private ImageView mBCodeResetImage;
-	private TextView mTvwResetBCode;
+	
 	private ImageView mQRCodeConnImage;
 	private TextView mTvwQRCodeConn;
 	private ImageView mImageBTConn;
@@ -46,21 +46,7 @@ public class SalveModeQRActivity extends BTSettingActivity
 		{
         	final String action = intent.getAction();
 
-            if(action.equals(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED))
-            {
-            	ICipherConnectManagerService.SERVER_STATE servertate = mCipherConnectService.GetServerState();  	
-            	switch (servertate)
-            	{
-            	case SERVER_STATE_ONLINE:
-            		//Toast.makeText(SalveModeQRActivity.this, R.string.strWaitConnOn, Toast.LENGTH_LONG).show();
-            		break;
-            	case SERVER_STATE_OFFLINE:
-            		Toast.makeText(SalveModeQRActivity.this, R.string.strWaitConnOff, Toast.LENGTH_LONG).show();
-            		break;
-            	}
-            	mUpdateUI(); 	
-            }
-            else if(action.equals(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED))
+            if(action.equals(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED))
             {
             	ICipherConnectManagerService.CONN_STATE conntate = mCipherConnectService.GetConnState();  	
             	switch (conntate)
@@ -110,52 +96,33 @@ public class SalveModeQRActivity extends BTSettingActivity
     {
 		if(mCipherConnectService == null)
     		return;
+		   			
+		float fWidthPxl = 300.0f;
+		float fHeightPxl = 100.0f;
 		
-		ICipherConnectManagerService.SERVER_STATE servertate = mCipherConnectService.GetServerState();  	
-    	switch (servertate) 
-    	{
-    		case  SERVER_STATE_ONLINE:
-    		{	   			
-    			float fWidthPxl = 300.0f;
-    			float fHeightPxl = 100.0f;
-    			
-    			float fQRWidthPxl = 90.0f;
-    			float fQRHeightPxl = 90.0f;
-    			Resources rsc = getResources();
-    			if(rsc != null)
-    			{
-    				fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
-    				fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
-    				fQRWidthPxl = rsc.getDimension(R.dimen.QRcodeWidth);
-    				fQRHeightPxl = rsc.getDimension(R.dimen.QRcodeHeight);
-    			}
-    					
-    			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
-    			mBCodeResetImage.setImageBitmap(bmpReset);
-    			mBCodeResetImage.setVisibility(View.GONE);
-    			mTvwResetBCode.setText(R.string.strResetConn);
-    			mTvwResetBCode.setVisibility(View.GONE);
-    			
-    			Bitmap bmpQRCodeConn = mCipherConnectService.GetSettingConnQRcodeImage((int)fQRWidthPxl, (int)fQRHeightPxl);
-    			mQRCodeConnImage.setImageBitmap(bmpQRCodeConn);
-    			mQRCodeConnImage.setVisibility(View.VISIBLE);
-    			mTvwQRCodeConn.setVisibility( View.VISIBLE);
-    			
-    			mImageBTConn.setImageResource(R.drawable.btdisconnect);
-    			mTvwDeviceName.setText(R.string.strWaitConnOn);
-    		}
-    		break;
-    		case  SERVER_STATE_OFFLINE:
-    		default:
-    		{	
-    			mBCodeResetImage.setVisibility(View.INVISIBLE);
-    			mTvwResetBCode.setVisibility(View.INVISIBLE);
-    			mTvwQRCodeConn.setVisibility( View.INVISIBLE);
-    			mQRCodeConnImage.setVisibility(View.INVISIBLE);
-    			mImageBTConn.setImageResource(R.drawable.btdisconnect);
-    		}
-    		break;
-    	}  	
+		float fQRWidthPxl = 90.0f;
+		float fQRHeightPxl = 90.0f;
+		Resources rsc = getResources();
+		if(rsc != null)
+		{
+			fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
+			fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
+			fQRWidthPxl = rsc.getDimension(R.dimen.QRcodeWidth);
+			fQRHeightPxl = rsc.getDimension(R.dimen.QRcodeHeight);
+		}
+				
+		Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
+		mBCodeResetImage.setImageBitmap(bmpReset);
+		mBCodeResetImage.setVisibility(View.GONE);
+		
+		
+		Bitmap bmpQRCodeConn = mCipherConnectService.GetSettingConnQRcodeImage((int)fQRWidthPxl, (int)fQRHeightPxl);
+		mQRCodeConnImage.setImageBitmap(bmpQRCodeConn);
+		mQRCodeConnImage.setVisibility(View.VISIBLE);
+		mTvwQRCodeConn.setVisibility( View.VISIBLE);
+		
+		mImageBTConn.setImageResource(R.drawable.btdisconnect);
+		mTvwDeviceName.setText(R.string.strWaitConnOn);
 		
     	ICipherConnectManagerService.CONN_STATE connState = mCipherConnectService.GetConnState();  	
     	switch (connState) 
@@ -175,25 +142,8 @@ public class SalveModeQRActivity extends BTSettingActivity
     		break;
     		case  CONN_STATE_CONNECTED:
     		{
-    			float fWidthPxl = 300.0f;
-    			float fHeightPxl = 100.0f;
-    			Resources rsc = getResources();
-    			if(rsc != null)
-    			{
-    				fWidthPxl = rsc.getDimension(R.dimen.BarcodeWidth);
-    				fHeightPxl = rsc.getDimension(R.dimen.BarcodeHeight);
-    			}
-    			Bitmap bmpReset = mCipherConnectService.GetResetConnBarcodeImage((int)fWidthPxl, (int)fHeightPxl);
-    			mBCodeResetImage.setImageBitmap(bmpReset);
-    			mBCodeResetImage.setVisibility(View.VISIBLE);
-    			mTvwResetBCode.setText(R.string.strDisconnect);
-    			mTvwResetBCode.setVisibility(View.VISIBLE);
-    			mQRCodeConnImage.setVisibility(View.INVISIBLE);
-    			mTvwQRCodeConn.setVisibility( View.INVISIBLE);
-    			mImageBTConn.setImageResource(R.drawable.btconnected);	
-    			String strMag = mCipherConnectService.GetConnDevice().getDeviceName() + " connected";
-    			mTvwDeviceName.setText(strMag);  			
-    			ShowProgressDlg(false);			
+    			ShowProgressDlg(false);
+    			finish();
     		}
     		default:
     		break;
@@ -203,7 +153,6 @@ public class SalveModeQRActivity extends BTSettingActivity
     private static IntentFilter makeActionsIntentFilter() {
     	final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CipherConnectManagerService.ACTION_CONN_STATE_CHANGED);
-        intentFilter.addAction(CipherConnectManagerService.ACTION_SERVER_STATE_CHANGED);
         return intentFilter;
     }
 	
@@ -215,7 +164,7 @@ public class SalveModeQRActivity extends BTSettingActivity
         
 		//Init UI
 		mBCodeResetImage = (ImageView)findViewById(R.id.imageResetConn);
-		mTvwResetBCode = (TextView) findViewById(R.id.tvwReset);
+		
 		
 		mQRCodeConnImage = (ImageView)findViewById(R.id.imageQRCodeConn);
 		mTvwQRCodeConn = (TextView) findViewById(R.id.tvwQRConn);
