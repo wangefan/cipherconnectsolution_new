@@ -647,8 +647,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    	if(btDevice==null){
 	    		fireCipherConnectControlError(
 	    				mDevice,
-	    				CipherConnectControlResource.please_turn_on_Bluetooth_id,
-	    				CipherConnectControlResource.please_turn_on_Bluetooth);
+	    				CipherConnectControlResource.bluetooth_connection_error_id,
+	    				CipherConnectControlResource.bluetooth_connection_error);
 	    		mResetConnThrd();
 	    		mDevice = null;
 	    		if(mBAuoReconnect)
