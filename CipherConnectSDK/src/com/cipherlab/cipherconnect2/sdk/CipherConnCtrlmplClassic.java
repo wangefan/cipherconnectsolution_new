@@ -133,6 +133,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		{
 			//Here will fire offline in thread. 
 			mListenAndConnThread.StopServer();
+			mListenAndConnThread = null;
 		}
 	}
 	//================ Server functions end=============
@@ -476,9 +477,10 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 					CipherLog.e("CipherConnect", "sendDisconnectCmd get the outputStream of BluetoothSocket", e);
 					return ;
 				}
-				if(mOutStream==null)
-					return;
      		}
+        	
+			if(mOutStream==null)
+				return;
         	
         	try {
 	        	String strCmd = "#@109919\r";	//reset connection
