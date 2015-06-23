@@ -261,7 +261,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	}
 	
 	@Override
-	public void Reset() {
+	public void reset() {
 		SetCipherConnectControlListener(null);
 		mDisconnect();
 	}

@@ -32,7 +32,7 @@ public class CipherConnectControl2 implements ICipherConnectControl2 {
 	
 	private void InitImplememtor(int nBTMode) {
 		if(mCipherConnCtrlImpl != null)
-			mCipherConnCtrlImpl.Reset();
+			mCipherConnCtrlImpl.reset();
 		mNBTMode = nBTMode;
 		switch (mNBTMode) {
 		case NClassicBTMode:
@@ -119,14 +119,20 @@ public class CipherConnectControl2 implements ICipherConnectControl2 {
 	public boolean StopScanLEDevices() throws UnsupportedOperationException {
 		return mCipherConnCtrlImpl.StopScanLEDevices();
 	}
+	
+	@Override
+	public void reset() {
+		if(mCipherConnCtrlImpl != null)
+			mCipherConnCtrlImpl.reset();
+	}
 
 	@Override
 	public void close() {
 		mNBTMode = NClassicBTMode;
 		mContext = null;
 		mCtrlListenerList = null;
-		mCipherConnCtrlImplClassic.Reset();
-		mCipherConnCtrlImplBle.Reset();
+		mCipherConnCtrlImplClassic.reset();
+		mCipherConnCtrlImplBle.reset();
 		mCipherConnCtrlImplClassic = null;
 		mCipherConnCtrlImplBle = null;
 	}

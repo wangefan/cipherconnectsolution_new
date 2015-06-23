@@ -32,7 +32,7 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 	
 	private void InitImplememtor(int nBTMode) {
 		if(mCipherConnCtrlImpl != null)
-			mCipherConnCtrlImpl.Reset();
+			mCipherConnCtrlImpl.reset();
 		mNBTMode = nBTMode;
 		switch (mNBTMode) {
 		case NClassicBTMode:
@@ -51,10 +51,10 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		mNBTMode = NClassicBTMode;
 		mContext = null;
 		mCtrlListenerList = null;
-		mCipherConnCtrlImplClassic.Reset();
+		mCipherConnCtrlImplClassic.reset();
 		mCipherConnCtrlImplClassic = null;
 		if(IsBLEModeSupported())
-			mCipherConnCtrlImplBle.Reset();
+			mCipherConnCtrlImplBle.reset();
 		mCipherConnCtrlImplBle = null;
 	}
 	
@@ -171,4 +171,10 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 			return mCipherConnCtrlImpl.GetSettingConnQRCodeImage(nWidth, nHeight);
     	return null;
     }
+
+	@Override
+	public void reset() {
+		if(mCipherConnCtrlImpl != null)
+			mCipherConnCtrlImpl.reset();
+	}
 }

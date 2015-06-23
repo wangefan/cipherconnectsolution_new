@@ -197,7 +197,7 @@ abstract public class CipherConnCtrlmplBase {
 	}
 	
 	//abstract methods
-	abstract public void Reset();
+	abstract public void reset();
 	
 	public abstract boolean isConnected();
 	

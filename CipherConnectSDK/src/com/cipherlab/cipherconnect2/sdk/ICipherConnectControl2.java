@@ -217,6 +217,11 @@ public interface ICipherConnectControl2 {
     public boolean StopScanLEDevices() throws UnsupportedOperationException;
     
     /**
+	 * Reset the instance for bluetooth.
+	 */
+	public void reset();
+	
+    /**
 	 * Close the instance.
 	 */
 	public void close();

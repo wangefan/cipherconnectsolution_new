@@ -310,8 +310,7 @@ public class CipherConnectManagerService extends Service
     	CipherLog.d(TAG, "btResetForBluetooth begin");
     	if(mCipherConnectControl != null)
     	{
-    		mCipherConnectControl.disconnect();
-    		mCipherConnectControl.StopListening();
+    		mCipherConnectControl.reset();
     	}
     	CipherLog.d(TAG, "btResetForBluetooth end");
     }
