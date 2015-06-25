@@ -22,7 +22,7 @@ import android.widget.Toast;
 public abstract class BTSettingActivity extends ListActivity 
 {
 	final static String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
-	
+	protected boolean mActive = false;
 	abstract protected String getTag();
 	
 	//This method be called after service connected and ensure that BT is turn on, connect service is bound.
@@ -115,7 +115,7 @@ public abstract class BTSettingActivity extends ListActivity
                 } 
                 else if (state == BluetoothAdapter.STATE_OFF) 
                 {
-                	if (!mBluetoothAdapter.isEnabled()) {
+                	if (!mBluetoothAdapter.isEnabled() && mActive) {
                 		mDoBTIntentForResult();
                         return;
                     }
@@ -213,11 +213,13 @@ public abstract class BTSettingActivity extends ListActivity
         	mDoBTIntentForResult();
             return;
         }
+        mActive = true;
 	}
 	
 	@Override
 	protected void onPause() 
 	{
+		mActive = false;
 		super.onPause();
 	}
 	
