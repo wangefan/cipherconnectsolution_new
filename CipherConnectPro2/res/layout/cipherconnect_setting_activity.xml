@@ -32,7 +32,13 @@
             android:entryValues="@array/Language_entries_value"
             android:defaultValue="No"            
             android:title="@string/setting_language" />
-        
+        <Preference
+            android:title="@string/setting_scanner_config" >
+            <intent 
+            	android:targetPackage="com.cipherlab.cipherconnectpro2"
+            	android:targetClass="com.cipherlab.cipherconnectpro2.ScannerConfigBarcodePage">
+        	</intent>
+        </Preference>
         <Preference
             android:title="@string/setting_about" >
             <intent 

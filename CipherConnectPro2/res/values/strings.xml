@@ -9,6 +9,9 @@
     <string name="strDisconnect">Disconnect</string>
     <string name="strSetConn">Step1. Set Connection</string>
     <string name="strMacAdd">Step2. MAC Address</string>
+    <string name="strAutheOn">Step1. Enable Authenticaion</string>
+    <string name="strSppOn">Step2. Enable Slave/Serial Port Profile mode</string>
+    <string name="strAutheOff">Step1. Disable Authenticaion</string>
     <string name="strBTNoDeviceName">no device</string>
     <string name="strOneScanTile">One Scan to connect to device</string>
     <string name="strBeginConn">Begin to connect&#8230;</string>
@@ -31,6 +34,7 @@
 	<string name="setting_autoconnect">Auto Reconnect</string>
 	<string name="setting_about">About</string>
 	<string name="setting_setinput">Set input method</string>
+	<string name="setting_scanner_config">Configure Bluetooth scanner</string>
 	<string name="about_company">Company</string>
 	<string name="about_company_value">CipherLab Co., Ltd.</string>
 	<string name="about_url">Website</string>
@@ -39,6 +43,8 @@
 	<string name="about_version_value">0.0.3</string>
 	<string name="about_sdk">Android SDK</string>
 	<string name="about_sdk_value">5.0.1</string>
+	<string name="config_type_title_1">Connect Type - Pair/Connect</string>
+	<string name="config_type_title_2">Connect Type - Scan Barcodes to connect</string>
 	<string name="Initialize_starts">Initialize CipherConnect</string>
 	<string name="can_not_find_any_bluetooth_device">Cannot find Bluetooth device!</string>
 	<string name="can_not_find_device_by_name">No device selected</string>

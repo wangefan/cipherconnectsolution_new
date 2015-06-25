@@ -24,6 +24,9 @@ public interface ICipherConnectManagerService {
 	public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight);
 	public Bitmap GetSettingConnQRcodeImage(int nWidth, int nHeight);
 	/*Server service end*/
+	public Bitmap GetEnableAuthBarcodeImage(int nWidth, int nHeight);
+	public Bitmap GetDisableAuthBarcodeImage(int nWidth, int nHeight);
+	public Bitmap GetEnableSppBarcodeImage(int nWidth, int nHeight);	
 	public boolean isConnected();
     public ICipherConnBTDevice[] getBtDevices();
     public ICipherConnBTDevice GetConnDevice();

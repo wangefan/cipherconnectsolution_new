@@ -61,4 +61,31 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
    	 * </DD>
    	 */
      public Bitmap GetSettingConnQRCodeImage(int nWidth, int nHeight);
+     
+     /**
+ 	 * Generate enabling authentication code128 command for Cipher device use. 
+ 	 * <DT><B>code:</B><DT>
+ 	 * <DD>
+ 	 * Bitmap img = _control.GetEnableAuthBarcodeImage(nWidth, nHeight);<br>
+ 	 * </DD>
+ 	 */
+     public Bitmap GetEnableAuthBarcodeImage(int nWidth, int nHeight); 
+     
+     /**
+  	 * Generate disabling authentication code128 command for Cipher device use. 
+  	 * <DT><B>code:</B><DT>
+  	 * <DD>
+  	 * Bitmap img = _control.GetDisableAuthBarcodeImage(nWidth, nHeight);<br>
+  	 * </DD>
+  	 */
+      public Bitmap GetDisableAuthBarcodeImage(int nWidth, int nHeight);
+      
+      /**
+    	 * Generate Enabling slave/spp code128 command for Cipher device use. 
+    	 * <DT><B>code:</B><DT>
+    	 * <DD>
+    	 * Bitmap img = _control.GetEnableSppBarcodeImage(nWidth, nHeight);<br>
+    	 * </DD>
+    	 */
+        public Bitmap GetEnableSppBarcodeImage(int nWidth, int nHeight);
 }

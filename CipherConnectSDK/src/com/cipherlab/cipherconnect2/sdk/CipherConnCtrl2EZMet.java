@@ -177,4 +177,25 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		if(mCipherConnCtrlImpl != null)
 			mCipherConnCtrlImpl.reset();
 	}
+
+	@Override
+	public Bitmap GetEnableAuthBarcodeImage(int nWidth, int nHeight) {
+		if(mCipherConnCtrlImpl != null)
+			return mCipherConnCtrlImpl.GetEnableAuthBarcodeImage(nWidth, nHeight);
+    	return null;
+	}
+
+	@Override
+	public Bitmap GetDisableAuthBarcodeImage(int nWidth, int nHeight) {
+		if(mCipherConnCtrlImpl != null)
+			return mCipherConnCtrlImpl.GetDisableAuthBarcodeImage(nWidth, nHeight);
+    	return null;
+	}
+
+	@Override
+	public Bitmap GetEnableSppBarcodeImage(int nWidth, int nHeight) {
+		if(mCipherConnCtrlImpl != null)
+			return mCipherConnCtrlImpl.GetEnableSppBarcodeImage(nWidth, nHeight);
+    	return null;
+	}
 }

@@ -161,6 +161,21 @@ public class CipherConnectManagerService extends Service
     	}
     	//Server service end
     	
+    	public Bitmap GetEnableAuthBarcodeImage(int nWidth, int nHeight)
+    	{
+    		return bt_GetEnableAuthBarcodeImage(nWidth, nHeight);
+    	}
+    	
+    	public Bitmap GetDisableAuthBarcodeImage(int nWidth, int nHeight)
+    	{
+    		return bt_GetDisableAuthBarcodeImage(nWidth, nHeight);
+    	}
+    	
+    	public Bitmap GetEnableSppBarcodeImage(int nWidth, int nHeight)
+    	{
+    		return bt_GetEnableSppBarcodeImage(nWidth, nHeight);
+    	}
+    	
 		public boolean connect(ICipherConnBTDevice device) throws Exception {
 			return bt_connect(device);
 		}
@@ -620,6 +635,27 @@ public class CipherConnectManagerService extends Service
 	{
 		if(mCipherConnectControl != null)
 			return mCipherConnectControl.GetSettingConnQRCodeImage(nWidth, nHeight);
+		return null;
+	}
+    
+    private Bitmap bt_GetEnableAuthBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mCipherConnectControl != null)
+			return mCipherConnectControl.GetEnableAuthBarcodeImage(nWidth, nHeight);
+		return null;
+	}
+    
+    private Bitmap bt_GetDisableAuthBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mCipherConnectControl != null)
+			return mCipherConnectControl.GetDisableAuthBarcodeImage(nWidth, nHeight);
+		return null;
+	}
+    
+    private Bitmap bt_GetEnableSppBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mCipherConnectControl != null)
+			return mCipherConnectControl.GetEnableSppBarcodeImage(nWidth, nHeight);
 		return null;
 	}
 }

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+   <TextView
+       android:id="@+id/textView1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center_vertical"
+       android:paddingBottom="30dp"
+       android:paddingTop="10dp"
+       android:text="@string/config_type_title_1"
+       android:textAppearance="?android:attr/textAppearanceMedium" />
+   
+   <ImageView
+        android:id="@+id/imageAuthenOn"
+        android:layout_width="@dimen/BarcodeWidth"
+        android:layout_height="@dimen/BarcodeHeight"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/tvwAutheOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/strAutheOn" />
+
+	<LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="0.2"
+	        android:orientation="vertical" />
+	
+	<ImageView
+	    android:id="@+id/imageSppOn"
+	    android:layout_width="@dimen/BarcodeWidth"
+	    android:layout_height="@dimen/BarcodeHeight"
+	    android:layout_gravity="center_horizontal" />
+
+         <TextView
+             android:id="@+id/tvwSppOn"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center_horizontal"
+             android:text="@string/strSppOn" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:orientation="vertical" />
+   
+    <View
+    	android:layout_width="fill_parent"
+    	android:layout_height="1dp"
+    	android:background="@android:color/darker_gray"/>
+    <TextView
+          android:id="@+id/textView2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:text="@string/config_type_title_2"
+          android:paddingBottom="30dp"
+       	  android:paddingTop="10dp"
+          android:textAppearance="?android:attr/textAppearanceMedium" />
+   
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.3"
+        android:orientation="vertical" >
+	       <ImageView
+		    android:id="@+id/imageAuheOff"
+		    android:layout_width="@dimen/BarcodeWidth"
+		    android:layout_height="@dimen/BarcodeHeight"
+		    android:layout_gravity="center_horizontal" />
+	
+	         <TextView
+	             android:id="@+id/tvwAhtheOff"
+	             android:layout_width="wrap_content"
+	             android:layout_height="wrap_content"
+	             android:layout_gravity="center_horizontal"
+	             android:text="@string/strAutheOff" />
+    </LinearLayout>
+</LinearLayout>

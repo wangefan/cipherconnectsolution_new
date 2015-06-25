@@ -24,6 +24,9 @@ abstract public class CipherConnCtrlmplBase {
 	protected Bitmap mResetConnBitmap = null;
 	protected Bitmap mSettingConnBitmap = null;
 	protected Bitmap mSettingConnQRCodeBitmap = null;
+	protected Bitmap mEnableAuthBitmap = null;
+	protected Bitmap mDisableAuthBitmap = null;
+	protected Bitmap mEnableSppBitmap = null;
 	protected boolean  mBHasConnection = false;
 	
 	//for auto re-connect
@@ -276,7 +279,7 @@ abstract public class CipherConnCtrlmplBase {
 	{
 		if(mResetConnBitmap == null)
 		{
-			String strResetConnCmd = "#@100003#";
+			String strResetConnCmd = "#@109919#";
 			mResetConnBitmap = mGenerateBCodeBMP(strResetConnCmd, nWidth, nHeight);
 		}
 		
@@ -314,4 +317,37 @@ abstract public class CipherConnCtrlmplBase {
 		
 		return mSettingConnQRCodeBitmap;
     }
+	
+	public Bitmap GetEnableAuthBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mEnableAuthBitmap == null)
+		{
+			String strCmd = "#@100155#";
+			mEnableAuthBitmap = mGenerateBCodeBMP(strCmd, nWidth, nHeight);
+		}
+		
+		return mEnableAuthBitmap;
+	}
+	
+	public Bitmap GetDisableAuthBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mDisableAuthBitmap == null)
+		{
+			String strCmd = "#@100154#";
+			mDisableAuthBitmap = mGenerateBCodeBMP(strCmd, nWidth, nHeight);
+		}
+		
+		return mDisableAuthBitmap;
+	}
+	
+	public Bitmap GetEnableSppBarcodeImage(int nWidth, int nHeight)
+	{
+		if(mEnableSppBitmap == null)
+		{
+			String strCmd = "#@100003#";
+			mEnableSppBitmap = mGenerateBCodeBMP(strCmd, nWidth, nHeight);
+		}
+		
+		return mEnableSppBitmap;
+	}
 }
