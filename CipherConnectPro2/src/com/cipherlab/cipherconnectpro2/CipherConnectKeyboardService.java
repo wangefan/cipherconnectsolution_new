@@ -113,6 +113,11 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
     @Override
     public void onDestroy() {
     	CipherLog.d(TAG, "onDestroy(): begin");
+    	if(mCipherConnectManagerListener != null && CipherConnectSettingInfo.isDisconnSwch(this))
+    	{
+    		mCipherConnectManagerService.disConnect();
+    	}
+    	
         this.unbindService(this.mSConnection);
         
         if(mCipherConnectManagerListener != null)

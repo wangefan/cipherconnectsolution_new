@@ -59,7 +59,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	private BuildConnMethodPreference mBuildConn = null;
 	private ListPreference   mBtnBTMode = null; 
 	private CheckBoxPreference ckbScreenBacklight = null;
-	private CheckBoxPreference mCKEnableMinimum = null;	
+	private CheckBoxPreference mCKEnableMinimum = null;
+	private CheckBoxPreference mCKDisconnSwch = null;
 	private ListPreference lstSendBarcodeInterval = null;  
 	private ListPreference lstLanguage = null;             
     
@@ -370,7 +371,17 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 return EnableMinimum_onPreferenceChange(preference, newValue);
             }
         });
-        
+		
+		/* Minimum keyboard */
+		mCKDisconnSwch = (CheckBoxPreference) findPreference("ckbDisconnSwch");
+		mCKDisconnSwch.setChecked(CipherConnectSettingInfo.isDisconnSwch(this));
+		mCKDisconnSwch.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					public boolean onPreferenceChange(Preference preference,
+							Object newValue) {
+                return DisconnSwch_onPreferenceChange(preference, newValue);
+            }
+        });
+		
 		/* lstSendBarcodeInterval */
         lstSendBarcodeInterval = (ListPreference) findPreference("lstSendBarcodeInterval");
         lstSendBarcodeInterval.setEntries(R.array.SendBarcodeInterval_entries);	
@@ -542,6 +553,25 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         
         return true;
     }
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: DisconnSwch_onPreferenceChange()
+     * @Description: Set Disconnect BT connection after switching to User Keybaord. 
+     *   
+     * @param: Preference preference
+     * @param: Object newValue
+     * return: boolean 
+     * <!----------------------------------------------------------------->
+     * */
+    public boolean DisconnSwch_onPreferenceChange(Preference preference, Object newValue) {
+        Boolean b = (Boolean) newValue;
+        
+        if (CipherConnectSettingInfo.isDisconnSwch(this) != b)
+            CipherConnectSettingInfo.setDisconnSwch(b, this);
+        
+        return true;
+    }    
 
     private void remove_ime_conflic() {
     	CipherLog.d(TAG, "remove_ime_conflic begin");

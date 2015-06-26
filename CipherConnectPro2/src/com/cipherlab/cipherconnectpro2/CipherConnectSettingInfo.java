@@ -71,6 +71,16 @@ public class CipherConnectSettingInfo {
         editor.commit();
     }
     
+    public static boolean isDisconnSwch(Context c) {
+    	return getSharedPreferences(c).getBoolean("disconnSwch", false);
+    }
+
+    public static void setDisconnSwch(boolean enable, Context c) {
+        Editor editor = getSharedPreferences(c).edit();
+        editor.putBoolean("disconnSwch", enable);
+        editor.commit();
+    }
+    
     public static boolean isSuspendBacklight(Context c) {
         return getSharedPreferences(c).getBoolean("WakeLock", false);
     }

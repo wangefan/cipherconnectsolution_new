@@ -16,7 +16,11 @@
             android:defaultValue="false"
             android:key="ckbMinimum"
             android:title="@string/setting_minimum" />
-
+		
+		<CheckBoxPreference
+	    	android:key="ckbDisconnSwch"
+	        android:title="@string/setting_disconnSwch" />	
+        
         <ListPreference
             android:dialogTitle="@string/setting_barcode_input"
             android:key="lstSendBarcodeInterval"
