@@ -19,7 +19,8 @@
 		
 		<CheckBoxPreference
 	    	android:key="ckbDisconnSwch"
-	        android:title="@string/setting_disconnSwch" />	
+	        android:title="@string/setting_disconnSwch" 
+	        android:summary="@string/setting_disconnSwchSum"/>	
         
         <ListPreference
             android:dialogTitle="@string/setting_barcode_input"
@@ -37,7 +38,8 @@
             android:defaultValue="No"            
             android:title="@string/setting_language" />
         <Preference
-            android:title="@string/setting_scanner_config" >
+            android:title="@string/setting_scanner_config" 
+            android:summary="@string/setting_scanner_config_sum">
             <intent 
             	android:targetPackage="com.cipherlab.cipherconnectpro2"
             	android:targetClass="com.cipherlab.cipherconnectpro2.ScannerConfigBarcodePage">
