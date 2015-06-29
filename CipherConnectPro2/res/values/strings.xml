@@ -34,14 +34,14 @@
 	<string name="setting_autoconnect">Auto Reconnect</string>
 	<string name="setting_about">About</string>
 	<string name="setting_setinput">Set input method</string>
-	<string name="setting_scanner_config">Disconnect after swithing to other IM</string>
+	<string name="setting_scanner_config">Configure Bluetooth scanner</string>
 	<string name="setting_scanner_config_sum">Configure scanner before using CipherConnectPro2 if any issue occurs during connection.</string>
 	<string name="about_company">Company</string>
 	<string name="about_company_value">CipherLab Co., Ltd.</string>
 	<string name="about_url">Website</string>
 	<string name="about_url_value">http://www.cipherlab.com</string>
 	<string name="about_version">Version</string>
-	<string name="about_version_value">0.0.7</string>
+	<string name="about_version_value">0.0.9</string>
 	<string name="about_sdk">Android SDK</string>
 	<string name="about_sdk_value">5.0.1</string>
 	<string name="config_type_title_1">Connect Type - Pair/Connect</string>
@@ -78,8 +78,8 @@
 	<string name="remove_lite_dialog_body">This input method may conflict with application CipherConnect Lite. Please remove CipherConnect Lite.</string>
 	<string name="remove_lite_quit_button">Exit</string>
 	<string name="setting_minimum">Enable Minimize keyboard</string>
-	<string name="setting_disconnSwch">Disconnect BT connection</string>
-	<string name="setting_disconnSwchSum">Disconnect BT connection after switching to User Keybaord. This only takes effect during BT connection.</string>
+	<string name="setting_disconnSwch">Disconnect after switching to user default IM</string>
+	<string name="setting_disconnSwchSum">Disconnect BT connection after switching to user keybaord. This only takes effect during BT connection.</string>
 	<string name="Bluetooth_Mode_Title">Classic Bluetooth/Low Energy</string>
 	<string name="Bluetooth_Mode_Summary">Classic </string>
 	<string name="Bluetooth_Mode_BLE_Summary">Low energy</string>
