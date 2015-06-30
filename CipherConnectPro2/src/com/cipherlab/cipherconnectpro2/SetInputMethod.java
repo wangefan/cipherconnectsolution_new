@@ -18,6 +18,7 @@ import android.widget.Toast;
 public class SetInputMethod extends Activity 
 {
 	//Data members
+	ImageButton mBtnOpenSetting = null;
 	ImageButton mBtnEnableIM = null;
 	ImageButton mBtnChooseIM = null;
 	
@@ -42,6 +43,19 @@ public class SetInputMethod extends Activity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setimputmehod);
+		
+		mBtnOpenSetting = (ImageButton) findViewById(R.id.btnOpenSettin);
+		if(mBtnOpenSetting != null)
+		{
+			mBtnOpenSetting.setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public void onClick(View v) {
+					setResult(RESULT_OK, null);
+			        onBackPressed();
+				}
+			});
+		}
 		
 		mBtnEnableIM = (ImageButton) findViewById(R.id.btnEnableIM);
 		if(mBtnEnableIM != null)

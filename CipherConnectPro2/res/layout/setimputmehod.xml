@@ -14,7 +14,7 @@
 	    android:orientation="vertical" >
 	
 		    <ImageButton
-		        android:id="@+id/cipherSetting"
+		        android:id="@+id/btnOpenSettin"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"
 		        android:layout_gravity="fill"

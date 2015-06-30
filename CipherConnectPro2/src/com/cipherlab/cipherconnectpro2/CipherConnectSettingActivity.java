@@ -43,6 +43,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	//constant 
 	private static final int REQUEST_GET_CLASSIC_BT = 1;
 	private static final int REQUEST_GET_CLE_BT = 2;
+	private static final int REQUEST_ENABLE_IM = 3;
 		
 	public static final String KEY_GET_CLSC_BT_DEVICE = "KEY_GET_CLSC_BT_DEVICE";
 	public static final String KEY_GET_LE_BT_DEVICE = "KEY_GET_LE_BT_DEVICE";
@@ -54,6 +55,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	private ProgressDialog mPDialog = null;
 	
 	boolean mBAddBTModeButton = false;
+	boolean mBAlreadyEnableIMPage = false;
 	
 	//controls
 	private BuildConnMethodPreference mBuildConn = null;
@@ -159,7 +161,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                   "CipherConnectSettingActivity.ConnectStatus_bt_startService:",
                   e);
         }
-        /* [End] Enable CipherConnectManagerService */               
+        /* [End] Enable CipherConnectManagerService */ 
+        mBAlreadyEnableIMPage = false;
     }
   
     /*
@@ -619,12 +622,13 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             return;
 		}
 		
-		if(mBIMNotReady() == false)
+		if(mBIMNotReady() == false && mBAlreadyEnableIMPage == false)
         {
         	Intent setInputMethod = new Intent(this, SetInputMethod.class);
-        	startActivity(setInputMethod);
+        	startActivityForResult(setInputMethod, REQUEST_ENABLE_IM);
         	return;
         }
+		mBAlreadyEnableIMPage = false;
         mUpdateUI(false);
     }
     
@@ -666,6 +670,14 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 				mCipherConnectService.setAutoConnect(bNeedAutoReConn);
         		mConnectBT(device);
         		super.onActivityResult(requestCode, resultCode, data);        		
+        	}
+        }
+        break;
+        case REQUEST_ENABLE_IM:
+        {
+        	if(resultCode == Activity.RESULT_OK ) 
+        	{
+        		mBAlreadyEnableIMPage = true ;     		
         	}
         }
         break;
