@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ android:layout_width="fill_parent"
+ android:layout_height="fill_parent"
+ android:gravity="center"
+ android:orientation="horizontal"
+ android:weightSum="100" >
+
+	<ImageView
+	    android:id="@+id/notifiation_image"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:layout_weight="15"
+	    android:src="@drawable/noconnect" />
+	
+	<LinearLayout
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="70"
+	    android:orientation="vertical" >
+
+	    <TextView
+	        android:id="@+id/noti_title"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	    <TextView
+	        android:id="@+id/noti_msg"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+	</LinearLayout>
+	
+	<ImageButton
+	    android:id="@+id/noti_disconnect"
+	    android:layout_width="0dp"
+	    android:layout_height="wrap_content"
+	    android:layout_weight="15"
+	    android:background="@null"
+	    android:scaleType="fitCenter"
+	    android:adjustViewBounds="true"
+	    android:paddingBottom="8dp"
+	    android:paddingLeft="8dp"
+	    android:paddingRight="8dp"
+	    android:paddingTop="8dp"
+	    android:src="@drawable/noti_disconn" />
+
+</LinearLayout>

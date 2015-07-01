@@ -41,6 +41,14 @@ public class CipherConnectManagerService extends Service
             new ArrayList<ICipherConnectManagerListener>();
     private LocalBinder mBinder;
     
+    public static class connDisconnectBDRec extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        	if (mCipherConnectControl != null && mCipherConnectControl.isConnected())
+	        	mCipherConnectControl.disconnect();
+        }
+    } 
+    
     private BroadcastReceiver mBTActReceiver = new BroadcastReceiver()
 	{
 		@Override
@@ -74,7 +82,9 @@ public class CipherConnectManagerService extends Service
         startForeground(NotificationUtil.NOTIFY_ID, NotificationUtil.GetNotificaion(R.drawable.noconnect, this, 
         										getResources().getString(R.string.ime_name), 
         										getResources().getString(R.string.setting_bluetooth_device_disconnected),
-        		                                      CipherConnectNotification.intent_cipherconnectproSettings()));
+        		                                      CipherConnectNotification.intent_cipherconnectproSettings(),
+        		                                      getPackageName(),
+        		                                      false));
         
         final IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -430,7 +440,7 @@ public class CipherConnectManagerService extends Service
         
         CipherConnectNotification.notify(CipherConnectManagerService.this,
 										CipherConnectNotification.intent_cipherconnectproSettings(),
-			                            this.getResources().getString(R.string.ime_name), message);
+			                            this.getResources().getString(R.string.ime_name), message, true);
         mBroadcastConnChange(CONN_STATE.CONN_STATE_CONNECTED);
 	}
 	

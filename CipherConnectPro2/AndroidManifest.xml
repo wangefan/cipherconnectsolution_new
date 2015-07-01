@@ -30,7 +30,7 @@
 		</service>
 		
 		<service android:name="com.cipherlab.cipherconnectpro2.CipherConnectManagerService" android:enabled="true" />
-		
+		<receiver android:name="CipherConnectManagerService$connDisconnectBDRec" />
 		<activity android:name="com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity"
 		          android:screenOrientation="portrait">
 			<intent-filter>

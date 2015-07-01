@@ -11,22 +11,22 @@ public class CipherConnectNotification {
     private static int mIcon = 0;
     private static String mMessage;
 
-    public static void notify(Context context, Intent intent, String title, String message) {
+    public static void notify(Context context, Intent intent, String title, String message, boolean bEnableDisconn) {
         mIcon = R.drawable.icon;
         mMessage = message;
-        NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage);
+        NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage, bEnableDisconn);
     }
 
     public static void error_notify(Context context, Intent intent, String title, String message) {
         mIcon = R.drawable.noconnect;
         mMessage = message;
-        NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage);
+        NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage, false);
     }
 
     public static void connecting_notify(Context context, Intent intent, String title, String message) {
         mIcon = R.drawable.connect;
         mMessage = message;
-        NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage);
+        NotificationUtil.notifyWithIntent(mIcon, context, intent, title, mMessage, false);
     }
 
     public static void cancel_notify(Context context) {
