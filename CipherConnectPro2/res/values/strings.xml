@@ -5,6 +5,7 @@
     <string name="strConnecting">connecting&#8230;</string>
     <string name="strConnectingMsg">Device is connecting, please wait&#8230;</string>
     <string name="error_bluetooth_not_turnon">Not turn on bluetooth</string>
+    <string name="msg_back">Please click BACK again to exit</string>
     <string name="app_service">Listen service</string>
     <string name="strDisconnect">Disconnect</string>
     <string name="strSetConn">Step1. Set Connection</string>

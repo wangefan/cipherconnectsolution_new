@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -56,6 +57,7 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	
 	boolean mBAddBTModeButton = false;
 	boolean mBAlreadyEnableIMPage = false;
+	boolean mDoubleBackToExitPressedOnce = false;
 	
 	//controls
 	private BuildConnMethodPreference mBuildConn = null;
@@ -696,6 +698,25 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         
         super.onDestroy();
     }    
+    
+    @Override
+    public void onBackPressed() {
+        if (mDoubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        mDoubleBackToExitPressedOnce = true;
+        Toast.makeText(this, R.string.msg_back, Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                mDoubleBackToExitPressedOnce = false;                       
+            }
+        }, 2000);
+    } 
     
     /*
      * <!----------------------------------------------------------------->

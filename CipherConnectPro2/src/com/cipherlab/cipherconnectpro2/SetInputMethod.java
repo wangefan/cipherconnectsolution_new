@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -33,17 +35,34 @@ public class SetInputMethod extends Activity
 	        {
 	            if(true == KeyboardUtil.isIMDefault(SetInputMethod.this))
 	            {
-	            	finish();
+	            	onBackPressed();
 	            }
 	        }
 	    }
 	};
+	
+	@Override
+	public void onBackPressed() {
+	 	setResult(RESULT_OK, null);
+	    super.onBackPressed();
+	} 
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+        	onBackPressed();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.setimputmehod);
-		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		mBtnOpenSetting = (ImageButton) findViewById(R.id.btnOpenSettin);
 		if(mBtnOpenSetting != null)
 		{

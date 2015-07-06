@@ -37,35 +37,7 @@ public class CipherConnectNotification {
         NotificationUtil.cancel(context);
     }
 
-    public static Intent intent_BluetoothSettings() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings", 
-                            "com.android.settings.bluetooth.BluetoothSettings");
-        return intent;
-    }
-
-    public static Intent intent_LanguageSettings() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.android.settings", 
-                            "com.android.settings.LanguageSettings");
-        return intent;
-    }
-
     public static Intent intent_cipherconnectproSettings() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.cipherlab.cipherconnectpro2",
-                            "com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity");
-        return intent;
-    }
-    
-    public static Intent intent_cipherconnectproServerOnlive() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClassName("com.cipherlab.cipherconnectpro2",
-                            "com.cipherlab.cipherconnectpro2.SalveModeActivity");
-        return intent;
-    }
-    
-    public static Intent intent_cipherconnectproServerOfflive() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName("com.cipherlab.cipherconnectpro2",
                             "com.cipherlab.cipherconnectpro2.CipherConnectSettingActivity");
