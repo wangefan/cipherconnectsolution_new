@@ -27,6 +27,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
     private static final String NAME_SECURE = "BluetoothChatSecure";
     private static final String NAME_INSECURE = "BluetoothChatInsecure";
     private ListenAndConnThread mListenAndConnThread = null;
+    private static Object mLockStreamAndSocket = new Object();
 	private static final int STATE_OFFLINE = -1;       // we're doing nothing
 	private static final int STATE_ONLINE = 0;       // start to listen connection
 	private int mServrState = STATE_OFFLINE; //Only used for server now.
@@ -42,6 +43,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		this.mUuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 		mMainThrdHandler = new Handler();
 		mResetListenThread();
+		if(mLockStreamAndSocket == null)
+			mLockStreamAndSocket = new Object();
 	}
 	
 	protected void fireCipherConnectControlError(ICipherConnBTDevice device, Exception e){
@@ -411,7 +414,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         }
         
         private void mCloseServerSocket() {
-            CipherLog.d(mTAG, "Socket Type" + mSocketType + "cancel " + this);
+        	CipherLog.d(mTAG,"ListenAndConnThread::mCloseServerSocket begin, thread = " + Thread.currentThread().getId());
             if(mServerSocket != null)
             {
 	            try {
@@ -425,85 +428,98 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             }
         }
         
-        private void mCloseSocket() 
+        private void mCloseStreamAndSocket() 
         {
-            if(mSocket != null)
-            {
-	            try {
-	            	mSocket.close();
-	            } catch (IOException e) {
-	                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of socket failed", e);
+        	CipherLog.d(mTAG, "mCloseStreamAndSocket begin, may wait out mLockStreamAndSocket, thread = "+ Thread.currentThread().getId());
+        	synchronized(mLockStreamAndSocket)
+        	{
+        		CipherLog.d(mTAG, "mCloseStreamAndSocket, in lock mLockStreamAndSocket");
+	        	if(mInStream != null)
+	            {
+		            try {
+		            	mInStream.close();
+		            } catch (IOException e) {
+		                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of InputStream failed", e);
+		            }
+		            finally {
+		            	mInStream = null;
+		            }
 	            }
-	            finally {
-	            	mSocket = null;
+	
+	            if(mOutStream != null)
+	            {
+		            try {
+		            	mOutStream.close();
+		            } catch (IOException e) {
+		                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of OutputStream failed", e);
+		            }
+		            finally {
+		            	mOutStream = null;
+		            }
 	            }
-            }
-        }
-        
-        private void mCloseStream() 
-        {
-            if(mInStream != null)
-            {
-	            try {
-	            	mInStream.close();
-	            } catch (IOException e) {
-	                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of InputStream failed", e);
+	            
+	        	CipherLog.d(mTAG,"mCloseSocketAndStream begin, thread = " + Thread.currentThread().getId());
+	            if(mSocket != null)
+	            {
+		            try {
+		            	mSocket.close();
+		            } catch (IOException e) {
+		                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of socket failed", e);
+		            }
+		            finally {
+		            	mSocket = null;
+		            }
 	            }
-	            finally {
-	            	mInStream = null;
-	            }
-            }
-
-            if(mOutStream != null)
-            {
-	            try {
-	            	mOutStream.close();
-	            } catch (IOException e) {
-	                CipherLog.e(mTAG, "Socket Type" + mSocketType + "close() of OutputStream failed", e);
-	            }
-	            finally {
-	            	mOutStream = null;
-	            }
-            }
+	            CipherLog.d(mTAG, "mCloseStreamAndSocket, in lock mLockStreamAndSocket end");
+        	}
         }
 		
         public void sendCmdToResetScanner()
 	    {
-        	if(mOutStream == null && mSocket != null)
-        	{    	
-				try {
-					mOutStream = mSocket.getOutputStream();
-				} catch (IOException e) {
-					CipherLog.e("CipherConnect", "sendDisconnectCmd get the outputStream of BluetoothSocket", e);
-					return ;
-				}
-     		}
-        	
-			if(mOutStream==null)
-				return;
-        	
-        	try {
-	        	String strCmd = "#@109919\r";	//reset connection
-	        	mOutStream.write(strCmd.getBytes());
-	     		
-	     		try {
-	     			Thread.sleep(1000);
-	     		} catch (InterruptedException e) {
-	     			e.printStackTrace();
-	     		}
-	     		
-	     		strCmd = "#@109999\r";	//Re-open scanner
-	     		mOutStream.write(strCmd.getBytes());
-	     		
-	     		try {
-	     			Thread.sleep(1000);
-	     		} catch (InterruptedException e) {
-	     			e.printStackTrace();
-	     		}
+        	CipherLog.d(mTAG,"sendCmdToResetScanner begin, thread = " + Thread.currentThread().getId());
+        	synchronized(mLockStreamAndSocket)
+        	{
+        		CipherLog.d(mTAG,"sendCmdToResetScanner in mLockStreamAndSocket, thread = " + Thread.currentThread().getId());
+        		if(mOutStream == null && mSocket != null)
+            	{    	
+    				try {
+    					mOutStream = mSocket.getOutputStream();
+    				} catch (IOException e) {
+    					CipherLog.d(mTAG, "IOException occurs in calling mSocket.getOutputStream, will return.");
+    					return ;
+    				}
+         		}
+            	
+    			if(mOutStream == null)
+    			{
+    				CipherLog.d(mTAG,"sendCmdToResetScanner, mOutStream == null, will return, thread = " + Thread.currentThread().getId());
+    				return;
+    			}
+            	
+            	try {
+    	        	String strCmd = "#@109919\r";	//reset connection
+    	        	mOutStream.write(strCmd.getBytes());
+    	     		
+    	     		try {
+    	     			Thread.sleep(1000);
+    	     		} catch (InterruptedException e) {
+    	     			e.printStackTrace();
+    	     		}
+    	     		
+    	     		strCmd = "#@109999\r";	//Re-open scanner
+    	     		mOutStream.write(strCmd.getBytes());
+    	     		
+    	     		try {
+    	     			Thread.sleep(1000);
+    	     		} catch (InterruptedException e) {
+    	     			e.printStackTrace();
+    	     		}
 
-			} catch (IOException e) {
-				CipherLog.e("CipherConnect","sendDisconnectCmd:Can't write to the Device",e);
-			}	
+    			} catch (IOException e) {
+    				CipherLog.d(mTAG, "sendCmdToResetScanner, IOException occurs in calling mOutStream.write, will return");
+    			}		
+            	CipherLog.d(mTAG,"sendCmdToResetScanner in mLockStreamAndSocket, thread = " + Thread.currentThread().getId() + " end");
+        	}        	
 	    }
         
         public void StopServer()
@@ -514,8 +530,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         public void Close()
         {
         	mCloseServerSocket();
-        	mCloseStream();
-        	mCloseSocket();
+        	mCloseStreamAndSocket();
         }
         public void run() 
         {
@@ -526,8 +541,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         	
             CipherLog.d(mTAG, "Socket Type: " + mSocketType + "BEGIN ListenAndConnThread" + this);
             setName("ListenAndConnThread" + mSocketType);
-            mCloseStream();
-        	mCloseSocket();
+            mCloseStreamAndSocket();
         	
         	CipherConnBTDevice device = new CipherConnBTDevice();
             try {
@@ -578,22 +592,20 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             } 
             //exception handle
             catch (IOException e) {
-                CipherLog.d(mTAG, "Socket Type: " + mSocketType + " IOException", e);
+                CipherLog.d(mTAG, "IOException in ListenAndConnThread, Thread id = " + Thread.currentThread().getId() +", Socket Type: " + mSocketType, e);
                 if(mIsConnected == true) 
                 	fireDisconnected(device);
             } 
             catch (CipherConnectErrException e) {
-                CipherLog.d(mTAG, "Socket Type: " + mSocketType + " CipherConnectErrException", e);
+                CipherLog.d(mTAG, "CipherConnectErrException in ListenAndConnThread, Thread id = " + Thread.currentThread().getId() +", , Socket Type: " + mSocketType , e);
                 fireCipherConnectControlError(device, e);
             } 
             catch (Exception e) {
-                CipherLog.d(mTAG, "Socket Type: " + mSocketType + " Exception occurs");
+                CipherLog.d(mTAG, "Exception in ListenAndConnThread, Thread id = " + Thread.currentThread().getId() +", , Socket Type: " + mSocketType);
                 fireCipherConnectControlError(device, e);
             } 
             finally {
-            	CipherLog.d(mTAG, "Close Listen thread");
-            	mCloseStream();
-            	mCloseSocket();
+        		mCloseStreamAndSocket();
             	if(mServrState == STATE_ONLINE)
             	{
             		mMainThrdHandler.post(
@@ -608,9 +620,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             		);
             	}
             	SetConnected(false);
+            	CipherLog.d(mTAG, "END ListenAndConnThread, socket Type: " + mSocketType);
             }       
-         
-            CipherLog.d(mTAG, "END ListenAndConnThread, socket Type: " + mSocketType);
         }
     }
 	
