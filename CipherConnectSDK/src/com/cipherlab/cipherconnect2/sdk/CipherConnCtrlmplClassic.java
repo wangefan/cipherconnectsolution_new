@@ -630,6 +630,11 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    
 	    public void run() 
 	    {
+	    	if(mBAuoReconnect)
+    		{
+    			mAutoConnDevice = mDevice;
+    		}
+	    	
 	    	if(BluetoothAdapter.getDefaultAdapter()==null)
 	    	{
 	    		fireCipherConnectControlError(
@@ -721,10 +726,16 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    
 	    	
 			CipherConnectVerify verify = new CipherConnectVerify(this.mBluetoothSocket);
+			boolean bVer = false;
 	        try {				
-				  if(verify.verify()==false){
-				 
-					fireCipherConnectControlError(
+	        	bVer = verify.verify();
+			} catch (Exception e) {
+				CipherLog.d("CipherConnectControl", e.getMessage());
+			}
+	        finally {
+	        	if(bVer == false)
+	        	{
+	        		fireCipherConnectControlError(
 							mDevice,
 							CipherConnectControlResource.the_device_is_not_the_cipherlab_product_id,
 							CipherConnectControlResource.the_device_is_not_the_cipherlab_product);
@@ -736,17 +747,11 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		    			mSetCheckConnTimer(true);
 		    		}
 				    return;
-				}
-			} catch (Exception e) {
-				CipherLog.d("CipherConnectControl", e.getMessage());
-			}
+	        	}
+	        }
 
         	fireConnected(mDevice);
         	mSetCheckConnTimer(false);
-        	if(mBAuoReconnect)
-    		{
-    			mAutoConnDevice = mDevice;
-    		}
         	
         	buffer = verify.getTransmitBuffer();
         	if(buffer!=null && buffer.length>0)
