@@ -229,6 +229,7 @@ public class BuildConnMethodPreference extends Preference
 		    		mbtnSearchDev.setEnabled(false);
 		    		mbtnConnMathod.setEnabled(false);
 		    		mbtnConnMathod.setImageResource(R.drawable.master_conn_disable);
+		    		mckAutoReConn.setEnabled(false);
 		    	}
 				else
 				{
@@ -244,6 +245,7 @@ public class BuildConnMethodPreference extends Preference
 					mbtnSearchDev.setEnabled(true);
 					mbtnConnMathod.setEnabled(true);
 					mbtnConnMathod.setImageResource(R.drawable.master_conn);
+					mckAutoReConn.setEnabled(true);
 				}
 			}
 			break;
