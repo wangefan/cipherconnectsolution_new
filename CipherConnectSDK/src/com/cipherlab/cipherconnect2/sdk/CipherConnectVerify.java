@@ -4,14 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.apache.http.util.EncodingUtils;
 import android.bluetooth.BluetoothSocket;
 import com.cipherlab.help.ArrayHelper;
@@ -92,13 +85,12 @@ public class CipherConnectVerify {
 			
 			StringBuilder strRead = new StringBuilder();
 			strRead.setLength(0);
+			mReadWrapperRetString.setPar(mBluetoothSocket.getInputStream());
 			do            
 	    	{
-	     		byte byteRet = 0; 
 	    		try {
-	    			final int nTimeOut = 2;
-	    			mReadTaskWrapperSingle.setPar(mBluetoothSocket.getInputStream());
-	    			byteRet = (byte) mReadTaskWrapperSingle.read(nTimeOut);
+	    			final int nTimeOut = 1;
+	    			strRead.append(mReadWrapperRetString.read(nTimeOut));
 				}
 	    		catch (TimeoutException e) 
 	    		{
@@ -111,8 +103,6 @@ public class CipherConnectVerify {
 						e.printStackTrace();
 					break;
 				}
-	     		
-	     		strRead.append((char)byteRet);
 	    	} while (true);
 			mCurltPageInfo = strRead.toString();
 		}
@@ -155,39 +145,31 @@ public class CipherConnectVerify {
 		}
 	}
 	
-	private ExecutorService mExecutor = Executors.newSingleThreadExecutor();  
-	private class ReadWrapperPar implements Callable<Integer>
+	private class ReadWrapperPar
 	{
 		private InputStream mInStream = null;
-        private byte[] mBa;
-        
-        public void setPar(InputStream in, byte[] ba) {
-        	mInStream = in;
-        	mBa = ba;
-        }
-
-        public Integer call() throws Exception {
-        	return mInStream.read(mBa);
-        }
-    }
-	private class ReadWrapperParSingleByte
-	{
-		private InputStream mInStream = null;
-        
         public void setPar(InputStream in) {
         	mInStream = in;
         }
 
-        public int read(int nTimeOutSec) throws TimeoutException, IOException {
-        	final int nTimeOutMilliSec = nTimeOutSec * 1000;
-        	final int nTimeStepMilliSec = 500;
-        	int nCurTimeMilliSec = 0;
+        public int read(byte[] ba, int nTimeOutSec) throws TimeoutException, IOException {
         	
+        	final int nTimeOutMilliSec = nTimeOutSec * 1000;
+        	final int nTimeStepMilliSec = 100;
+        	int nCurTimeMilliSec = 0;
+        	CipherLog.d(mTAG, "ReadWrapperPar read byte array begin, nTimeOutMilliSec = " + nTimeOutMilliSec);
         	while( nCurTimeMilliSec < nTimeOutMilliSec)
             {
                 if( mInStream.available() > 0 )
                 {
-                	return mInStream.read();
+                	CipherLog.d(mTAG, "mInStream is available:");
+                	int nResult = mInStream.read(ba);
+                	if(CipherLog._DEBUG)
+                	{
+                		String strRead = new String(ba);
+                		CipherLog.d(mTAG, strRead);	
+                	}
+                	return nResult;
                 }
                 else
                 {
@@ -198,6 +180,50 @@ public class CipherConnectVerify {
     					throw new TimeoutException();
     				}
                 	nCurTimeMilliSec += nTimeStepMilliSec;
+                	CipherLog.d(mTAG, "mInStream no data, sleep, nCurTimeMilliSec = " + nCurTimeMilliSec);
+                }
+            }
+        	throw new TimeoutException();
+        }
+    }
+	private class ReadWrapperRetString
+	{
+		private InputStream mInStream = null;
+        
+        public void setPar(InputStream in) {
+        	mInStream = in;
+        }
+
+        public String read(int nTimeOutSec) throws TimeoutException, IOException {
+        	final int nTimeOutMilliSec = nTimeOutSec * 1000;
+        	final int nTimeStepMilliSec = 100;
+        	int nCurTimeMilliSec = 0;
+        	CipherLog.d(mTAG, "ReadWrapperRetString read begin, nTimeOutMilliSec = " + nTimeOutMilliSec);
+        	while( nCurTimeMilliSec < nTimeOutMilliSec)
+            {
+        		int nAvailable = mInStream.available();
+                if( nAvailable > 0 )
+                {
+                	CipherLog.d(mTAG, "mInStream is available, nAvailable = " + nAvailable);
+                	byte ba[] = new byte[nAvailable];
+                	mInStream.read(ba);
+                	String strResult = new String(ba); 
+                	if(CipherLog._DEBUG)
+                	{
+                		CipherLog.d(mTAG, strResult);	
+                	}
+                	return strResult;
+                }
+                else
+                {
+                	try {
+    					Thread.sleep(nTimeStepMilliSec);
+    				} catch (InterruptedException e) {
+    					e.printStackTrace();
+    					throw new TimeoutException();
+    				}
+                	nCurTimeMilliSec += nTimeStepMilliSec;
+                	CipherLog.d(mTAG, "mInStream no data, sleep, nCurTimeMilliSec = " + nCurTimeMilliSec);
                 }
             }
         	throw new TimeoutException();
@@ -205,7 +231,7 @@ public class CipherConnectVerify {
     }
 	
 	private ReadWrapperPar mReadArrayWrapper = new ReadWrapperPar();
-	private ReadWrapperParSingleByte mReadTaskWrapperSingle = new ReadWrapperParSingleByte();
+	private ReadWrapperRetString mReadWrapperRetString = new ReadWrapperRetString();
     
 	//timeout: sec
 	public boolean recvRequestCommandTimeout(BluetoothSocket socket, int nTimeoutSec) throws TimeoutException
@@ -220,26 +246,19 @@ public class CipherConnectVerify {
 		if(stream==null)
 			return false;
 		
-		byte[] data = new byte[10240];
+		byte[] data = new byte[1024];
 		try {
-			Thread.sleep(7000);
 			if(mReadArrayWrapper != null)
 			{
-				mReadArrayWrapper.setPar(stream, data);
-				Future<Integer> future = mExecutor.submit(mReadArrayWrapper);
-    			future.get(nTimeoutSec*1000, TimeUnit.MILLISECONDS);
+				mReadArrayWrapper.setPar(stream);
+				mReadArrayWrapper.read(data, nTimeoutSec);
 			}
 			else {
 				stream.read(data);
 			}
 		}
-		catch (InterruptedException e) 
+		catch (TimeoutException e) 
 		{
-			CipherLog.e(mTAG, "recvRequestCommandTimeout fail, Can't recv from the Device",e);
-			e.printStackTrace();
-			return false;
-		}
-		catch (ExecutionException e) {
 			CipherLog.e(mTAG, "recvRequestCommandTimeout fail, Can't recv from the Device",e);
 			e.printStackTrace();
 			return false;
@@ -331,18 +350,16 @@ public class CipherConnectVerify {
 			return false;
 		
 		try {
-			Thread.sleep(1000);
 			if(mReadArrayWrapper != null)
 			{
-				mReadArrayWrapper.setPar(stream, recvData);
-				Future<Integer> future = mExecutor.submit(mReadArrayWrapper);
-    			future.get(nTimeoutSec*1000, TimeUnit.MILLISECONDS);
+				mReadArrayWrapper.setPar(stream);
+				mReadArrayWrapper.read(recvData, nTimeoutSec);
 			}
 			else {
 				stream.read(recvData);
 			}
 		} 
-		catch (InterruptedException e) 
+		catch (TimeoutException e) 
 		{
 			CipherLog.e(mTAG, "recvCommandTimeout fail, InterruptedException occurs, Can't recv from the Device",e);
 			e.printStackTrace();
