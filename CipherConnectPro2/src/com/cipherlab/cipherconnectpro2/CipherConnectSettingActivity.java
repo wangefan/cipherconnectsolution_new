@@ -66,7 +66,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	private CheckBoxPreference mCKEnableMinimum = null;
 	private CheckBoxPreference mCKDisconnSwch = null;
 	private ListPreference lstSendBarcodeInterval = null;  
-	private ListPreference lstLanguage = null;             
+	private ListPreference lstLanguage = null;    
+	private Preference mAbout = null;    
     
     private ServiceConnection mSConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) 
@@ -414,6 +415,10 @@ public class CipherConnectSettingActivity extends PreferenceActivity
                 return Language_onPreferenceChange(preference, newValue);
             }
         });
+        
+        /* About */
+        mAbout = (Preference) findPreference("about");
+        
 	}
     
     /*
@@ -452,6 +457,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     			mShowProgressDlg(false);
     			if(bShowToast)
     				Toast.makeText(getApplicationContext(), "Disconnect", Toast.LENGTH_SHORT).show();
+    			if(mAbout != null)
+    				mAbout.setSummary(getResources().getString(R.string.setting_about_sum_fwname) + "none");
     			break;
     		}
     		case  CONN_STATE_CONNECTERR:
@@ -468,6 +475,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     			ICipherConnBTDevice device = mCipherConnectService.GetConnDevice();
     			if(mBuildConn != null && device != null)
     				mBuildConn.setLastDev(device.getDeviceName(), device.getAddress());
+    			if(mAbout != null)
+    				mAbout.setSummary(getResources().getString(R.string.setting_about_sum_fwname) + mCipherConnectService.getFWVersion());
     			mShowProgressDlg(false);
     			if(bShowToast)
     				Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();

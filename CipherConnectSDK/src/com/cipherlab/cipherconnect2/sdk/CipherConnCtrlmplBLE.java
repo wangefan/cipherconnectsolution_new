@@ -350,4 +350,10 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		}
 		return false;
 	}
+
+	@Override
+	public String getFWVersion() {
+		
+		return "";
+	}
 }

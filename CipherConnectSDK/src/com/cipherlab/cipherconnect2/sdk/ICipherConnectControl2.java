@@ -21,6 +21,16 @@ public interface ICipherConnectControl2 {
 	public String getVersion();
 	
 	/**
+	 * Get the version of connected firmware version.
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * String version = _control.getFWVersion();
+	 * </DD>
+	 * @return Ver:1.31a
+	 */
+	public String getFWVersion();
+	
+	/**
 	 * Get the status of CipherConnectControl.
 	 * <DT><B>code:</B><DT>
 	 * <DD> 

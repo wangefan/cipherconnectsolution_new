@@ -198,4 +198,11 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 			return mCipherConnCtrlImpl.GetEnableSppBarcodeImage(nWidth, nHeight);
     	return null;
 	}
+
+	@Override
+	public String getFWVersion() {
+		if(mCipherConnCtrlImpl != null)
+			return mCipherConnCtrlImpl.getFWVersion();
+    	return "";
+	}
 }

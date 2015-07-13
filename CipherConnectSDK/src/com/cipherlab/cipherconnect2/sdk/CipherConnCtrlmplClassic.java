@@ -35,6 +35,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	private boolean mBDisconnect = false;
 	private ConnectedThread mConnectThread;
 	private boolean mIsConnected = false;
+	private String mCurltPageInfo = "";
 	
 	public CipherConnCtrlmplClassic(Context context){
 		super(context);
@@ -127,6 +128,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 		mSetCheckConnTimer(false);
 		mResetConnThrd();	//trigger exception in thread.  
 		mStopListenAndConn();
+		mCurltPageInfo = "";
 	}
 	
 	public void StopListening()
@@ -572,7 +574,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				}
                 if(bVer == false)
                 	throw new CipherConnectErrException(CipherConnectErrException.INFO_NOT_CIPHER_DEVICE);
-                
+                mCurltPageInfo = cverify.getListPageInfo();
                 byte[] buffer = cverify.getTransmitBuffer();
                 mProcessBarcode(buffer, device);
                 buffer = null;
@@ -662,6 +664,9 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 	    	}
 	    	
 	    	BluetoothDevice btDevice = getBtDevice(mDevice.getAddress());
+	    	if(btDevice == null)
+	    		btDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress());
+
 	    	if(btDevice==null){
 	    		fireCipherConnectControlError(
 	    				mDevice,
@@ -760,7 +765,8 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 				    return;
 	        	}
 	        }
-
+	        
+	        mCurltPageInfo = verify.getListPageInfo();
         	fireConnected(mDevice);
         	mSetCheckConnTimer(false);
         	
@@ -844,5 +850,18 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
         	}
         	this.mBluetoothSocket = null;
 	    }
+	}
+
+	@Override
+	public String getFWVersion() {
+		if(mCurltPageInfo.length() > 0)
+		{
+			final String strFindPrefix = "Ver:";
+			String ver = mCurltPageInfo.substring(mCurltPageInfo.indexOf(strFindPrefix) + strFindPrefix.length());
+			ver = ver.substring(0, ver.indexOf("\r"));
+			return ver;
+		}
+			
+		return "";
 	}
 }

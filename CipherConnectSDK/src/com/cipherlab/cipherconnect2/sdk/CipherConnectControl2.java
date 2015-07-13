@@ -136,4 +136,11 @@ public class CipherConnectControl2 implements ICipherConnectControl2 {
 		mCipherConnCtrlImplClassic = null;
 		mCipherConnCtrlImplBle = null;
 	}
+
+	@Override
+	public String getFWVersion() {
+		if(mCipherConnCtrlImpl != null)
+			return mCipherConnCtrlImpl.getFWVersion();
+    	return "";
+	}
 }

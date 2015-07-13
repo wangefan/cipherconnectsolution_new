@@ -214,6 +214,8 @@ abstract public class CipherConnCtrlmplBase {
 	
 	public abstract boolean StartListening();
 	
+	public abstract String getFWVersion();
+	
 	public abstract void StopListening();
 	
 	// @param: boolean bSetTimer

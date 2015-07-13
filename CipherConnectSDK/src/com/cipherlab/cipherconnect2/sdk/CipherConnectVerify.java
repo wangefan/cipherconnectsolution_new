@@ -25,6 +25,10 @@ public class CipherConnectVerify {
 		return mTransmitBuffer;
 	}
 	
+	public String getListPageInfo()	{
+		return mCurltPageInfo;
+	}
+	
 	public boolean verify()throws IOException, TimeoutException{
 		CipherLog.e(mTAG,"verify() begin");
 		if(this.sendRequestCommand(this.mBluetoothSocket)==false)

@@ -42,4 +42,5 @@ public interface ICipherConnectManagerService {
     public void SetBLEMode(boolean bEnable) throws UnsupportedOperationException;
     public boolean StartScanLEDevices() throws UnsupportedOperationException;
     public boolean StopScanLEDevices() throws UnsupportedOperationException;
+    public String getFWVersion();
 }

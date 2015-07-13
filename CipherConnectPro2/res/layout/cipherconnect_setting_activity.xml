@@ -46,6 +46,7 @@
         	</intent>
         </Preference>
         <Preference
+            android:key="about"
             android:title="@string/setting_about" >
             <intent 
             	android:targetPackage="com.cipherlab.cipherconnectpro2"

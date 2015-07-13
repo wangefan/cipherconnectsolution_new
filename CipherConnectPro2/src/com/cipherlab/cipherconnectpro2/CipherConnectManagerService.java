@@ -242,6 +242,11 @@ public class CipherConnectManagerService extends Service
 	    public boolean StopScanLEDevices() throws UnsupportedOperationException {
 	    	return mCipherConnectControl.StopScanLEDevices();
 	    }
+
+		@Override
+		public String getFWVersion() {
+			return mCipherConnectControl.getFWVersion();
+		}
     }
     
     /*

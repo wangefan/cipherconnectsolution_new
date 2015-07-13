@@ -34,6 +34,7 @@
 	<string name="setting_mode">Scan mode</string>
 	<string name="setting_autoconnect">Auto Reconnect</string>
 	<string name="setting_about">About</string>
+	<string name="setting_about_sum_fwname">Scanner Firmware Version:</string>
 	<string name="setting_setinput">Set input method</string>
 	<string name="setting_scanner_config">Configure Bluetooth scanner</string>
 	<string name="setting_scanner_config_sum">Configure scanner before using CipherConnectPro2 if any issue occurs during connection.</string>

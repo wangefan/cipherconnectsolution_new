@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 public abstract class BTSettingActivity extends ListActivity 
 {
-	final static String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
 	protected boolean mActive = false;
 	abstract protected String getTag();
 	
@@ -145,7 +144,7 @@ public abstract class BTSettingActivity extends ListActivity
                 default: 
                     break; 
                 } 
-            }else if (intent.getAction().equals(ACTION_PAIRING_REQUEST)) 
+            }else if (intent.getAction().equals(BluetoothDevice.ACTION_PAIRING_REQUEST)) 
             {
             	try {
 	    			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
