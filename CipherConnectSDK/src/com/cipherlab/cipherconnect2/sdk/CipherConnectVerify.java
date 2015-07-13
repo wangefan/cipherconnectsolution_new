@@ -93,7 +93,7 @@ public class CipherConnectVerify {
 			do            
 	    	{
 	    		try {
-	    			final int nTimeOut = 1;
+	    			final int nTimeOut = 2;
 	    			strRead.append(mReadWrapperRetString.read(nTimeOut));
 				}
 	    		catch (TimeoutException e) 

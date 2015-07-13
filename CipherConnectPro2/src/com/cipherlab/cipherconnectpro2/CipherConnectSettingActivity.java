@@ -711,6 +711,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
     @Override
     public void onBackPressed() {
         if (mDoubleBackToExitPressedOnce) {
+        	if(mCipherConnectService != null)
+        		mCipherConnectService.disConnect();
             super.onBackPressed();
             return;
         }
