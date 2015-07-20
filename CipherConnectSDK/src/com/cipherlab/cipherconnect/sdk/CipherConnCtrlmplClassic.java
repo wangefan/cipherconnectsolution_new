@@ -363,7 +363,7 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
    			String strResult = "Unknown Message";
    			switch (mInfoID) {
    			case INFO_NOT_CIPHER_DEVICE:
-   				strResult = "Not Cipher Devices";
+   				strResult = "Get no response from device";
    				break;
    			case INFO_SERVER_SKT_ERROR:
    				strResult = "Create Server socket error";
