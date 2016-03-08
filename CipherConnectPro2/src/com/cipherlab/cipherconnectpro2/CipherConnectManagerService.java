@@ -13,10 +13,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
-import com.cipherlab.cipherconnect2.sdk.CipherConnCtrl2EZMet;
-import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
-import com.cipherlab.cipherconnect2.sdk.ICipherConnCtrl2EZMet;
-import com.cipherlab.cipherconnect2.sdk.ICipherConnectControl2Listener;
+import com.cipherlab.cipherconnect.sdk2.CipherConnCtrl2EZMet;
+import com.cipherlab.cipherconnect.sdk2.ICipherConnBTDevice;
+import com.cipherlab.cipherconnect.sdk2.ICipherConnCtrl2EZMet;
+import com.cipherlab.cipherconnect.sdk2.ICipherConnectControl2Listener;
 import com.cipherlab.cipherconnectpro2.ICipherConnectManagerService.CONN_STATE;
 import com.cipherlab.cipherconnectpro2.R;
 import com.cipherlab.help.CipherLog;

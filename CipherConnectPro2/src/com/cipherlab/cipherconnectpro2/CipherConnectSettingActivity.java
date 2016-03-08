@@ -30,7 +30,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 
-import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
+import com.cipherlab.cipherconnect.sdk2.ICipherConnBTDevice;
 import com.cipherlab.cipherconnectpro2.R;
 import com.cipherlab.util.DialogUtil;
 import com.cipherlab.util.KeyboardUtil;

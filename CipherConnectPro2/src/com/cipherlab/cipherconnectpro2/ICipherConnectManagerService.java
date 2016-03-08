@@ -1,7 +1,7 @@
 package com.cipherlab.cipherconnectpro2;
 
 
-import com.cipherlab.cipherconnect2.sdk.ICipherConnBTDevice;
+import com.cipherlab.cipherconnect.sdk2.ICipherConnBTDevice;
 
 import android.graphics.Bitmap;
 
