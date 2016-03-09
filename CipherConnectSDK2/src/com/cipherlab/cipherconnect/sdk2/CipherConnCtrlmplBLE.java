@@ -335,7 +335,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 	}
 
 	@Override
-	public boolean StartScanLEDevices() throws UnsupportedOperationException {
+	public boolean startScanLEDevices() throws UnsupportedOperationException {
 		if(mBluetoothAdapter != null) {
 			mbtDericeList.clear();
 			return mBluetoothAdapter.startLeScan(mLeScanCallback);
@@ -343,7 +343,7 @@ public class CipherConnCtrlmplBLE extends CipherConnCtrlmplBase {
 		return false;
 	}
 	
-	public boolean StopScanLEDevices() throws UnsupportedOperationException {
+	public boolean stopScanLEDevices() throws UnsupportedOperationException {
 		if(mBluetoothAdapter != null) {
 			mBluetoothAdapter.stopLeScan(mLeScanCallback);
 			return true;

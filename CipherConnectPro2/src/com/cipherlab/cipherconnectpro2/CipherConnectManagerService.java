@@ -232,15 +232,15 @@ public class CipherConnectManagerService extends Service
 	    }
 	    
 	    public void SetBLEMode(boolean bEnable) {
-	    	mCipherConnectControl.SetBLEMode(bEnable);
+	    	mCipherConnectControl.setBLEMode(bEnable);
 	    }
 	    
 	    public boolean StartScanLEDevices() throws UnsupportedOperationException {
-	    	return mCipherConnectControl.StartScanLEDevices();
+	    	return mCipherConnectControl.startScanLEDevices();
 	    }
 	    
 	    public boolean StopScanLEDevices() throws UnsupportedOperationException {
-	    	return mCipherConnectControl.StopScanLEDevices();
+	    	return mCipherConnectControl.stopScanLEDevices();
 	    }
 
 		@Override
@@ -316,10 +316,10 @@ public class CipherConnectManagerService extends Service
     	String strCurBTMode = CipherConnectSettingInfo.getBTMode(this);
     	if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_Classic)))
     	{
-    		mCipherConnectControl.SetBLEMode(false);
+    		mCipherConnectControl.setBLEMode(false);
     	}
     	else if(0 == strCurBTMode.compareTo(this.getResources().getString(R.string.Str_BT_LE))) {
-    		mCipherConnectControl.SetBLEMode(true);
+    		mCipherConnectControl.setBLEMode(true);
     	}
     	if(false == CipherConnectSettingInfo.getBCMode(this).equals(CipherConnectSettingInfo.MASTER))
     	{
@@ -596,14 +596,14 @@ public class CipherConnectManagerService extends Service
     private boolean bt_StartListenConn()
 	{
 		if(mCipherConnectControl != null)
-			return mCipherConnectControl.StartListening();
+			return mCipherConnectControl.startListening();
 		return false;
 	}
     
     private void bt_StopListenConn()
 	{
 		if(mCipherConnectControl != null)
-			mCipherConnectControl.StopListening();
+			mCipherConnectControl.stopListening();
 	}
     
     /*
@@ -628,49 +628,49 @@ public class CipherConnectManagerService extends Service
     private Bitmap bt_GetMacAddrBarcodeImage(int nWidth, int nHeight)
 	{
 		if(mCipherConnectControl != null)
-			return mCipherConnectControl.GetMacAddrBarcodeImage(nWidth, nHeight);
+			return mCipherConnectControl.getMacAddrBarcodeImage(nWidth, nHeight);
 		return null;
 	}
 	
     private Bitmap bt_GetResetConnBarcodeImage(int nWidth, int nHeight)
 	{
 		if(mCipherConnectControl != null)
-			return mCipherConnectControl.GetResetConnBarcodeImage(nWidth, nHeight);
+			return mCipherConnectControl.getResetConnBarcodeImage(nWidth, nHeight);
 		return null;
 	}
 	
     private Bitmap bt_GetSettingConnBarcodeImage(int nWidth, int nHeight)
 	{
 		if(mCipherConnectControl != null)
-			return mCipherConnectControl.GetSettingConnBarcodeImage(nWidth, nHeight);
+			return mCipherConnectControl.getSettingConnBarcodeImage(nWidth, nHeight);
 		return null;
 	}
     
     private Bitmap bt_GetSettingConnQRCodeImage(int nWidth, int nHeight)
 	{
 		if(mCipherConnectControl != null)
-			return mCipherConnectControl.GetSettingConnQRCodeImage(nWidth, nHeight);
+			return mCipherConnectControl.getSettingConnQRCodeImage(nWidth, nHeight);
 		return null;
 	}
     
     private Bitmap bt_GetEnableAuthBarcodeImage(int nWidth, int nHeight)
 	{
 		if(mCipherConnectControl != null)
-			return mCipherConnectControl.GetEnableAuthBarcodeImage(nWidth, nHeight);
+			return mCipherConnectControl.getEnableAuthBarcodeImage(nWidth, nHeight);
 		return null;
 	}
     
     private Bitmap bt_GetDisableAuthBarcodeImage(int nWidth, int nHeight)
 	{
 		if(mCipherConnectControl != null)
-			return mCipherConnectControl.GetDisableAuthBarcodeImage(nWidth, nHeight);
+			return mCipherConnectControl.getDisableAuthBarcodeImage(nWidth, nHeight);
 		return null;
 	}
     
     private Bitmap bt_GetEnableSppBarcodeImage(int nWidth, int nHeight)
 	{
 		if(mCipherConnectControl != null)
-			return mCipherConnectControl.GetEnableSppBarcodeImage(nWidth, nHeight);
+			return mCipherConnectControl.getEnableSppBarcodeImage(nWidth, nHeight);
 		return null;
 	}
 }

@@ -27,7 +27,7 @@ public class CipherConnectControl2 implements ICipherConnectControl2 {
 		mCtrlListenerList = new ArrayList<ICipherConnectControl2Listener>();
 		mCipherConnCtrlImplClassic = new CipherConnCtrlmplClassic(mContext);
 		mCipherConnCtrlImplBle = new CipherConnCtrlmplBLE(mContext);
-		SetBLEMode(false);
+		setBLEMode(false);
 	}
 	
 	private void InitImplememtor(int nBTMode) {
@@ -89,7 +89,7 @@ public class CipherConnectControl2 implements ICipherConnectControl2 {
 		
 	}
 	
-	public void setAutoReconnect(boolean enable)throws NullPointerException
+	public void setAutoReconnect(boolean enable)
 	{
 		mCipherConnCtrlImpl.setAutoReconnect(enable);
 	}
@@ -105,19 +105,19 @@ public class CipherConnectControl2 implements ICipherConnectControl2 {
 		return false;
 	}
 	
-	public void SetBLEMode(boolean bEnable) throws UnsupportedOperationException {
+	public void setBLEMode(boolean bEnable) throws UnsupportedOperationException {
 		if(bEnable && false == IsBLEModeSupported())
 			throw new UnsupportedOperationException();
 		mNBTMode = bEnable ? NBLEBTMode : NClassicBTMode;
 		InitImplememtor(mNBTMode);
 	}
 	
-	public boolean StartScanLEDevices() throws UnsupportedOperationException {
-		return mCipherConnCtrlImpl.StartScanLEDevices();
+	public boolean startScanLEDevices() throws UnsupportedOperationException {
+		return mCipherConnCtrlImpl.startScanLEDevices();
 	}
 	
-	public boolean StopScanLEDevices() throws UnsupportedOperationException {
-		return mCipherConnCtrlImpl.StopScanLEDevices();
+	public boolean stopScanLEDevices() throws UnsupportedOperationException {
+		return mCipherConnCtrlImpl.stopScanLEDevices();
 	}
 	
 	@Override

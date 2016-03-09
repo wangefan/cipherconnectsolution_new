@@ -1,7 +1,7 @@
 package com.cipherlab.cipherconnect.sdk2;
 
 public abstract class CipherConnectControlResource {
-	public static String lib_version = "v1.8.0";
+	public static String lib_version = "v1.0.0";
 	
 	public static String please_turn_on_Bluetooth = "Please turn on Bluetooth";
 	public static String can_not_find_any_bluetooth_device = "Can not find any bluetooth device";

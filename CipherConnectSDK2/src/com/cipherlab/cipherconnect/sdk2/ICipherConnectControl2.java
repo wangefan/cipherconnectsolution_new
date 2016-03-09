@@ -6,7 +6,7 @@ package com.cipherlab.cipherconnect.sdk2;
  * <DD>
  *    ICipherConnectControl2 _control =  ICipherConnectControl2.createInst();
  * </DD>
- * @author visual.chen
+ * @author yifan.wang
  * @version 1.0
  */
 public interface ICipherConnectControl2 {
@@ -16,12 +16,12 @@ public interface ICipherConnectControl2 {
 	 * <DD>
 	 * String version = _control.getVersion();
 	 * </DD>
-	 * @return 1.0
+	 * @return 1.0.0
 	 */
 	public String getVersion();
 	
 	/**
-	 * Get the version of connected firmware version.
+	 * Get the connected device firmware version.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * String version = _control.getFWVersion();
@@ -31,7 +31,7 @@ public interface ICipherConnectControl2 {
 	public String getFWVersion();
 	
 	/**
-	 * Get the status of CipherConnectControl.
+	 * Get the connection status.
 	 * <DT><B>code:</B><DT>
 	 * <DD> 
 	 * boolean bConnect = _control.isConnected();
@@ -45,13 +45,13 @@ public interface ICipherConnectControl2 {
 	 * Get the all Bluetooth devices which have been identified with the OS.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
-	 * ICipherConnBTDevice[] sNames = _control.getBtDevices();
+	 * ICipherConnBTDevice[] devices = _control.getBtDevices();
 	 * </DD>
 	 */
 	public ICipherConnBTDevice[] getBtDevices();
 	
 	/**
-	 * Connect to the BT scanner device by device.
+	 * Connect to the BT scanner device.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * try{<br>
@@ -67,7 +67,7 @@ public interface ICipherConnectControl2 {
     public void connect(ICipherConnBTDevice device)throws NullPointerException;	
     
     /**
-	 * Connect to the BT scanner device by MAC address.
+	 * Connect to the BT scanner device by name and MAC address.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * try{<br>
@@ -79,7 +79,7 @@ public interface ICipherConnectControl2 {
 	 * </DD>
 	 * @param deviceName: BT name and have been identified with this OS.
 	 * @param deviceAddr: BT MAC address and have been identified with this OS. 
-	 * @throws NullPointerException : if device is null, CipherConnectControl throws a NullPointerException.
+	 * @throws NullPointerException : if deviceName or deviceAddr is null, CipherConnectControl throws a NullPointerException.
 	 */
     public void connect(String deviceName, String deviceAddr)throws NullPointerException;	
     
@@ -93,7 +93,7 @@ public interface ICipherConnectControl2 {
 	public void disconnect();
 	
 	/**
-	 * Define the interface of CipherConnectControl and monitor all events from CipherConnectControl.
+	 * Monitor all events from CipherConnectControl2.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * try{<br>
@@ -130,25 +130,18 @@ public interface ICipherConnectControl2 {
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * //Set auto Reconnect.<br>
-	 * try{<br>
+	 *<br>
 	 * 		_control.setAuotReconnect(true);<br>
-	 * }<br>
-	 * catch(NullPointerException e){<br>
-	 * 		System.out.println(e);<br>
-	 * }<br>
+	 * <br>
 	 * //Set autoReconnect stop. <br>
-	 * try{<br>
+	 * <br>
 	 * 		_control.setAuotReconnect(false);<br>
-	 * }<br>
-	 * catch(NullPointerException e){<br>
-	 * 		System.out.println(e);<br>
-	 * } <br>
+	 * <br>
 	 * </DD>
 	 * @param enable true | false 
 	 * @param device BT scanner device and have been identified with this OS. 
-	 * @throws NullPointerException If device is null, CipherConnectControl throws a NullPointerException. 
 	 */
-	public void setAutoReconnect(boolean enable)throws NullPointerException;
+	public void setAutoReconnect(boolean enable);
 	
 	/**
 	 * Get the status of AutoReconnect.
@@ -188,7 +181,7 @@ public interface ICipherConnectControl2 {
 	 * @param enable true | false  
 	 * @throws UnsupportedOperationException If not support low energy mode. 
 	 */
-    public void SetBLEMode(boolean bEnable) throws UnsupportedOperationException;
+    public void setBLEMode(boolean bEnable) throws UnsupportedOperationException;
     
 	/**
 	 * Start Scan LE Devices.
@@ -206,7 +199,7 @@ public interface ICipherConnectControl2 {
 	 * 			false: Start asynchronous Scan LE Devices fail.
 	 * @throws UnsupportedOperationException If not support low energy mode. 
 	 */
-    public boolean StartScanLEDevices() throws UnsupportedOperationException;
+    public boolean startScanLEDevices() throws UnsupportedOperationException;
     
 	/**
 	 * Stop Scan LE Devices.
@@ -224,15 +217,15 @@ public interface ICipherConnectControl2 {
 	 * 			false: Stop asynchronous Scan LE Devices fail.
 	 * @throws UnsupportedOperationException If not support low energy mode. 
 	 */
-    public boolean StopScanLEDevices() throws UnsupportedOperationException;
+    public boolean stopScanLEDevices() throws UnsupportedOperationException;
     
     /**
-	 * Reset the instance for bluetooth.
+	 * Reset the CipherConnectControl2 object status.
 	 */
 	public void reset();
 	
     /**
-	 * Close the instance.
+	 * CipherConnectControl2 object should be closed before leaving service.
 	 */
 	public void close();
 }

@@ -9,83 +9,97 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * //Start listen devices to connect.<br>
-	 * _control.StartListening();<br>
+	 * _control.startListening();<br>
 	 * </DD>
 	 * @return 	true : Start asynchronous Listen<br>
 	 * 			false: Asynchronous Listen fail. 
 	 */
-    public boolean StartListening();
+    public boolean startListening();
     
     /**
 	 * stop and clean all connections from remote device.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * //Stop and clean all connections.<br>
-	 * _control.Stop();<br>
+	 * _control.stopListening();<br>
 	 * </DD>
 	 */
-    public void StopListening(); 
+    public void stopListening(); 
     
     /**
-	 * Generate MAC address code128 for Cipher device use. 
+	 * Generate code128 barcode bitmap to show MAC address for Cipher device use. 
 	 * <DT><B>code:</B><DT>
 	 * <DD>
-	 * Bitmap img = _control.GetMacAddrBarcodeImage(nWidth, nHeight);<br>
+	 * Bitmap img = _control.getMacAddrBarcodeImage(nWidth, nHeight);<br>
 	 * </DD>
+	 * @param nWidth: specified bitmap width. 
+	 *        nHeight: specified bitmap height. 
 	 */
-    public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight);
+    public Bitmap getMacAddrBarcodeImage(int nWidth, int nHeight);
     
     /**
-	 * Generate Reset connection code128 command for Cipher device use. 
+	 * Generate code128 barcode bitmap to reset connection command for Cipher device use. 
 	 * <DT><B>code:</B><DT>
 	 * <DD>
-	 * Bitmap img = _control.GetResetConnBarcodeImage(nWidth, nHeight);<br>
+	 * Bitmap img = _control.getResetConnBarcodeImage(nWidth, nHeight);<br>
 	 * </DD>
+	 * @param nWidth: specified bitmap width. 
+	 *        nHeight: specified bitmap height.
 	 */
-    public Bitmap GetResetConnBarcodeImage(int nWidth, int nHeight); 
+    public Bitmap getResetConnBarcodeImage(int nWidth, int nHeight); 
     
     /**
-	 * Generate setting connection code128 command for Cipher device use. 
+	 * Generate code128 barcode bitmap to set connection command for Cipher device use. 
 	 * <DT><B>code:</B><DT>
 	 * <DD>
-	 * Bitmap img = _control.GetSettingConnBarcodeImage(nWidth, nHeight);<br>
+	 * Bitmap img = _control.getSettingConnBarcodeImage(nWidth, nHeight);<br>
 	 * </DD>
+	 * @param nWidth: specified bitmap width. 
+	 *        nHeight: specified bitmap height.
 	 */
-    public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight); 
+    public Bitmap getSettingConnBarcodeImage(int nWidth, int nHeight); 
     
     /**
-   	 * Generate setting connection 2D code command for connecting Cipher device use. 
+   	 * Generate QR code bitmap to setting connection command for connecting Cipher device use. 
    	 * <DT><B>code:</B><DT>
    	 * <DD>
-   	 * Bitmap img = _control.GetSettingConnQRCodeImage(nWidth, nHeight);<br>
+   	 * Bitmap img = _control.getSettingConnQRCodeImage(nWidth, nHeight);<br>
    	 * </DD>
+   	 * @param nWidth: specified bitmap width. 
+	 *        nHeight: specified bitmap height.
    	 */
-     public Bitmap GetSettingConnQRCodeImage(int nWidth, int nHeight);
+     public Bitmap getSettingConnQRCodeImage(int nWidth, int nHeight);
      
      /**
- 	 * Generate enabling authentication code128 command for Cipher device use. 
+ 	 * Generate code128 bitmap to enable authentication command for Cipher device use. 
  	 * <DT><B>code:</B><DT>
  	 * <DD>
- 	 * Bitmap img = _control.GetEnableAuthBarcodeImage(nWidth, nHeight);<br>
+ 	 * Bitmap img = _control.getEnableAuthBarcodeImage(nWidth, nHeight);<br>
  	 * </DD>
+ 	 * @param nWidth: specified bitmap width. 
+	 *        nHeight: specified bitmap height.
  	 */
-     public Bitmap GetEnableAuthBarcodeImage(int nWidth, int nHeight); 
+     public Bitmap getEnableAuthBarcodeImage(int nWidth, int nHeight); 
      
      /**
-  	 * Generate disabling authentication code128 command for Cipher device use. 
+  	 * Generate code128 bitmap to disable authentication command for Cipher device use. 
   	 * <DT><B>code:</B><DT>
   	 * <DD>
-  	 * Bitmap img = _control.GetDisableAuthBarcodeImage(nWidth, nHeight);<br>
+  	 * Bitmap img = _control.getDisableAuthBarcodeImage(nWidth, nHeight);<br>
   	 * </DD>
+  	 * @param nWidth: specified bitmap width. 
+	 *        nHeight: specified bitmap height.
   	 */
-      public Bitmap GetDisableAuthBarcodeImage(int nWidth, int nHeight);
+      public Bitmap getDisableAuthBarcodeImage(int nWidth, int nHeight);
       
       /**
-    	 * Generate Enabling slave/spp code128 command for Cipher device use. 
+    	 * Generate code128 bitmap to enabling slave/spp command for Cipher device use. 
     	 * <DT><B>code:</B><DT>
     	 * <DD>
-    	 * Bitmap img = _control.GetEnableSppBarcodeImage(nWidth, nHeight);<br>
+    	 * Bitmap img = _control.getEnableSppBarcodeImage(nWidth, nHeight);<br>
     	 * </DD>
+    	 * @param nWidth: specified bitmap width. 
+    	 *        nHeight: specified bitmap height.
     	 */
-        public Bitmap GetEnableSppBarcodeImage(int nWidth, int nHeight);
+      public Bitmap getEnableSppBarcodeImage(int nWidth, int nHeight);
 }

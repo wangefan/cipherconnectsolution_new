@@ -45,11 +45,11 @@ abstract public class CipherConnCtrlmplBase {
 		mListenerList = listenerList;
 	}
 	
-	public boolean StartScanLEDevices() throws UnsupportedOperationException {
+	public boolean startScanLEDevices() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}
 	
-	public boolean StopScanLEDevices() throws UnsupportedOperationException {
+	public boolean stopScanLEDevices() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -246,7 +246,7 @@ abstract public class CipherConnCtrlmplBase {
 		}
 	}
 	
-	public void setAutoReconnect(boolean enable) throws NullPointerException 
+	public void setAutoReconnect(boolean enable)  
 	{
 		mBAuoReconnect = enable;
 		if(mBAuoReconnect == false)
@@ -331,7 +331,7 @@ abstract public class CipherConnCtrlmplBase {
 		return mEnableAuthBitmap;
 	}
 	
-	public Bitmap GetDisableAuthBarcodeImage(int nWidth, int nHeight)
+	public Bitmap getDisableAuthBarcodeImage(int nWidth, int nHeight)
 	{
 		if(mDisableAuthBitmap == null)
 		{

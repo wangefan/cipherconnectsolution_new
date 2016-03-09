@@ -13,15 +13,15 @@ public interface ICipherConnectControl2Listener
 	 *  while CipherConnectControl is beginning
 	 *   to connect to BT scanner device.
 	 * 
-	 * @param device: BT scanner device 
+	 * @param device: The BT scanner device begin to be connected. 
 	 */
 	public void onBeginConnecting(ICipherConnBTDevice device);
 	
 	/**
 	 * The user program will be notified When BT scanner device sends the barcode data to CipherConnectControl
 	 * 
-	 * @param device: Active BT scanner device 
-	 * @param barcode : A set of barecode data.
+	 * @param device: Connected BT scanner device 
+	 * @param barcode : barecode data.
 	 */
 	public void onReceivingBarcode(ICipherConnBTDevice device, String barcode);
 	
@@ -58,7 +58,7 @@ public interface ICipherConnectControl2Listener
 	 *  while CipherConnectControl is trying
 	 *   to connect to BT scanner device.
 	 * 
-	 * @param device: BT scanner device
+	 * @param device: active scanner device
 	 */
 	public void onConnecting(ICipherConnBTDevice device);
 	

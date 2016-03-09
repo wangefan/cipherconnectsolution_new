@@ -27,7 +27,7 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		mCipherConnCtrlImplClassic = new CipherConnCtrlmplClassic(mContext);
 		if(IsBLEModeSupported())
 			mCipherConnCtrlImplBle = new CipherConnCtrlmplBLE(mContext);
-		SetBLEMode(false);
+		setBLEMode(false);
 	}
 	
 	private void InitImplememtor(int nBTMode) {
@@ -100,7 +100,7 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		
 	}
 	
-	public void setAutoReconnect(boolean enable)throws NullPointerException
+	public void setAutoReconnect(boolean enable)
 	{
 		mCipherConnCtrlImpl.setAutoReconnect(enable);
 	}
@@ -116,56 +116,56 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 		return false;
 	}
 	
-	public void SetBLEMode(boolean bEnable) throws UnsupportedOperationException {
+	public void setBLEMode(boolean bEnable) throws UnsupportedOperationException {
 		if(bEnable && false == IsBLEModeSupported())
 			throw new UnsupportedOperationException();
 		mNBTMode = bEnable ? NBLEBTMode : NClassicBTMode;
 		InitImplememtor(mNBTMode);
 	}
 	
-	public boolean StartScanLEDevices() throws UnsupportedOperationException {
-		return mCipherConnCtrlImpl.StartScanLEDevices();
+	public boolean startScanLEDevices() throws UnsupportedOperationException {
+		return mCipherConnCtrlImpl.startScanLEDevices();
 	}
 	
-	public boolean StopScanLEDevices() throws UnsupportedOperationException {
-		return mCipherConnCtrlImpl.StopScanLEDevices();
+	public boolean stopScanLEDevices() throws UnsupportedOperationException {
+		return mCipherConnCtrlImpl.stopScanLEDevices();
 	}
 	
-	public boolean StartListening() 
+	public boolean startListening() 
 	{
 		if(mCipherConnCtrlImpl != null)
 			return mCipherConnCtrlImpl.StartListening();
 		return false;
 	}
 	
-    public void StopListening()
+    public void stopListening()
     {
     	if(mCipherConnCtrlImpl != null)
 			mCipherConnCtrlImpl.StopListening();
     }
     
-    public Bitmap GetMacAddrBarcodeImage(int nWidth, int nHeight)
+    public Bitmap getMacAddrBarcodeImage(int nWidth, int nHeight)
     {
     	if(mCipherConnCtrlImpl != null)
 			return mCipherConnCtrlImpl.GetMacAddrBarcodeImage(nWidth, nHeight);
     	return null;
     }
     
-    public Bitmap GetResetConnBarcodeImage(int nWidth, int nHeight)
+    public Bitmap getResetConnBarcodeImage(int nWidth, int nHeight)
     {
     	if(mCipherConnCtrlImpl != null)
 			return mCipherConnCtrlImpl.GetResetConnBarcodeImage(nWidth, nHeight);
     	return null;
     }
     
-    public Bitmap GetSettingConnBarcodeImage(int nWidth, int nHeight)
+    public Bitmap getSettingConnBarcodeImage(int nWidth, int nHeight)
     {
     	if(mCipherConnCtrlImpl != null)
 			return mCipherConnCtrlImpl.GetSettingConnBarcodeImage(nWidth, nHeight);
     	return null;
     }
     
-    public Bitmap GetSettingConnQRCodeImage(int nWidth, int nHeight)
+    public Bitmap getSettingConnQRCodeImage(int nWidth, int nHeight)
     {
     	if(mCipherConnCtrlImpl != null)
 			return mCipherConnCtrlImpl.GetSettingConnQRCodeImage(nWidth, nHeight);
@@ -179,21 +179,21 @@ public class CipherConnCtrl2EZMet implements ICipherConnCtrl2EZMet
 	}
 
 	@Override
-	public Bitmap GetEnableAuthBarcodeImage(int nWidth, int nHeight) {
+	public Bitmap getEnableAuthBarcodeImage(int nWidth, int nHeight) {
 		if(mCipherConnCtrlImpl != null)
 			return mCipherConnCtrlImpl.GetEnableAuthBarcodeImage(nWidth, nHeight);
     	return null;
 	}
 
 	@Override
-	public Bitmap GetDisableAuthBarcodeImage(int nWidth, int nHeight) {
+	public Bitmap getDisableAuthBarcodeImage(int nWidth, int nHeight) {
 		if(mCipherConnCtrlImpl != null)
-			return mCipherConnCtrlImpl.GetDisableAuthBarcodeImage(nWidth, nHeight);
+			return mCipherConnCtrlImpl.getDisableAuthBarcodeImage(nWidth, nHeight);
     	return null;
 	}
 
 	@Override
-	public Bitmap GetEnableSppBarcodeImage(int nWidth, int nHeight) {
+	public Bitmap getEnableSppBarcodeImage(int nWidth, int nHeight) {
 		if(mCipherConnCtrlImpl != null)
 			return mCipherConnCtrlImpl.GetEnableSppBarcodeImage(nWidth, nHeight);
     	return null;
