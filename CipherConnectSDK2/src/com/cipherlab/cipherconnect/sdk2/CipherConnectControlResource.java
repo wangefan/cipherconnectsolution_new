@@ -12,6 +12,7 @@ public abstract class CipherConnectControlResource {
 	public static String can_not_find_any_listener = "Can not find any listener";
 	public static String can_not_find_any_services = "Can not find any services(BLE mode)";
 	
+	public static int exception = 0;
 	public static int please_turn_on_Bluetooth_id = 101;
 	public static int can_not_find_any_bluetooth_device_id = 102;
 	public static int can_not_find_id = 103;

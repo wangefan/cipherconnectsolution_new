@@ -17,7 +17,7 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
     public boolean startListening();
     
     /**
-	 * stop and clean all connections from remote device.
+	 * stop listening from remote device.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * //Stop and clean all connections.<br>
@@ -27,7 +27,7 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
     public void stopListening(); 
     
     /**
-	 * Generate code128 barcode bitmap to show MAC address for Cipher device use. 
+	 * Generate code128 barcode bitmap to show MAC address for CipherLab scanner use. 
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * Bitmap img = _control.getMacAddrBarcodeImage(nWidth, nHeight);<br>
@@ -38,7 +38,7 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
     public Bitmap getMacAddrBarcodeImage(int nWidth, int nHeight);
     
     /**
-	 * Generate code128 barcode bitmap to reset connection command for Cipher device use. 
+	 * Generate code128 barcode bitmap to reset connection command for CipherLab scanner use. 
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * Bitmap img = _control.getResetConnBarcodeImage(nWidth, nHeight);<br>
@@ -49,7 +49,7 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
     public Bitmap getResetConnBarcodeImage(int nWidth, int nHeight); 
     
     /**
-	 * Generate code128 barcode bitmap to set connection command for Cipher device use. 
+	 * Generate code128 barcode bitmap to set connection command for CipherLab scanner use. 
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * Bitmap img = _control.getSettingConnBarcodeImage(nWidth, nHeight);<br>
@@ -60,7 +60,7 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
     public Bitmap getSettingConnBarcodeImage(int nWidth, int nHeight); 
     
     /**
-   	 * Generate QR code bitmap to setting connection command for connecting Cipher device use. 
+   	 * Generate QR code bitmap to setting connection command for connecting CipherLab scanner use. 
    	 * <DT><B>code:</B><DT>
    	 * <DD>
    	 * Bitmap img = _control.getSettingConnQRCodeImage(nWidth, nHeight);<br>
@@ -71,7 +71,7 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
      public Bitmap getSettingConnQRCodeImage(int nWidth, int nHeight);
      
      /**
- 	 * Generate code128 bitmap to enable authentication command for Cipher device use. 
+ 	 * Generate code128 bitmap to enable authentication command for CipherLab scanner use. 
  	 * <DT><B>code:</B><DT>
  	 * <DD>
  	 * Bitmap img = _control.getEnableAuthBarcodeImage(nWidth, nHeight);<br>
@@ -82,7 +82,7 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
      public Bitmap getEnableAuthBarcodeImage(int nWidth, int nHeight); 
      
      /**
-  	 * Generate code128 bitmap to disable authentication command for Cipher device use. 
+  	 * Generate code128 bitmap to disable authentication command for CipherLab scanner use. 
   	 * <DT><B>code:</B><DT>
   	 * <DD>
   	 * Bitmap img = _control.getDisableAuthBarcodeImage(nWidth, nHeight);<br>
@@ -93,7 +93,7 @@ public interface ICipherConnCtrl2EZMet extends ICipherConnectControl2
       public Bitmap getDisableAuthBarcodeImage(int nWidth, int nHeight);
       
       /**
-    	 * Generate code128 bitmap to enabling slave/spp command for Cipher device use. 
+    	 * Generate code128 bitmap to enabling slave/spp command for CipherLab scanner use. 
     	 * <DT><B>code:</B><DT>
     	 * <DD>
     	 * Bitmap img = _control.getEnableSppBarcodeImage(nWidth, nHeight);<br>

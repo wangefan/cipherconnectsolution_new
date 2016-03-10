@@ -10,34 +10,53 @@ public interface ICipherConnectControl2Listener
 {
 	/**
 	 * The user program will be notified
-	 *  while CipherConnectControl is beginning
-	 *   to connect to BT scanner device.
+	 *  while CipherConnectControl2 and CipherLab scanner are beginning to connect.
 	 * 
-	 * @param device: The BT scanner device begin to be connected. 
+	 * @param device: The CipherLab scanner device begin to be connected. 
 	 */
 	public void onBeginConnecting(ICipherConnBTDevice device);
+
+	/**
+	 * The user program will be notified
+	 *  while CipherConnectControl2 and CipherLab scanner are connecting.
+	 * 
+	 * @param device: active scanner device
+	 */
+	public void onConnecting(ICipherConnBTDevice device);
 	
 	/**
-	 * The user program will be notified When BT scanner device sends the barcode data to CipherConnectControl
+	 * The user program will be notified
+	 *  while CipherConnectControl2 and CipherLab scanner are connected.
 	 * 
-	 * @param device: Connected BT scanner device 
-	 * @param barcode : barecode data.
+	 * @param device: CipherLab scanner device 
+	 */
+	public void onConnected(ICipherConnBTDevice device);
+	
+	/**
+	 * The user program will be notified
+	 *  while CipherConnectControl2 and CipherLab scanner are disconnected.
+	 * @param device: CipherLab scanner device 
+	 */
+	public void onDisconnected(ICipherConnBTDevice device);
+	
+	/**
+	 * The user program will be notified When CipherLab scanner device sends the barcode data.
+	 * 
+	 * @param device: Connected CipherLab scanner device 
+	 * @param barcode : barcode data.
 	 */
 	public void onReceivingBarcode(ICipherConnBTDevice device, String barcode);
 	
 	/**
-	 * The user program will be notified When BT scanner device sends minimize keyboard command.
+	 * The user program will be notified When CipherLab scanner device sends minimize keyboard command.
 	 *
 	 */
 	public void onMinimizeCmd();
 	
 	/**
-	 * The user program will be notified
-	 *  when the exception or error occurs
-	 *   in CipherConnectControl while CipherConnectControl
-	 *    is doing operations.
+	 * The user program will be notified when the exception or error occurs.
 	 * 
-	 * @param device: BT scanner device
+	 * @param device: CipherLab scanner device
 	 * @param id,message : exception message list is follows:<br>
 	 * 	               <UL>	
 	 * 					  <li>0,Exception message.
@@ -52,29 +71,6 @@ public interface ICipherConnectControl2Listener
 	 *					<UL>
 	 */
 	public void onCipherConnectControlError(ICipherConnBTDevice device,int id, String message);
-	
-	/**
-	 * The user program will be notified
-	 *  while CipherConnectControl is trying
-	 *   to connect to BT scanner device.
-	 * 
-	 * @param device: active scanner device
-	 */
-	public void onConnecting(ICipherConnBTDevice device);
-	
-	/**
-	 * The user program will be notified when CipherConnectControl is connected to the BT scanner device.
-	 * 
-	 * @param device: BT scanner device 
-	 */
-	public void onConnected(ICipherConnBTDevice device);
-	
-	/**
-	 * The user program will be notified when CipherConnectControl is disconnected from the BT scanner device. 
-	 * 
-	 * @param device: BT scanner device 
-	 */
-	public void onDisconnected(ICipherConnBTDevice device);
 	
 	/**
 	 * The user program will be notified when CipherConnectControl in scan LE mode and discover devices. 

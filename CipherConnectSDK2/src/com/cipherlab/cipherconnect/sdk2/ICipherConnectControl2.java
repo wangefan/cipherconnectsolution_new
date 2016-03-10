@@ -11,7 +11,7 @@ package com.cipherlab.cipherconnect.sdk2;
  */
 public interface ICipherConnectControl2 {
 	/**
-	 * Get the version of CipherConnectControl.
+	 * Get the version of CipherConnectControl2.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * String version = _control.getVersion();
@@ -42,7 +42,7 @@ public interface ICipherConnectControl2 {
 	public boolean isConnected();
 	
 	/**
-	 * Get the all Bluetooth devices which have been identified with the OS.
+	 * Get all Bluetooth devices which have been identified with the OS.
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * ICipherConnBTDevice[] devices = _control.getBtDevices();
@@ -126,7 +126,7 @@ public interface ICipherConnectControl2 {
 	public void addCipherConnect2Listener(ICipherConnectControl2Listener listener)throws NullPointerException;
 	
 	/**
-	 * Set auto Reconnect.
+	 * Set auto Reconnect (for master mode connection).
 	 * <DT><B>code:</B><DT>
 	 * <DD>
 	 * //Set auto Reconnect.<br>
@@ -220,12 +220,24 @@ public interface ICipherConnectControl2 {
     public boolean stopScanLEDevices() throws UnsupportedOperationException;
     
     /**
-	 * Reset the CipherConnectControl2 object status.
+	 * Clean previous connection status such as firmware version, scanner name .. etc.
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * <br>
+	 * 		_control.reset();<br>
+	 * <br>
+	 * </DD>
 	 */
 	public void reset();
 	
     /**
 	 * CipherConnectControl2 object should be closed before leaving service.
+	 * <DT><B>code:</B><DT>
+	 * <DD>
+	 * <br>
+	 * 		_control.close();<br>
+	 * <br>
+	 * </DD>
 	 */
 	public void close();
 }

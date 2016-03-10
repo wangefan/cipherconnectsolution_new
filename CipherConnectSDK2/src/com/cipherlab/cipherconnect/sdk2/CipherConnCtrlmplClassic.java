@@ -48,17 +48,6 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
 			mLockStreamAndSocket = new Object();
 	}
 	
-	protected void fireCipherConnectControlError(ICipherConnBTDevice device, Exception e){
-		if(mListenerList == null)
-			return;
-		for (ICipherConnectControl2Listener l : this.mListenerList) {
-			if(l!=null)
-			{
-				l.onCipherConnectControlError(device, 0, e.getMessage());
-			}
-		}
-	}
-	
 	//================ Server functions begin=============
 	private void mResetListenThread()
 	{
@@ -600,11 +589,11 @@ public class CipherConnCtrlmplClassic extends CipherConnCtrlmplBase {
             } 
             catch (CipherConnectErrException e) {
                 CipherLog.d(mTAG, "CipherConnectErrException in ListenAndConnThread, Thread id = " + Thread.currentThread().getId() +", , Socket Type: " + mSocketType , e);
-                fireCipherConnectControlError(device, e);
+                fireCipherConnectControlError(device, CipherConnectControlResource.exception, e.getMessage());
             } 
             catch (Exception e) {
                 CipherLog.d(mTAG, "Exception in ListenAndConnThread, Thread id = " + Thread.currentThread().getId() +", , Socket Type: " + mSocketType);
-                fireCipherConnectControlError(device, e);
+                fireCipherConnectControlError(device, CipherConnectControlResource.exception, e.getMessage());
             } 
             finally {
         		mCloseStreamAndSocket();
