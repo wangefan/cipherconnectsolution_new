@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content">
+	
+	<ImageView 
+		android:id="@+id/imvCompany" 
+		android:src="@drawable/logo"
+		android:layout_height="145sp" 
+		android:layout_gravity="center_vertical" 
+		android:layout_width="300sp"/>
+			
+  	<TextView 
+			android:text="@string/about_company" 
+			android:layout_width="fill_parent" 
+			android:layout_height="2.5mm" 
+			android:textSize="13sp"/>
+			
+	<TextView 
+		android:text="@string/about_company_value" 
+		android:textSize="18sp"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"/>
+		
+ 	<TextView 
+		android:text="@string/about_url" 
+		android:layout_width="fill_parent" 
+		android:layout_height="2.5mm" 
+		android:textSize="13sp"/>
+			
+	<TextView 
+		android:text="@string/about_url_value" 
+		android:textSize="18sp"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"/>
+		
+	<TextView 
+		android:text="@string/about_version" 
+		android:layout_width="fill_parent" 
+		android:layout_height="2.5mm" 
+		android:textSize="13sp"/>
+			
+	<TextView
+		android:id="@+id/txtVersion"
+		android:text="@string/about_version_value"
+		android:textSize="18sp"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"/>
+		
+	<TextView 
+		android:text="@string/about_os" 
+		android:layout_width="fill_parent" 
+		android:layout_height="2.5mm" 
+		android:textSize="13sp"/>
+			
+	<TextView 
+		android:text="@string/about_os_value" 
+		android:textSize="18sp"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"/>
+		
+</LinearLayout>

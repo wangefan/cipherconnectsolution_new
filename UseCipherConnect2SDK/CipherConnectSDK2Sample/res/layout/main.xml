@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    
+	    <RadioGroup 
+    		android:orientation="horizontal"
+    		android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content">
+    	
+    	<TextView 
+			android:text="@string/main_operation_type" 
+			android:layout_height="wrap_content" 
+			android:layout_width="100sp"/>	
+	
+    	<RadioButton 
+    		android:text="@string/main_receiving" 
+    		android:id="@+id/rbtReceiving" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="wrap_content" 
+    		android:checked="true"/>
+    	<RadioButton 
+    		android:text="@string/main_shipping" 
+    		android:id="@+id/rbtShipping" 
+    		android:layout_width="wrap_content" 
+    		android:layout_height="wrap_content"/>
+    
+    </RadioGroup>
+			
+    
+    
+    <LinearLayout 
+    	android:orientation="horizontal"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content">
+    	
+    	<TextView 
+			android:text="@string/main_input_barcode" 
+			android:layout_height="wrap_content" 
+			android:layout_width="100sp"/>	
+    	<EditText 
+    		android:text="" 
+    		android:id="@+id/txtInputBarcode" 
+    		android:layout_width="fill_parent" 
+    		android:layout_height="wrap_content" android:singleLine="true" android:clickable="true" android:lines="1" android:linksClickable="false"/>
+    	
+    </LinearLayout>
+    
+    <LinearLayout 
+    	android:orientation="horizontal"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content">
+    	
+    	<TextView 
+			android:text="@string/main_quantity" 
+			android:layout_height="wrap_content" 
+			android:layout_width="100sp"/>	
+    	<EditText 
+    		android:text="0" 
+    		android:id="@+id/txtQuantity" 
+    		android:layout_width="fill_parent" 
+    		android:gravity="right" android:layout_height="wrap_content" android:editable="false"/>
+    	
+    </LinearLayout>
+    
+	 <LinearLayout 
+    	android:orientation="horizontal"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content">
+    	
+    	<LinearLayout 
+    		android:orientation="vertical"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content">
+    		
+	    	<TextView 
+				android:text="@string/main_picture" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"/>	
+	    	<ImageView 
+				android:id="@+id/imagePicture" 
+				android:layout_width="150sp" android:layout_height="230sp" android:padding="10sp" android:layout_gravity="top|center_vertical"/>
+	    	
+    	</LinearLayout>
+    	<LinearLayout 
+    		android:orientation="vertical"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content">
+    	
+	    	<TextView 
+				android:text="@string/main_barcode" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"/>	
+	    	<EditText 
+	    		android:id="@+id/txtBarcode" 
+	    		android:layout_width="170sp" 
+	    		android:layout_height="wrap_content" android:editable="false"/>
+	
+	
+	    	<TextView 
+				android:text="@string/main_name" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"/>	
+	    	<EditText 
+	    		android:text="" 
+	    		android:id="@+id/txtName" 
+	    		android:layout_width="170sp" 
+	    		android:layout_height="wrap_content" android:editable="false"/>
+	
+	
+	    	<TextView 
+				android:text="@string/main_company" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"/>	
+	    	<EditText 
+	    		android:text="" 
+	    		android:id="@+id/txtCompany" 
+	    		android:layout_width="170sp" 
+	    		android:layout_height="wrap_content" android:editable="false"/>
+	
+	
+	    	<TextView 
+				android:text="@string/main_description" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"/>	
+	    	<EditText 
+	    		android:text="" 
+	    		android:id="@+id/txtDescription" 
+	    		android:layout_width="170sp" 
+	    		android:layout_height="wrap_content" 
+	    		android:lines="4" android:editable="false" android:gravity="top|left"/>
+	    	
+	    </LinearLayout>
+	</LinearLayout>
+    
+</LinearLayout>

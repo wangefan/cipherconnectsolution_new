@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <RadioButton
+	        android:id="@+id/masterMode"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:text="Master Mode" />
+    
+	<RelativeLayout
+	    android:id="@+id/masterModeGroup"
+	    android:layout_width="fill_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="1"
+	    android:orientation="horizontal"
+	    android:layout_below="@+id/masterMode" >
+	    
+	    <Spinner
+	        android:id="@+id/cobSettingDeviceName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"/>
+	    
+	    <Button
+	        android:id="@+id/chbSettingBluetoothConnected"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_below="@+id/cobSettingDeviceName"
+	        android:text="@string/SettingBluetoothConnected" />
+
+	    <CheckBox
+	        android:id="@+id/chbSettingAutoReConnect"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/chbSettingBluetoothConnected"
+	        android:layout_toRightOf="@+id/chbSettingBluetoothConnected"
+	        android:text="@string/SettingAutoReConnect" />
+	
+	</RelativeLayout>
+
+	<RadioButton
+	    android:id="@+id/slaveMode"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentTop="true"
+	    android:text="Slave Mode" />
+			
+	<LinearLayout
+	    android:id="@+id/slaveModeGroup"
+	    android:layout_width="fill_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="3"
+	    android:orientation="vertical" >
+
+	    <LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="0dp"
+		    android:layout_weight="1"
+		    android:orientation="vertical" >
+		    
+			<TextView
+			    android:id="@+id/tvwSetConn"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="center_horizontal"
+			    android:text="set connection" />
+	
+	        <ImageView
+	            android:id="@+id/imageSetConn"
+	            android:layout_width="match_parent"
+	            android:layout_height="50dp"
+	            android:layout_gravity="center_horizontal" />
+
+		</LinearLayout>
+		<LinearLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="0dp"
+		    android:layout_weight="1"
+		    android:orientation="vertical" >
+	        <TextView
+	            android:id="@+id/tvwAddress"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center_horizontal"
+	            android:text="MAC address" />
+	
+	         <ImageView
+	             android:id="@+id/imageMACAdd"
+	             android:layout_width="match_parent"
+	             android:layout_height="50dp"
+	             android:layout_gravity="center_horizontal" />
+
+	     </LinearLayout>
+	</LinearLayout>
+</LinearLayout>

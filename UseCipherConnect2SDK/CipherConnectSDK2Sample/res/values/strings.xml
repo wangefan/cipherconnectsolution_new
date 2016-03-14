@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CipherConnectSDK2 Sample</string>
+	<string name="main_description">Description</string>
+	<string name="main_company">Company</string>
+	<string name="main_name">Name</string>
+	<string name="main_barcode">Barcode</string>
+	<string name="main_picture">Picture</string>
+	<string name="main_quantity">Quantity</string>
+	<string name="main_input_barcode">Input barcode</string>
+	<string name="main_shipping">Shipping</string>
+	<string name="main_receiving">Receiving</string>
+	<string name="main_operation_type">Operation</string>
+	
+	<string name="SettingBluetoothConnected">Connect</string>
+	<string name="SettingAutoReConnect">Auto reconnect</string>
+	
+	<string name="SettingDeviceName">Device name</string>
+	<string name="SettingGotoBack">Go to back</string>
+	
+	<string name="about_company">COMPANY</string>
+	<string name="about_company_value">CipherLab Co., Ltd.</string>
+	<string name="about_url">URL</string>
+	<string name="about_url_value">http://www.cipherlab.com</string>
+	<string name="about_version">VERSION</string>
+	<string name="about_version_value">1.0.0</string>
+	<string name="about_os">Android OS</string>
+	<string name="about_os_value">v2.1</string>
+</resources>
