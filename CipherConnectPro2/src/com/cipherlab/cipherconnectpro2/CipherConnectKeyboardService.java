@@ -41,7 +41,7 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
             sendBarcode(barcode);
         }
         
-        public void onMinimizeCmd()
+        public void onMinimizeKeyboard()
         {
         	//Handle Minimize Command
         	mMainThrdHandler.post(new Runnable(){

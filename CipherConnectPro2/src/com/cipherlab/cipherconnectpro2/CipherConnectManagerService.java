@@ -378,9 +378,9 @@ public class CipherConnectManagerService extends Service
 			public void onReceivingBarcode(ICipherConnBTDevice device, String barcode) {
 				CipherConnectControl_onReceivingBarcode(device,barcode);
 			}
-			public void onMinimizeCmd() {
+			public void onMinimizeKeyboard() {
 				for (ICipherConnectManagerListener listener :mListenerList)
-					listener.onMinimizeCmd();
+					listener.onMinimizeKeyboard();
 				mBroadcastCommand();
 			}
 			public void onGetLEDevice(final ICipherConnBTDevice device) {
