@@ -62,7 +62,7 @@ public class CipherConnectSDK2SampleMainActivity extends Activity {
 			
 		}
 		@Override
-		public void onMinimizeCmd() {
+		public void onMinimizeKeyboard() {
 			// TODO Auto-generated method stub
 			
 		}
