@@ -51,7 +51,7 @@ public interface ICipherConnectControl2Listener
 	 * The user program will be notified When CipherLab scanner device sends minimize keyboard command.
 	 *
 	 */
-	public void onMinimizeCmd();
+	public void onMinimizeKeyboard();
 	
 	/**
 	 * The user program will be notified when the exception or error occurs.

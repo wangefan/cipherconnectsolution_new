@@ -83,7 +83,7 @@ abstract public class CipherConnCtrlmplBase {
 		for (ICipherConnectControl2Listener l : this.mListenerList) {
 			if(l!=null)
 			{
-				l.onMinimizeCmd();
+				l.onMinimizeKeyboard();
 			}
 		}
 	}
