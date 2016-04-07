@@ -33,41 +33,33 @@ public class NotificationUtil {
     @SuppressWarnings("deprecation")
 	public static Notification GetNotificaion(int icon, Context context, String title, String message, Intent intent, String strPackageName, boolean bEnableDisconn) 
     {
-    	if(Build.VERSION.SDK_INT <=  16)
-    	{
-			Notification not = new Notification(icon, title, System.currentTimeMillis());
-    		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-    		not.setLatestEventInfo(context, title, message, pendingIntent);
-    		return not;	
-    	}
-		else {
-			Notification.Builder notiBuilder= new Notification.Builder(context);
-			notiBuilder.setSmallIcon(icon);
-			notiBuilder.setContentTitle(title);
-			notiBuilder.setContentText(message);
-			notiBuilder.setWhen(System.currentTimeMillis());
-			PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-			notiBuilder.setContentIntent(pendingIntent);
-			
-			//Custom notification 
-			RemoteViews remoteViews = new RemoteViews(strPackageName, R.layout.custom_notification);
-			remoteViews.setImageViewResource(R.id.notifiation_image, icon);
-			remoteViews.setTextViewText(R.id.noti_title, title);
-			remoteViews.setTextViewText(R.id.noti_msg, message);
-			remoteViews.setBoolean(R.id.noti_disconnect, "setEnabled", false);
-			if(bEnableDisconn)
-			{
-				remoteViews.setBoolean(R.id.noti_disconnect, "setEnabled", true);
-				Intent connDisconnIntent = new Intent(context, connDisconnectBDRec.class);
-			    PendingIntent pendingDisconnIntent = PendingIntent.getBroadcast(context, 0, 
-			    		connDisconnIntent, 0);
-				remoteViews.setOnClickPendingIntent(R.id.noti_disconnect, pendingDisconnIntent);
-			}
-			
-			notiBuilder.setContent(remoteViews);
-			
-			return notiBuilder.build(); 	
+    	
+		Notification.Builder notiBuilder= new Notification.Builder(context);
+		notiBuilder.setSmallIcon(icon);
+		notiBuilder.setContentTitle(title);
+		notiBuilder.setContentText(message);
+		notiBuilder.setWhen(System.currentTimeMillis());
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		notiBuilder.setContentIntent(pendingIntent);
+		
+		//Custom notification 
+		RemoteViews remoteViews = new RemoteViews(strPackageName, R.layout.custom_notification);
+		remoteViews.setImageViewResource(R.id.notifiation_image, icon);
+		remoteViews.setTextViewText(R.id.noti_title, title);
+		remoteViews.setTextViewText(R.id.noti_msg, message);
+		remoteViews.setBoolean(R.id.noti_disconnect, "setEnabled", false);
+		if(bEnableDisconn)
+		{
+			remoteViews.setBoolean(R.id.noti_disconnect, "setEnabled", true);
+			Intent connDisconnIntent = new Intent(context, connDisconnectBDRec.class);
+		    PendingIntent pendingDisconnIntent = PendingIntent.getBroadcast(context, 0, 
+		    		connDisconnIntent, 0);
+			remoteViews.setOnClickPendingIntent(R.id.noti_disconnect, pendingDisconnIntent);
 		}
+		
+		notiBuilder.setContent(remoteViews);
+		
+		return notiBuilder.build(); 	
     }
 
     public static void cancel(Context context) 
