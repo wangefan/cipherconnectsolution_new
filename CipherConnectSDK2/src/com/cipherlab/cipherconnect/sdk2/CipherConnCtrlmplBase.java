@@ -199,6 +199,25 @@ abstract public class CipherConnCtrlmplBase {
 	    return bmp; 
 	}
 	
+	private String getBTMacAddress() {
+		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+		if(btAdapter == null)
+			return "";
+		
+		//Handle can`t get MAC address under Android 6.0 issue
+		final String errAddr = "02:00:00:00:00:00";
+				
+	    String strLocalMACAdres = btAdapter.getAddress();
+	    if(strLocalMACAdres == null || strLocalMACAdres.isEmpty())
+	    	return ""; 
+	    if(strLocalMACAdres.compareToIgnoreCase(errAddr) == 0) {
+	    	strLocalMACAdres = android.provider.Settings.Secure.getString(mContext.getContentResolver(), "bluetooth_address");
+		    if(strLocalMACAdres == null || strLocalMACAdres.isEmpty() || strLocalMACAdres.compareToIgnoreCase(errAddr) == 0)
+		    	return ""; 
+	    }
+	    return strLocalMACAdres;
+	}
+	
 	//abstract methods
 	abstract public void reset();
 	
@@ -261,25 +280,12 @@ abstract public class CipherConnCtrlmplBase {
 	{
 		if(mMACAddressBitmap == null)
 		{
-			BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-			if(btAdapter == null)
+			String strLocalMACAdres = getBTMacAddress();
+			if(strLocalMACAdres.isEmpty())
 				return null;
-			
-			//Handle can`t get MAC address under Android 6.0 issue
-			final String errAddr = "02:00:00:00:00:00";
-					
-		    String strLocalMACAdres = btAdapter.getAddress();
-		    if(strLocalMACAdres == null || strLocalMACAdres.isEmpty())
-		    	return null; 
-		    if(strLocalMACAdres.compareToIgnoreCase(errAddr) == 0) {
-		    	strLocalMACAdres = android.provider.Settings.Secure.getString(mContext.getContentResolver(), "bluetooth_address");
-			    if(strLocalMACAdres == null || strLocalMACAdres.isEmpty() || strLocalMACAdres.compareToIgnoreCase(errAddr) == 0)
-			    	return null; 
-		    }
 		    
 		    strLocalMACAdres = strLocalMACAdres.replace(":", "");
 		    strLocalMACAdres = "0x" + strLocalMACAdres;
-	
 		    mMACAddressBitmap = mGenerateBCodeBMP(strLocalMACAdres, nWidth, nHeight);
 		}
 	    return mMACAddressBitmap; 
@@ -311,13 +317,9 @@ abstract public class CipherConnCtrlmplBase {
     {
 		if(mSettingConnQRCodeBitmap == null)
 		{
-			BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-			if(btAdapter == null)
-				return null; 
-					
-		    String strLocalMACAdres = btAdapter.getAddress();
-		    if(strLocalMACAdres == null || strLocalMACAdres.isEmpty())
-		    	return null; 
+			String strLocalMACAdres = getBTMacAddress();
+			if(strLocalMACAdres.isEmpty())
+				return null;
 		    
 		    strLocalMACAdres = strLocalMACAdres.replace(":", "");
 		    strLocalMACAdres = "0X" + strLocalMACAdres;
