@@ -263,11 +263,19 @@ abstract public class CipherConnCtrlmplBase {
 		{
 			BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 			if(btAdapter == null)
-				return null; 
+				return null;
+			
+			//Handle can`t get MAC address under Android 6.0 issue
+			final String errAddr = "02:00:00:00:00:00";
 					
 		    String strLocalMACAdres = btAdapter.getAddress();
 		    if(strLocalMACAdres == null || strLocalMACAdres.isEmpty())
 		    	return null; 
+		    if(strLocalMACAdres.compareToIgnoreCase(errAddr) == 0) {
+		    	strLocalMACAdres = android.provider.Settings.Secure.getString(mContext.getContentResolver(), "bluetooth_address");
+			    if(strLocalMACAdres == null || strLocalMACAdres.isEmpty() || strLocalMACAdres.compareToIgnoreCase(errAddr) == 0)
+			    	return null; 
+		    }
 		    
 		    strLocalMACAdres = strLocalMACAdres.replace(":", "");
 		    strLocalMACAdres = "0x" + strLocalMACAdres;
