@@ -67,13 +67,6 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#e8e8e8"
-        android:text="@string/about_sdk"
-        android:textSize="13sp" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:text="@string/about_sdk_value"
         android:textSize="18sp" />
 
