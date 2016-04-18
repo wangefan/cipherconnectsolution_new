@@ -65,7 +65,8 @@ public class CipherConnectSettingActivity extends PreferenceActivity
 	private CheckBoxPreference ckbScreenBacklight = null;
 	private CheckBoxPreference mCKEnableMinimum = null;
 	private CheckBoxPreference mCKDisconnSwch = null;
-	private ListPreference lstSendBarcodeInterval = null;  
+	private ListPreference lstSendBarcodeInterval = null; 
+	private ListPreference lstDefaultLanguage = null;   
 	private ListPreference lstLanguage = null;    
 	private Preference mAbout = null;    
     
@@ -401,6 +402,21 @@ public class CipherConnectSettingActivity extends PreferenceActivity
             }
         });
         
+        /* lstDefaultLanguage */
+        lstDefaultLanguage = (ListPreference) findPreference("lstDefaultLanguage");
+        lstDefaultLanguage.setEntries(R.array.Language_default_entries);
+        
+        if (lstDefaultLanguage == null)
+        	CipherConnectSettingInfo.setLanguage(lstDefaultLanguage.getValue(), this);
+
+        CipherLog.d(TAG, "DefaultLanguage : " +lstDefaultLanguage.getValue());
+        
+        lstDefaultLanguage.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return DefaultLanguage_onPreferenceChange(preference, newValue);
+            }
+        });
+        
         /* lstLanguage */
         lstLanguage = (ListPreference) findPreference("lstLanguage");
         lstLanguage.setEntries(R.array.Language_entries);
@@ -525,6 +541,23 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         CipherConnectSettingInfo.setBarcodeInterval((String) newValue, CipherConnectSettingActivity.this);
         //BarcodeInterval.setSummary((String) newValue);
         CipherLog.d(TAG, "SendBarcodeInterval_onPreferenceChange(): newValue= " + newValue); 
+
+        return true;
+    }
+    
+    /*
+     * <!----------------------------------------------------------------->
+     * @Name: DefaultLanguage_onPreferenceChange()
+     * @Description: Choose Language value.
+     *  
+     * @param: Preference preference
+     * @param: Object newValue
+     * return: boolean 
+     * <!----------------------------------------------------------------->
+     * */
+	public boolean DefaultLanguage_onPreferenceChange(Preference preference, Object newValue) {
+        CipherConnectSettingInfo.setDefaultLanguage((String) newValue, this);
+        CipherLog.d(TAG, "DefaultLanguage_onPreferenceChange(): newValue= " + newValue);
 
         return true;
     }

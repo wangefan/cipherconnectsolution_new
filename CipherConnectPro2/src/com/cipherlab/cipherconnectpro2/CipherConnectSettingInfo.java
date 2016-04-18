@@ -30,7 +30,17 @@ public class CipherConnectSettingInfo {
         editor.putString("BarcodeInterval", mBarcodeInterval);
         editor.commit();
     }
+    
+    public static String getDefaultLanguage(Context c) {
+        return getSharedPreferences(c).getString("DefaultLanguage", "English");
+    }
 
+    public static void setDefaultLanguage(String mLanguage, Context c) {
+        Editor editor = getSharedPreferences(c).edit();
+        editor.putString("DefaultLanguage", mLanguage);
+        editor.commit();
+    }
+    
     public static String getLanguage(Context c) {
         return getSharedPreferences(c).getString("Language", "No select");
     }

@@ -30,6 +30,7 @@
 	<string name="setting_bluetooth_device_disconnected">Device disconnect</string>
 	<string name="setting_bluetooth_device">Bluetooth device</string>
 	<string name="setting_barcode_input">Inter-character delay</string>
+	<string name="setting_Default_language">Default language</string>
 	<string name="setting_language">Second language</string>
 	<string name="setting_mode">Scan mode</string>
 	<string name="setting_autoconnect">Auto Reconnect</string>
@@ -43,7 +44,7 @@
 	<string name="about_url">Website</string>
 	<string name="about_url_value">http://www.cipherlab.com</string>
 	<string name="about_version">Version</string>
-	<string name="about_version_value">1.0.3</string>
+	<string name="about_version_value">1.0.4</string>
 	<string name="about_sdk_value">5.0.1</string>
 	<string name="config_type_title_1">Connect Type - Pair/Connect</string>
 	<string name="config_type_title_2">Connect Type - Scan Barcodes to connect</string>
@@ -163,4 +164,26 @@
 		<item>Ru</item>
 		<item>Es</item>		
 	</string-array>
+	<string-array name="Language_default_entries">
+		<item>English</item>
+		<item>Czech</item>
+		<item>French</item>
+		<item>German</item>
+		<item>Italian</item>
+		<item>Portuguese</item>
+		<item>Russian</item>
+		<item>Spanish</item>						
+	</string-array>
+	<string-array name="Language_default_entries_value">
+		<item>En</item>
+		<item>Cz</item>
+		<item>Fr</item>
+		<item>De</item>
+		<item>It</item>
+		<item>Pt</item>
+		<item>Ru</item>
+		<item>Es</item>		
+	</string-array>
+	<string name="sign1">\?</string>
+	<string name="sign2">\\</string>
 </resources>

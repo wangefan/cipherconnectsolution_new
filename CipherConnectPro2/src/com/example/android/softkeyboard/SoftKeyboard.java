@@ -149,7 +149,7 @@ public class SoftKeyboard extends InputMethodService implements
         mOneLineKeyboard = new LatinKeyboard(this, R.xml.oneline);
         
     }
-   
+    
 	/**
      * Called by the framework when your view for creating input needs to be
      * generated. This will be called the first time your input method is
@@ -182,6 +182,8 @@ public class SoftKeyboard extends InputMethodService implements
      */
     @Override
     public void onStartInput(EditorInfo attribute, boolean restarting) {
+    	attribute.imeOptions = EditorInfo.IME_FLAG_NO_EXTRACT_UI;
+
         super.onStartInput(attribute, restarting);
 
         // Reset our state. We want to do this even if restarting, because
@@ -235,15 +237,16 @@ public class SoftKeyboard extends InputMethodService implements
         	mSecondlanguage = false;
         }
         
+        mQwertyKeyboard = this.GetDefaultKeyboard(mSecondlanguage, Language);
         if (mSecondlanguage)
         {
-        	mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty);
+        	//mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty);
         	mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
             mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift);        
         }
         else
         {
-        	mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty_none);
+        	//mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty_none);
         	mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols_none);
             mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift_none);        
         }
@@ -330,6 +333,69 @@ public class SoftKeyboard extends InputMethodService implements
         // Update the label on the enter key, depending on what the application
         // says it will do.
         mCurKeyboard.setImeOptions(getResources(), attribute.imeOptions);
+    }
+    
+    /*
+     * Get default keyboard by Default language of Setting
+     * Added by Visual, 2016/4/18
+     */
+    private LatinKeyboard GetDefaultKeyboard(boolean bSecondlanguage, String secondlanguageName)
+    {
+    	String defaultLanguage = CipherConnectSettingInfo.getDefaultLanguage(this);
+    	if(defaultLanguage==null)
+    		defaultLanguage = "En";
+    	
+    	CipherLog.d(TAG, "GetDefaultKeyboard(bSecondlanguage="+bSecondlanguage+",secondlanguageName="+secondlanguageName+").defaultLanguage="+defaultLanguage);
+    	if(secondlanguageName!=null)
+    	{
+    		if(secondlanguageName.equals(defaultLanguage) == true)
+    		{
+    			bSecondlanguage = false;
+    		}
+    	}
+    	
+    	LatinKeyboard keyboard = null;
+    	if(bSecondlanguage==false)
+    	{
+        	if(defaultLanguage.equals("Cz"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_none_cz); 
+        	else if(defaultLanguage.equals("Fr"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_none_fr); 
+        	else if(defaultLanguage.equals("De"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_none_de); 
+        	else if(defaultLanguage.equals("It"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_none_it); 
+        	else if(defaultLanguage.equals("Pt"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_none_pt); 
+        	else if(defaultLanguage.equals("Ru"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_none_ru); 
+        	else if(defaultLanguage.equals("Es"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_none_es); 
+        	else
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_none); 
+    	}
+    	else
+    	{
+        	if(defaultLanguage.equals("Cz"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_cz); 
+        	else if(defaultLanguage.equals("Fr"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_fr); 
+        	else if(defaultLanguage.equals("De"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_de); 
+        	else if(defaultLanguage.equals("It"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_it); 
+        	else if(defaultLanguage.equals("Pt"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_pt); 
+        	else if(defaultLanguage.equals("Ru"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_ru); 
+        	else if(defaultLanguage.equals("Es"))
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty_es); 
+        	else
+        		keyboard = new LatinKeyboard(this, R.xml.qwerty); 
+    	}
+
+    	
+    	return keyboard;
     }
 
     /**
@@ -849,20 +915,21 @@ public class SoftKeyboard extends InputMethodService implements
     }
 
     public void onPress(int primaryCode) {  
-    	final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
-    	final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
-    	if (primaryCode == nSettingCode ||
-    		primaryCode == nPreIM) {
-            mInputView.setPreviewEnabled(false);
-        }
+    	//final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
+    	//final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
+    	//if (primaryCode == nSettingCode ||
+    	//	primaryCode == nPreIM) {
+        //    mInputView.setPreviewEnabled(false);
+        //}
+    	//mInputView.setPreviewEnabled(false);
     }
 
     public void onRelease(int primaryCode) {
-    	final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
-    	final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
-    	if (primaryCode==nSettingCode ||
-            primaryCode == nPreIM){
-    		mInputView.setPreviewEnabled(true);
-    	}
+    	//final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
+    	//final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
+    	//if (primaryCode==nSettingCode ||
+        //    primaryCode == nPreIM){
+    	//	mInputView.setPreviewEnabled(true);
+    	//}
     }
 }

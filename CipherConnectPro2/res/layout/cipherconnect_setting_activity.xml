@@ -31,12 +31,21 @@
             android:title="@string/setting_barcode_input" />
          
         <ListPreference
+            android:dialogTitle="@string/setting_Default_language"
+            android:key="lstDefaultLanguage"
+            android:entries="@array/Language_default_entries"
+            android:entryValues="@array/Language_default_entries_value"
+            android:defaultValue="En"            
+            android:title="@string/setting_Default_language" />
+        
+        <ListPreference
             android:dialogTitle="@string/setting_language"
             android:key="lstLanguage"
             android:entries="@array/Language_entries"
             android:entryValues="@array/Language_entries_value"
             android:defaultValue="No"            
             android:title="@string/setting_language" />
+        
         <Preference
             android:title="@string/setting_scanner_config" 
             android:summary="@string/setting_scanner_config_sum">
