@@ -393,8 +393,10 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         lstSendBarcodeInterval = (ListPreference) findPreference("lstSendBarcodeInterval");
         lstSendBarcodeInterval.setEntries(R.array.SendBarcodeInterval_entries);	
         
-        if (lstSendBarcodeInterval == null)
-        	CipherConnectSettingInfo.setBarcodeInterval(lstSendBarcodeInterval.getValue(), this);
+        //if (lstSendBarcodeInterval == null)
+        //	CipherConnectSettingInfo.setBarcodeInterval(lstSendBarcodeInterval.getValue(), this);
+        this.lstSendBarcodeInterval.setSummary(lstSendBarcodeInterval.getEntry());
+        CipherLog.d(TAG, "SendBarcodeInterval : " +lstSendBarcodeInterval.getValue());
         
         lstSendBarcodeInterval.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -406,9 +408,9 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         lstDefaultLanguage = (ListPreference) findPreference("lstDefaultLanguage");
         lstDefaultLanguage.setEntries(R.array.Language_default_entries);
         
-        if (lstDefaultLanguage == null)
-        	CipherConnectSettingInfo.setLanguage(lstDefaultLanguage.getValue(), this);
-
+        //if (lstDefaultLanguage == null)
+        	//CipherConnectSettingInfo.setDefaultLanguage(lstDefaultLanguage.getValue(), this);
+        this.lstDefaultLanguage.setSummary(lstDefaultLanguage.getEntry());
         CipherLog.d(TAG, "DefaultLanguage : " +lstDefaultLanguage.getValue());
         
         lstDefaultLanguage.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -421,9 +423,9 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         lstLanguage = (ListPreference) findPreference("lstLanguage");
         lstLanguage.setEntries(R.array.Language_entries);
         
-        if (lstLanguage == null)
-        	CipherConnectSettingInfo.setLanguage(lstLanguage.getValue(), this);
-
+      //if (lstLanguage == null)
+        //	CipherConnectSettingInfo.setLanguage(lstLanguage.getValue(), this);
+    	this.lstLanguage.setSummary(lstLanguage.getEntry());
         CipherLog.d(TAG, "Language : " +lstLanguage.getValue());
         
         lstLanguage.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -542,6 +544,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         //BarcodeInterval.setSummary((String) newValue);
         CipherLog.d(TAG, "SendBarcodeInterval_onPreferenceChange(): newValue= " + newValue); 
 
+        if(this.lstSendBarcodeInterval!=null)
+        {
+        	CharSequence entry = this.GetEntry(R.array.SendBarcodeInterval_entries,R.array.SendBarcodeInterval_entries_value,(String)newValue);
+        	this.lstSendBarcodeInterval.setSummary(entry);
+        }
+        
         return true;
     }
     
@@ -559,6 +567,12 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         CipherConnectSettingInfo.setDefaultLanguage((String) newValue, this);
         CipherLog.d(TAG, "DefaultLanguage_onPreferenceChange(): newValue= " + newValue);
 
+        if(this.lstDefaultLanguage!=null)
+        {
+        	CharSequence entry = this.GetEntry(R.array.Language_default_entries,R.array.Language_default_entries_value,(String)newValue);
+        	this.lstDefaultLanguage.setSummary(entry);
+        }
+        
         return true;
     }
 
@@ -578,9 +592,47 @@ public class CipherConnectSettingActivity extends PreferenceActivity
         //String list = (String) lstLanguage.getEntry();
         CipherLog.d(TAG, "Language_onPreferenceChange(): newValue= " + newValue);
         //CipherLog.d(TAG, "Language_onPreferenceChange(): Entry= " + lst);
-
+        
+        if(this.lstLanguage!=null)
+        {
+        	CharSequence entry = this.GetEntry(R.array.Language_entries,R.array.Language_entries_value,(String)newValue);
+        	this.lstLanguage.setSummary(entry);
+        }
+        
         return true;
     }
+	
+	private String GetEntry(int entriesID, int valueID, String newValue)
+	{
+		if(entriesID<0)
+			return "";
+		if(valueID<0)
+			return "";
+		if(newValue==null)
+			return "";
+		
+		try {
+	    	String[] entryList = getResources().getStringArray(entriesID);
+	    	if(entryList==null)
+	    		return "";
+
+	    	String[] valueList = getResources().getStringArray(valueID);
+	    	if(valueList==null)
+	    		return "";
+	    	
+	    	for(int i=0;i<valueList.length;i++)
+	    	{
+	    		String value = valueList[i];
+	    		if(value.equals(newValue))
+	    			return entryList[i];
+	    	}
+		} catch (Exception e) {
+			CipherLog.d(TAG, "GetEntry().ex=" + e.getMessage());
+		}
+
+		
+    	return "";
+	}
     
     /*
      * <!----------------------------------------------------------------->

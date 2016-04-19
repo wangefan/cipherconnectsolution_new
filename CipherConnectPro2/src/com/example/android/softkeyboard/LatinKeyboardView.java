@@ -16,13 +16,14 @@
 
 package com.example.android.softkeyboard;
 
-import com.cipherlab.help.CipherLog;
-
 import android.content.Context;
+import android.content.Intent;
 import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.Keyboard.Key;
+import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
+
+import com.cipherlab.help.CipherLog;
 
 public class LatinKeyboardView extends KeyboardView {
 
@@ -44,6 +45,57 @@ public class LatinKeyboardView extends KeyboardView {
             return true;
         } else {
             return super.onLongPress(key);
+        	//return onLongPressEx(key);
         }
     }
+    
+//    private boolean onLongPressEx(Key key) 
+//    {
+//    	Context context = this.getContext();
+//    	View custom = LayoutInflater.from(context)
+//    		    .inflate(R.xml.qwerty_popup_template, new FrameLayout(context));
+//		PopupWindow popup = new PopupWindow(context);
+//		popup.setContentView(custom);
+//    	
+//		popup.setWidth(this.getWidth());
+//	    popup.setHeight(this.getHeight());
+//	    popup.showAtLocation(custom, Gravity.NO_GRAVITY, (int)this.getX(), (int)this.getY());
+//		
+//	    return true;
+//    	PopupWindow mPopupKeyboard = new PopupWindow(this.getContext());            
+//    	mPopupKeyboard.setBackgroundDrawable(null); 
+//    	
+//    	if(mPopupKeyboard != null)
+//    	{
+//    	    this.dismissPopupKeyboard();
+//    	    View mMiniKeyboardContainer = null;
+//    	    KeyboardView mMiniKeyboard = null;
+//    	    View closeButton = null;   
+//    	    
+//    	    mMiniKeyboardContainer = LayoutInflater.from(this.getContext()).inflate(R.xml.qwerty_popup_template, null);
+//    	    mMiniKeyboard = (KeyboardView) mMiniKeyboardContainer.findViewById(R.id.popup_keyboardView);
+//    	    closeButton = mMiniKeyboardContainer.findViewById(R.id.closeButton);
+//    	    if (closeButton != null) 
+//    	    {
+//    	        closeButton.setOnClickListener(new OnClickListener()            
+//    	        {
+//    	            @Override
+//    	            public void onClick(View arg0) 
+//    	            {
+//    	                mPopupKeyboard.dismiss();
+//    	        });
+//    	    }
+    	    //mMiniKeyboard.setOnKeyboardActionListener(null);
+//
+//    	    String resourcestring = "abcdefghi";
+//    	    mMiniKeyboard.setKeyboard(new Keyboard(this.getBaseContext(), R.xml.kbd_popup_template, alternates, 3, 0));
+//    	    mMiniKeyboard.setPopupParent(mCandidateView);           
+//    	    mPopupKeyboard.setContentView(mMiniKeyboardContainer);
+//    	    mPopupKeyboard.setWidth(LayoutParams.WRAP_CONTENT);
+//    	    mPopupKeyboard.setHeight(LayoutParams.WRAP_CONTENT);
+//    	    mPopupKeyboard.showAtLocation(mCandidateView, Gravity.TOP, 0, 0);
+    	//}   
+    	
+    	//return false;
+//    }
 }
