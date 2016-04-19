@@ -64,10 +64,4 @@
         android:text="@string/about_version_value"
         android:textSize="18sp" />
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/about_sdk_value"
-        android:textSize="18sp" />
-
 </LinearLayout>
