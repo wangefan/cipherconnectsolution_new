@@ -1,0 +1,35 @@
+2016/04/19
+===========APP info===========
+Version number : 1.0.4
+SDK version: Android 5.0.1
+1. ¥[¤WDefault Languange on Setting
+2. §ó·sSetting, Delay, Default Languange©MSecond Langunge ¥[¤WSummary
+3. ½Õ¾ã Fr Keyboard ©M¥[¤WPopup Keyboard 
+4. °±¥Î³Ì¤j¤Æ.(¦b«È¤áªºEditÄæ¦ì, ·|¦Û°Ê©ñ¤j¿é¤JÄæ¦ì)
+
+
+2015/06/16
+===========APP info===========
+Version number : 0.0.2
+SDK version: Android 5.0.1
+
+ƒå	< Bugs Fixed >:
+1.	0006423:  [CipherConnectPro2] ¥­ªO»P1663°t¹ï³s½u«á,©ó note ¤¤ "List Page 1" ÄY­«±¼¦r(ªþ¹Ï5).
+2.	0006424: [CipherConnectPro2] ¥­ªOÃö¾÷­«¶},1663¤£·|¦^³s,CipherConnect Pro2³]©w³s½u±ø½XªÅ¥Õ(ªþ¹Ï3),»Ý¤Á´«¤@¦¸¥kÃä2D icon(ªþ¹Ï4),1663¤~·|¦^³s.
+
+ƒå	< New Functions >:
+1.	Enabling input method if it is not current used.
+ƒå	< Modification >:
+
+
+
+2015/04/20
+===========APP info===========
+Version number : 0.0.1
+SDK version: Android 5.0.1
+Change log:
+1. Refine Listen connection mechanism.
+
+
+2015/04/17
+1.Fix maximum/minimum issue (¤Á´«¿é¤Jªk¥i°µ¥X,­ì¦]¬°¥¼remove listener)
