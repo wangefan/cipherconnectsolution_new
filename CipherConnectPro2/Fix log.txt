@@ -2,11 +2,12 @@
 ===========APP info===========
 Version number : 1.0.4
 SDK version: Android 5.0.1
-1. 加上Default Languange on Setting
-2. 更新Setting, Delay, Default Languange和Second Langunge 加上Summary
-3. 調整 Fr Keyboard 和加上Popup Keyboard 
-4. 停用最大化.(在客戶的Edit欄位, 會自動放大輸入欄位)
-
+1.	Setting
+	i.	加上Default Languange.
+	ii.	對Delay, Default Languange和Second Langunge加上顯示Summary.
+2.	Keyboard
+	i.	調整法國Keyboard(調整配置和加上Popup Keyboard)
+	ii.	停用最大化.(在客戶App的Edit欄位, CipherconnectPro2會自動放大輸入欄位)
 
 2015/06/16
 ===========APP info===========
