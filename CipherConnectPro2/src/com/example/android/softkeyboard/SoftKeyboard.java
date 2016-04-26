@@ -855,6 +855,8 @@ public class SoftKeyboard extends InputMethodService implements
         commitTyped(getCurrentInputConnection());
         requestHideSelf(0);
         mInputView.closing();
+        
+        this.setKeyboardMinimize(CipherConnectSettingInfo.isMinimum(this));
     }
 
     private void checkToggleCapsLock() {

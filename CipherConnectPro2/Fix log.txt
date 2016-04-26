@@ -1,3 +1,12 @@
+2016/04/26
+===========APP info===========
+Version number : 1.0.5
+SDK version: Android 5.0.1
+Updated:
+1.	在Keyboard按下最大化後, 會將設定的EnabledMini Keyboard 改成 false.
+2.	在設定的Enabled Mini Keyboard是true時, 在Keyboard按下最大化後, 再按下Hide Keyboard, 再Show Keyboard 時, 會顯示最大化的Keyboard
+
+
 2016/04/19
 ===========APP info===========
 Version number : 1.0.4
