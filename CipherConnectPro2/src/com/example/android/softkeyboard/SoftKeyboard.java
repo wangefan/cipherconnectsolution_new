@@ -94,7 +94,7 @@ public class SoftKeyboard extends InputMethodService implements
     		mMode = TURN_OFF;
     		mCurKeyboard = mQwertyKeyboard;
     	}
-    	CipherConnectSettingInfo.setMinimum(bSetMin, this);
+    	//CipherConnectSettingInfo.setMinimum(bSetMin, this);
     	if(mInputView != null)
     		mInputView.setKeyboard(mCurKeyboard);
     }
@@ -735,7 +735,7 @@ public class SoftKeyboard extends InputMethodService implements
                     current = mSymbolsKeyboard;
                 }
                 mMode = TURN_OFF;
-                CipherConnectSettingInfo.setMinimum(false, this);
+                //CipherConnectSettingInfo.setMinimum(false, this);
                 mCurKeyboard = mQwertyKeyboard;
             } else {
                 if (current == mSymbolsKeyboard
