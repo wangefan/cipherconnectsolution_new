@@ -530,6 +530,7 @@ public class SoftKeyboard extends InputMethodService implements
             // However, our keyboard could be showing a pop-up window
             // that back should dismiss, so we first allow it to do that.
             if (event.getRepeatCount() == 0 && mInputView != null) {
+            	setKeyboardMinimize(CipherConnectSettingInfo.isMinimum(this));
                 if (mInputView.handleBack()) {
                     return true;
                 }
@@ -856,7 +857,7 @@ public class SoftKeyboard extends InputMethodService implements
         requestHideSelf(0);
         mInputView.closing();
         
-        this.setKeyboardMinimize(CipherConnectSettingInfo.isMinimum(this));
+        setKeyboardMinimize(CipherConnectSettingInfo.isMinimum(this));
     }
 
     private void checkToggleCapsLock() {
