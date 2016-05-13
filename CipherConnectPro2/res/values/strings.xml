@@ -44,7 +44,7 @@
 	<string name="about_url">Website</string>
 	<string name="about_url_value">http://www.cipherlab.com</string>
 	<string name="about_version">Version</string>
-	<string name="about_version_value">1.0.6</string>
+	<string name="about_version_value">1.0.7</string>
 	<string name="config_type_title_1">Connect Type - Pair/Connect</string>
 	<string name="config_type_title_2">Connect Type - Scan Barcodes to connect</string>
 	<string name="Initialize_starts">Initialize CipherConnect</string>

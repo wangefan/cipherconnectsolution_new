@@ -1,10 +1,18 @@
+2016/05/13
+===========APP info===========
+Version number : 1.0.7
+SDK version: Android 4.4
+
+Updated:
+1.修正在Nexus9, notification icon變白色一塊
+
 2016/04/27
 ===========APP info===========
 Version number : 1.0.6
 SDK version: Android 5.0.1
 
 Updated:
-1.	修正在設定的Enabled Minimize Keyboard是true時, 在Keyboard按下最大化後, 再按下Android System backup button(Hide Keyboard), 再Show Keyboard 時, 不應該顯示最大化的Keyboard
+1.修正在設定的Enabled Minimize Keyboard是true時, 在Keyboard按下最大化後, 再按下Android System backup button(Hide Keyboard), 再Show Keyboard 時, 不應該顯示最大化的Keyboard
 
 
 2016/04/26
