@@ -34,6 +34,7 @@ public class NotificationUtil {
     	
 		Notification.Builder notiBuilder= new Notification.Builder(context);
 		notiBuilder.setSmallIcon(icon);
+		//notiBuilder.setLargeIcon(icon);
 		notiBuilder.setContentTitle(title);
 		notiBuilder.setContentText(message);
 		notiBuilder.setWhen(System.currentTimeMillis());
