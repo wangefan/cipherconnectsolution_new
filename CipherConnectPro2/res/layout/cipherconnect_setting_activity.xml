@@ -10,7 +10,8 @@
 
     	<CheckBoxPreference
 	    	android:key="ckbSuspend_Enable"
-	        android:title="@string/Backlight_Suspend_Title" />
+	        android:title="@string/Backlight_Suspend_Title" 
+	        android:summary="@string/Backlight_Suspend_Summary"/>
     
     	<CheckBoxPreference
             android:defaultValue="false"
