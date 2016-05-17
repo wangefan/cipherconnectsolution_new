@@ -7,12 +7,12 @@ import android.content.ServiceConnection;
 import android.inputmethodservice.Keyboard;
 import android.os.Handler;
 import android.os.IBinder;
+import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import com.cipherlab.cipherconnect.sdk2.ICipherConnBTDevice;
-import com.cipherlab.cipherconnectpro2.R;
 import com.cipherlab.help.CipherLog;
 import com.cipherlab.util.KeyboardUtil;
 import com.example.android.softkeyboard.SoftKeyboard;
@@ -205,30 +205,25 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
             
             this.waitEx(5);
 
-            InputConnection ic = getCurrentInputConnection();
-            
-            //ic.commitText("\n", 1);
+            InputConnection ic = this.getCurrentInputConnection();
+           
             for (char c : data) {
-                /*
-            	if (c == '\n') {
+                
+            	//Added by Visual.chen, 2016/05/17{
+            	if (c == '\n') 
+            	{
         	    	CipherLog.e("sendBarcode", "Enter");
-
-					this.waitEx(10);
-                    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_ENTER));
-                    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_ENTER));
-					this.waitEx(20);
-
+        	    	this.keyDownUp(ic, KeyEvent.KEYCODE_ENTER);
                     continue;
-                } else if (c == '\t') {
-					this.waitEx(10);
-                    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_TAB));
-                    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_TAB));
-                    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_TAB));
-                    this.waitEx(20);
-
+                } 
+            	else if (c == '\t') 
+            	{
+        	    	CipherLog.e("sendBarcode", "Tab");
+        	    	this.keyDownUp(ic, KeyEvent.KEYCODE_TAB);
                     continue;
                 }
-                */
+            	//}Added by Visual.chen, 2016/05/17
+            	
                 this.waitEx(3);
                 String s = String.valueOf(c);
     	    	CipherLog.e("sendBarcode", "commitText("+s+")");
@@ -252,6 +247,18 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         catch (InterruptedException e) {
         	e.printStackTrace();
 		}
+    }
+    
+    /*
+     * Added by Visual.chen, 2016/05/17
+     */
+    private void keyDownUp(InputConnection inputConnection, int keyEventCode) 
+    {
+    	if(inputConnection==null)
+    		return;
+    	
+    	inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
+    	inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
     }
 
     @Override

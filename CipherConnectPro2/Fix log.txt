@@ -1,5 +1,14 @@
 2016/05/16
 ===========APP info===========
+Version number : 1.0.9
+SDK version: Android 4.4
+
+Updated:
+1.Fixed 收到Barcode內的Enter和tab的處理方法.
+2.調整取得About version的方法.
+
+2016/05/16
+===========APP info===========
 Version number : 1.0.8
 SDK version: Android 4.4
 

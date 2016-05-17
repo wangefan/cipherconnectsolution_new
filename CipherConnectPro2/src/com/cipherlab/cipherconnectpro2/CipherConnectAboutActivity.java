@@ -7,7 +7,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.cipherlab.cipherconnectpro2.R;
+import com.cipherlab.help.PackageInfoHelper;
 
 public class CipherConnectAboutActivity extends Activity {
     @Override
@@ -30,7 +30,14 @@ public class CipherConnectAboutActivity extends Activity {
      * */
     private void init_ui() {
         TextView txtVersion = (TextView) this.findViewById(R.id.txtVersion);
-        txtVersion.setText(R.string.about_version_value);
+        
+        String versionName = PackageInfoHelper.getPackageInfoVersionName(this);
+        if (versionName != null)
+        {
+            txtVersion.setText(versionName);
+        }
+        
+        //txtVersion.setText(R.string.about_version_value);
 
         TextView txtWebsite = (TextView) this.findViewById(R.id.website);
         txtWebsite.setText(
