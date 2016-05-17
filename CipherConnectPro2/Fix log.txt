@@ -1,5 +1,13 @@
 2016/05/16
 ===========APP info===========
+Version number : 1.0.10
+SDK version: Android 4.4
+
+Updated:
+1.Changed string "Stays awake" to "Display stays awake while connecting with the BT scanner".
+
+2016/05/16
+===========APP info===========
 Version number : 1.0.9
 SDK version: Android 4.4
 
@@ -53,6 +61,7 @@ SDK version: Android 5.0.1
 	i.	調整法國Keyboard(調整配置和加上Popup Keyboard)
 	ii.	停用最大化.(在客戶App的Edit欄位, CipherconnectPro2會自動放大輸入欄位)
 
+	
 2015/06/16
 ===========APP info===========
 Version number : 0.0.2

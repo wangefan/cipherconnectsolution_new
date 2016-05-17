@@ -358,14 +358,10 @@ public class CipherConnectSettingActivity extends PreferenceActivity
      
         /* DisplaySetting */
 		ckbScreenBacklight = (CheckBoxPreference) findPreference("ckbSuspend_Enable");
-		ckbScreenBacklight.setChecked(CipherConnectSettingInfo
-				.isSuspendBacklight(this));
-		ckbScreenBacklight
-				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						return ScreenBacklight_onPreferenceChange(preference,
-								newValue);
+		ckbScreenBacklight.setChecked(CipherConnectSettingInfo.isSuspendBacklight(this));
+		ckbScreenBacklight.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						return ScreenBacklight_onPreferenceChange(preference, newValue);
             }
         });
         

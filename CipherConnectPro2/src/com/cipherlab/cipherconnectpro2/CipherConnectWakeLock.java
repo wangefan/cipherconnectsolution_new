@@ -21,6 +21,8 @@ public class CipherConnectWakeLock {
 		if (mWakeLock == null) {
 			CipherLog.d("Miller", "Suspend Backlight");
 			mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+			//mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
+			//PowerManager.SCREEN_DIM_WAKE_LOCK
 			mWakeLock.acquire();
 		}
 	}

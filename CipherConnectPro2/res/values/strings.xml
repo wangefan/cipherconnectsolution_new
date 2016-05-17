@@ -84,7 +84,7 @@
 	<string name="Bluetooth_Mode_Summary">Classic </string>
 	<string name="Bluetooth_Mode_BLE_Summary">Low energy</string>
 	<string name="Bluetooth_Title">Bluetooth</string>
-	<string name="Backlight_Suspend_Title">Stay awake</string>
+	<string name="Backlight_Suspend_Title">Display stays awake while connecting with the BT scanner</string>
 	<string name="Exit_Title">Exit CiperConnect</string>
 	<string name="Bluetooth_TurnOn">Turn on Bluetooth</string>
 	<string name="Bluetooth_TurningOn">Turning on&#8230;</string>
