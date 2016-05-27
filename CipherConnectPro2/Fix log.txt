@@ -1,3 +1,11 @@
+2016/05/27
+===========APP info===========
+Version number : 2.0.0
+SDK version: Android 4.4
+
+發佈, 更新版本到 2.0.0
+
+
 2016/05/23
 ===========APP info===========
 Version number : 1.0.12
