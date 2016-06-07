@@ -179,14 +179,21 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
             // ic.sendKeyEvent(event);
             // ic.sendKeyEvent(event)
             // int caps = ic.getCursorCapsMode(reqModes);
-            if (this.mInputView.isShifted()) {
-                primaryCode = Character.toUpperCase(primaryCode);
-                this.mInputView.setShifted(false);
-            }
+        	
+        	if(this.mInputView!=null)
+        	{
+                if (this.mInputView.isShifted()) {
+                    primaryCode = Character.toUpperCase(primaryCode);
+                    this.mInputView.setShifted(false);
+                }
+        	}
 
             StringBuffer sb = new StringBuffer();
             sb.append((char) primaryCode);
-            ic.commitText(sb.toString(), 1);
+            
+            if(ic!=null)
+            	ic.commitText(sb.toString(), 1);
+            
             sb = null;
             break;
         }
