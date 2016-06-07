@@ -1,3 +1,11 @@
+2016/06/07
+===========APP info===========
+Version number : 2.0.1
+SDK version: Android 4.4
+
+Fixed NullPointerException on CipherConnectKeyboardService.onKey.
+
+
 2016/05/27
 ===========APP info===========
 Version number : 2.0.0
