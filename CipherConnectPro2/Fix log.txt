@@ -1,3 +1,11 @@
+2016/06/21
+===========APP info===========
+Version number : 2.0.2
+SDK version: Android 4.4
+
+Updated Online Help url to connect2.cipherlab.com
+Updated SDK for Android N.
+
 2016/06/07
 ===========APP info===========
 Version number : 2.0.1
