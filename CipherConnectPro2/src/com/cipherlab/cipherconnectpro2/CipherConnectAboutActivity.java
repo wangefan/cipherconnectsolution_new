@@ -46,7 +46,7 @@ public class CipherConnectAboutActivity extends Activity {
 
         TextView txtHelp = (TextView) this.findViewById(R.id.help);
         txtHelp.setText(
-            Html.fromHtml("<a href=\"http://connect.cipherlab.com\">http://connect.cipherlab.com</a> "));
+            Html.fromHtml("<a href=\"http://connect2.cipherlab.com\">http://connect2.cipherlab.com</a> "));
         txtHelp.setMovementMethod(LinkMovementMethod.getInstance());
     }
     
