@@ -79,7 +79,11 @@ public class CipherConnectManagerService extends Service
     	mBinder = new LocalBinder();
     	CipherConnectWakeLock.initial(this);
         CipherConnectControl_init();
-        startForeground(NotificationUtil.NOTIFY_ID, NotificationUtil.GetNotificaion(R.drawable.noconnect, this, 
+        
+        //int icon = R.drawable.noconnect;
+        int icon = R.drawable.notification_noconnect;
+        int icon2 = R.drawable.list_noconnect;
+        startForeground(NotificationUtil.NOTIFY_ID, NotificationUtil.GetNotificaion(icon, icon2, this, 
         										getResources().getString(R.string.ime_name), 
         										getResources().getString(R.string.setting_bluetooth_device_disconnected),
         		                                      CipherConnectNotification.intent_cipherconnectproSettings(),

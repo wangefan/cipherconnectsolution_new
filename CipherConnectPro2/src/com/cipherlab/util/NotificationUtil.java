@@ -10,6 +10,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.widget.RemoteViews;
 
 /**
@@ -20,20 +21,19 @@ public class NotificationUtil {
 	public static final String TAG = "NotificationUtil";
 	public final static int NOTIFY_ID = 101;
 
-    public static void notifyWithIntent(int icon, Context context, Intent intent, String title, String message, boolean bEnableDisconn) 
+    public static void notifyWithIntent(int notification_icon,int noti_icon, Context context, Intent intent, String title, String message, boolean bEnableDisconn) 
     {
         //if (NOTIFY_ID == 0)
         //	NOTIFY_ID = System.identityHashCode(context);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(NOTIFY_ID, GetNotificaion(icon, context, title, message, intent, context.getPackageName(), bEnableDisconn));
+        mNotificationManager.notify(NOTIFY_ID, GetNotificaion(notification_icon, noti_icon, context, title, message, intent, context.getPackageName(), bEnableDisconn));
         mNotificationManager = null;
     }
     
-	public static Notification GetNotificaion(int icon, Context context, String title, String message, Intent intent, String strPackageName, boolean bEnableDisconn) 
+	public static Notification GetNotificaion(int notification_icon,int noti_icon, Context context, String title, String message, Intent intent, String strPackageName, boolean bEnableDisconn) 
     {
-    	
 		Notification.Builder notiBuilder= new Notification.Builder(context);
-		notiBuilder.setSmallIcon(icon);
+		notiBuilder.setSmallIcon(notification_icon);
 		//notiBuilder.setLargeIcon(icon);
 		notiBuilder.setContentTitle(title);
 		notiBuilder.setContentText(message);
@@ -43,9 +43,13 @@ public class NotificationUtil {
 		
 		//Custom notification 
 		RemoteViews remoteViews = new RemoteViews(strPackageName, R.layout.custom_notification);
-		remoteViews.setImageViewResource(R.id.notifiation_image, icon);
+		remoteViews.setImageViewResource(R.id.notifiation_image, noti_icon);
 		remoteViews.setTextViewText(R.id.noti_title, title);
 		remoteViews.setTextViewText(R.id.noti_msg, message);
+		
+		remoteViews.setTextColor(R.id.noti_title, Color.BLACK);
+		remoteViews.setTextColor(R.id.noti_msg, Color.GRAY);
+		
 		remoteViews.setBoolean(R.id.noti_disconnect, "setEnabled", false);
 		if(bEnableDisconn)
 		{
