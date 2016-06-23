@@ -1,9 +1,10 @@
-2016/06/22
+2016/06/23
 ===========APP info===========
 Version number : 2.0.3
 SDK version: Android 4.4
 
-Changed icon for Android 6 and N.
+Updated notification icon for Android 6 and N.
+Fixed notification text color.
 
 
 2016/06/21
