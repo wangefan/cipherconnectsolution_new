@@ -23,6 +23,7 @@ import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.text.method.MetaKeyKeyListener;
+import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
@@ -47,6 +48,8 @@ public class SoftKeyboard extends InputMethodService implements
             KeyboardView.OnKeyboardActionListener {
     static final int TURN_OFF = 0;
     static final int TURN_ON = 1;
+    
+    private static final String TAG = "SoftKeyboard";
 
     /**
      * This boolean indicates the optional example code for performing
@@ -61,13 +64,13 @@ public class SoftKeyboard extends InputMethodService implements
     protected KeyboardView mInputView;
     // private CandidateView mCandidateView;
     private CompletionInfo[] mCompletions;
-    private static final String TAG = "SoftKeyboard()";
+    
     private StringBuilder mComposing = new StringBuilder();
     private boolean mPredictionOn;
     private boolean mCompletionOn;
     private boolean mSecondlanguage;
     private int mLastDisplayWidth;
-    private boolean mCapsLock;
+    protected boolean mCapsLock;
     private long mLastShiftTime;
     private long mMetaState;
     private int mMode = TURN_OFF;
@@ -629,7 +632,10 @@ public class SoftKeyboard extends InputMethodService implements
                 caps = getCurrentInputConnection().getCursorCapsMode(
                            attr.inputType);
             }
-            mInputView.setShifted(mCapsLock || caps != 0);
+            
+            boolean b = mCapsLock || caps != 0;
+            Log.d(TAG,"updateShiftKeyState.setShifted("+b+")");
+            mInputView.setShifted(b);
         }
     }
 
@@ -684,11 +690,17 @@ public class SoftKeyboard extends InputMethodService implements
             }
             sendKey(primaryCode);
             updateShiftKeyState(getCurrentInputEditorInfo());
-        } else if (primaryCode == Keyboard.KEYCODE_DELETE) {
+        } 
+    	else if (primaryCode == Keyboard.KEYCODE_DELETE) 
+    	{
             handleBackspace();
-        } else if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+        } 
+        else if (primaryCode == Keyboard.KEYCODE_SHIFT) 
+        {
             handleShift();
-        } else if (primaryCode == Keyboard.KEYCODE_CANCEL) {
+        } 
+        else if (primaryCode == Keyboard.KEYCODE_CANCEL) 
+        {
             handleClose();
             return;
         } else if (primaryCode == LatinKeyboardView.KEYCODE_OPTIONS) {
@@ -823,7 +835,15 @@ public class SoftKeyboard extends InputMethodService implements
         if ((mQwertyKeyboard == currentKeyboard) || (mLangKeyboard == currentKeyboard)) {
             // Alphabet keyboard
             checkToggleCapsLock();
-            mInputView.setShifted(mCapsLock || !mInputView.isShifted());
+            
+            boolean bShifted = mInputView.isShifted();
+            Log.d(TAG, "handleShift.bShifted="+bShifted);
+            Log.d(TAG, "handleShift.mCapsLock="+mCapsLock);
+            
+            boolean bNewShifted = mCapsLock || !bShifted;
+            Log.d(TAG, "handleShift.setShifted("+bNewShifted+")");
+            mInputView.setShifted(bNewShifted);
+            
         } else if (currentKeyboard == mSymbolsKeyboard) {
             mSymbolsKeyboard.setShifted(true);
             mInputView.setKeyboard(mSymbolsShiftedKeyboard);
@@ -862,12 +882,27 @@ public class SoftKeyboard extends InputMethodService implements
 
     private void checkToggleCapsLock() {
         long now = System.currentTimeMillis();
-        if (mLastShiftTime + 800 > now) {
-            mCapsLock = !mCapsLock;
+//        if (mLastShiftTime + 800 > now) {
+//            mCapsLock = !mCapsLock;
+//            mLastShiftTime = 0;
+//            Log.d(TAG, "checkToggleCapsLock().mCapsLock=" + mCapsLock);
+//        } else {
+//            mLastShiftTime = now;
+//        }
+        
+        if (mLastShiftTime + 800 > now) 
+        {
+            mCapsLock = true;
             mLastShiftTime = 0;
-        } else {
+            Log.d(TAG, "checkToggleCapsLock().mCapsLock=" + mCapsLock);
+        } 
+        else 
+        {
+            mCapsLock = false;
             mLastShiftTime = now;
         }
+        
+        Log.d(TAG, "checkToggleCapsLock().mLastShiftTime=" + mLastShiftTime);
     }
 
     private String getWordSeparators() {
@@ -901,7 +936,8 @@ public class SoftKeyboard extends InputMethodService implements
     }
 
     public void swipeRight() {
-        if (mCompletionOn) {
+        if (mCompletionOn) 
+        {
         	pickDefaultCandidate();
         }
     }
@@ -917,7 +953,9 @@ public class SoftKeyboard extends InputMethodService implements
     public void swipeUp() {    	
     }
 
-    public void onPress(int primaryCode) {  
+    public void onPress(int primaryCode) 
+    {  
+    	Log.d(TAG, "onPress(primaryCode="+primaryCode+")");
     	//final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
     	//final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
     	//if (primaryCode == nSettingCode ||
@@ -927,7 +965,9 @@ public class SoftKeyboard extends InputMethodService implements
     	//mInputView.setPreviewEnabled(false);
     }
 
-    public void onRelease(int primaryCode) {
+    public void onRelease(int primaryCode) 
+    {
+    	Log.d(TAG, "onRelease(primaryCode="+primaryCode+")");
     	//final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
     	//final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
     	//if (primaryCode==nSettingCode ||

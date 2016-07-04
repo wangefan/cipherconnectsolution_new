@@ -1,3 +1,12 @@
+2016/07/04
+===========APP info===========
+Version number : 2.0.4
+SDK version: Android 4.4
+
+Fixed French keyboard.
+Supported Caps Lock by double-tapping the Shift key
+
+
 2016/06/23
 ===========APP info===========
 Version number : 2.0.3

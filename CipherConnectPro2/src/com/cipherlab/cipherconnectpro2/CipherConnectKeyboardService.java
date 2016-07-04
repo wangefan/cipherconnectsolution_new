@@ -182,9 +182,14 @@ public class CipherConnectKeyboardService extends SoftKeyboard {
         	
         	if(this.mInputView!=null)
         	{
-                if (this.mInputView.isShifted()) {
+                if (this.mInputView.isShifted()) 
+                {
                     primaryCode = Character.toUpperCase(primaryCode);
-                    this.mInputView.setShifted(false);
+
+                    //Update by Visual,2016/7/4
+                    //Supported CapsLock
+                    if(super.mCapsLock==false)
+                    	this.mInputView.setShifted(false);
                 }
         	}
 

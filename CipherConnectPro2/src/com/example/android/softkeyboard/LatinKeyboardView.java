@@ -22,12 +22,14 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.cipherlab.help.CipherLog;
 
 public class LatinKeyboardView extends KeyboardView {
 
     static final int KEYCODE_OPTIONS = -100;
+    private static final String TAG = "LatinKeyboardView";
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);        
@@ -35,6 +37,21 @@ public class LatinKeyboardView extends KeyboardView {
 
     public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);        
+    }
+    
+    @Override
+    public boolean setShifted(boolean shifted) 
+    {
+    	Log.d(TAG, "setShifted(shifted="+shifted+")");
+    	return super.setShifted(shifted);
+    }
+    
+    @Override
+    public boolean isShifted() 
+    {
+    	boolean b = super.isShifted();
+    	Log.d(TAG, "isShifted = " + b);
+    	return b;
     }
 
     @Override
@@ -48,6 +65,8 @@ public class LatinKeyboardView extends KeyboardView {
         	//return onLongPressEx(key);
         }
     }
+    
+
     
 //    private boolean onLongPressEx(Key key) 
 //    {
