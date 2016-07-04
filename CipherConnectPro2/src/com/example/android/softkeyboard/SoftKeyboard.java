@@ -890,6 +890,8 @@ public class SoftKeyboard extends InputMethodService implements
 //            mLastShiftTime = now;
 //        }
         
+        //Update by Visual,2016/7/4
+        //Supported CapsLock
         if (mLastShiftTime + 800 > now) 
         {
             mCapsLock = true;
@@ -955,7 +957,7 @@ public class SoftKeyboard extends InputMethodService implements
 
     public void onPress(int primaryCode) 
     {  
-    	Log.d(TAG, "onPress(primaryCode="+primaryCode+")");
+    	//Log.d(TAG, "onPress(primaryCode="+primaryCode+")");
     	//final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
     	//final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
     	//if (primaryCode == nSettingCode ||
@@ -967,7 +969,7 @@ public class SoftKeyboard extends InputMethodService implements
 
     public void onRelease(int primaryCode) 
     {
-    	Log.d(TAG, "onRelease(primaryCode="+primaryCode+")");
+    	//Log.d(TAG, "onRelease(primaryCode="+primaryCode+")");
     	//final Integer nSettingCode = getResources().getInteger(R.integer.keycodeSetting);
     	//final Integer nPreIM = getResources().getInteger(R.integer.keycodePreIM);
     	//if (primaryCode==nSettingCode ||

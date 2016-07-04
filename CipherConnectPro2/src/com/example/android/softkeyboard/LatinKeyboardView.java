@@ -39,20 +39,20 @@ public class LatinKeyboardView extends KeyboardView {
         super(context, attrs, defStyle);        
     }
     
-    @Override
-    public boolean setShifted(boolean shifted) 
-    {
-    	Log.d(TAG, "setShifted(shifted="+shifted+")");
-    	return super.setShifted(shifted);
-    }
-    
-    @Override
-    public boolean isShifted() 
-    {
-    	boolean b = super.isShifted();
-    	Log.d(TAG, "isShifted = " + b);
-    	return b;
-    }
+//    @Override
+//    public boolean setShifted(boolean shifted) 
+//    {
+//    	Log.d(TAG, "setShifted(shifted="+shifted+")");
+//    	return super.setShifted(shifted);
+//    }
+//    
+//    @Override
+//    public boolean isShifted() 
+//    {
+//    	boolean b = super.isShifted();
+//    	Log.d(TAG, "isShifted = " + b);
+//    	return b;
+//    }
 
     @Override
     protected boolean onLongPress(Key key) {
