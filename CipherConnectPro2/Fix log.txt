@@ -3,9 +3,9 @@
 Version number : 2.0.4
 SDK version: Android 4.4
 
-Fixed French keyboard.
+Fixed "'" keycode to 39 on French keyboard.
 Supported Caps Lock by double-tapping the Shift key
-
+Changed SHIFT icon to 1/2 and 2/2 on Symbols keyboard.
 
 2016/06/23
 ===========APP info===========
